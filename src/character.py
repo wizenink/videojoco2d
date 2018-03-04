@@ -105,7 +105,7 @@ class  Character(MySprite):
             self.numFrame += 1
 
             if self.numFrame >= len(self.sheetPositions[self.looking])-1:
-                self.numFrame = 0
+                self.numFrame = 1
             if self.numFrame < 0:
                 self.numFrame = len(self.sheetPositions[self.looking])-1
 
@@ -140,7 +140,7 @@ class Player(Character):
     "Cualquier personaje del juego"
     def __init__(self):
         # Invocamos al constructor de la clase padre con la configuracion de este personaje concreto
-        Character.__init__(self,'demo.png','demo.data', 0.2, 2);
+        Character.__init__(self,'demo.png','demo.data', 0.2, 4);
 
 
     def move(self, keyPressed, up, down, left, right):
