@@ -4,7 +4,7 @@ import configparser
 
 
 # Constants
-MAIN_FOLDER = "/home/juli/Dropbox/Universidade/CIIE/videojoco2d/res/"
+MAIN_FOLDER = "/Users/Bruno/Desktop/CIIE/videojoco2d/res/"
 CHARACTER_SPRITE_FOLDER = MAIN_FOLDER + "characters/"
 BLUEPRINT_LEVEL_FOLDER = MAIN_FOLDER + "level/"
 TERRAIN_TEXTURE_FOLDER = MAIN_FOLDER + "texture/"

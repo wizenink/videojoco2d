@@ -13,10 +13,11 @@ BLANCO = (255,255,255)
 pantalla = pygame.display.set_mode((800,600))
 
 player1 = Player()
+enemigo = Enemy1()
 
 clock = pygame.time.Clock()
 
-groupSprites = pygame.sprite.Group(player1)
+groupSprites = pygame.sprite.Group(player1,enemigo)
 
 
 # Bucle infinito
@@ -36,6 +37,8 @@ while True:
     pantalla.fill((0,0,0))
 
     # Dibujamos un círculo de color blanco en esa posición en el buffer
+    enemigo.move_cpu(player1)
+    enemigo.update(clock.get_time())
     player1.move(pygame.key.get_pressed(), K_UP, K_DOWN, K_LEFT, K_RIGHT)
     player1.update(clock.get_time())
     groupSprites.draw(pantalla)

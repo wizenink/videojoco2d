@@ -1,0 +1,5 @@
+[walk]
+starty = 512
+recty = 64
+frames = 9
+rectx = 64
