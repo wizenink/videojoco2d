@@ -35,13 +35,13 @@ class Button(ElementGUI):
 
 class PlayButton(Button):
 	def __init__(self,screen):
-		Button.__init__(self,screen,"nombre_do_puto_boton",(580,530))
+		Button.__init__(self,screen,"nombre_do_puto_boton.jpg",(580,530))
 	def action(self):
 		self.screen.menu.runGame()
 
 class ExitButton(Button):
 	def __init__(self,screen):
-		Button.__init__(self,screen,"nombre_doutro_puto_boton",(580,560))
+		Button.__init__(self,screen,"nombre_doutro_puto_boton.jpg",(580,560))
 	def action(self):
 		self.screen.menu.exitProgram()
 
