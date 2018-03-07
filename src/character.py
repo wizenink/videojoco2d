@@ -179,24 +179,24 @@ class Enemy1(Enemy):
         if self.rect.left>0 and self.rect.right< DISPLAY_WIDTH and self.rect.bottom>0 and self.rect.top< DISPLAY_HEIGHT:
 
             # Por ejemplo, intentara acercarse al jugador mas cercano en el eje x
-            """if player.position[0]<self.position[0]:
-                Character.move(self,LEFT)
-            else:
-                Character.move(self,RIGHT)
-            
-            if player.position[1]<self.position[1]:
-                Character.move(self,UP)
-            else:
-                Character.move(self,DOWN)"""
 
-            if player.position[0]<self.position[0]:
+            xdiference = player.position[0] - self.position[0]
+            ydiference = player.position[1] - self.position[1]
+
+            mayor = abs(xdiference) >= abs(ydiference)
+            print(mayor)
+
+            if mayor and (xdiference > 0):
+                  Character.move(self,RIGHT)
+            elif mayor and (xdiference < 0):
                 Character.move(self,LEFT)
-            elif player.position[0]>self.position[0]:
-                Character.move(self,RIGHT)
-            elif player.position[1]<self.position[1]:
-                Character.move(self,UP)
-            else: 
+            elif not mayor and (ydiference > 0):
                 Character.move(self,DOWN)
+            elif not mayor and (ydiference < 0):
+                Character.move(self,UP)
+            else: Character.move(self,STILL)
+                
+
 
         # Si este personaje no esta en pantalla, no hara nada
         else:
