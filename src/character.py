@@ -182,16 +182,19 @@ class Enemy1(Enemy):
 
             xdiference = player.position[0] - self.position[0]
             ydiference = player.position[1] - self.position[1]
+            #print(xdiference)
+            #print(ydiference)
 
             mayor = abs(xdiference) >= abs(ydiference)
 
-            if mayor and (xdiference > 0):
+            #Diferencia de dos para contemplar que el exprite no eté en el mismo sitio por distancia de menos de dos pixeles y se mueva igual
+            if mayor and (xdiference > 2):
                   Character.move(self,RIGHT)
-            elif mayor and (xdiference < 0):
+            elif mayor and (xdiference < -2):
                 Character.move(self,LEFT)
-            elif not mayor and (ydiference > 0):
+            elif not mayor and (ydiference > 2):
                 Character.move(self,DOWN)
-            elif not mayor and (ydiference < 0):
+            elif not mayor and (ydiference < -2):
                 Character.move(self,UP)
             else: Character.move(self,STILL)
                 
