@@ -184,7 +184,6 @@ class Enemy1(Enemy):
             ydiference = player.position[1] - self.position[1]
 
             mayor = abs(xdiference) >= abs(ydiference)
-            print(mayor)
 
             if mayor and (xdiference > 0):
                   Character.move(self,RIGHT)
