@@ -25,15 +25,17 @@ PLAYER_SPEED = 0.2
 PLAYER_ANIMATION_DELAY = 4
 
 class MySprite(pygame.sprite.Sprite):
-
+    old = (0,0)
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
         self.position = (100,100)
+        self.old = self.position
         self.currentSpeed = (0,0)
         self.speed = 0
         self.rect = pygame.Rect(64,64,64,64)
 
     def setPosition(self,position):
+        self.old = self.position
         self.position = position
         self.rect.left = self.position[0]
         self.rect.bottom = self.position[1]
@@ -47,6 +49,9 @@ class MySprite(pygame.sprite.Sprite):
         xIncrease = self.currentSpeed[0]*time
         yIncrease = self.currentSpeed[1]*time
         self.increasePosition((xIncrease, yIncrease))
+    def draw(self,surface,camera):
+        surface.blit(self.image,camera.apply(self))
+
 
 class  Character(MySprite):
     """docstring for Character."""
@@ -54,7 +59,7 @@ class  Character(MySprite):
 
         MySprite.__init__(self)
 
-        self.sheet = resourceManager.loadImage(imageFile)
+        self.sheet = resourceManager.loadImage(imageFile,colorkey=0)
         self.sheet = self.sheet.convert_alpha()
 
         data = resourceManager.loadData(coordFile)
@@ -166,7 +171,7 @@ class Enemy(Character):
     def move_cpu(self, player):
         # Indicamos las acciónes a realizar para el enemigo
         return
-        
+
 class Enemy1(Enemy):
     "Enemigo 1"
     def __init__(self):
@@ -183,7 +188,7 @@ class Enemy1(Enemy):
                 Character.move(self,LEFT)
             else:
                 Character.move(self,RIGHT)
-            
+
             if player.position[1]<self.position[1]:
                 Character.move(self,UP)
             else:
@@ -195,7 +200,7 @@ class Enemy1(Enemy):
                 Character.move(self,RIGHT)
             elif player.position[1]<self.position[1]:
                 Character.move(self,UP)
-            else: 
+            else:
                 Character.move(self,DOWN)
 
         # Si este personaje no esta en pantalla, no hara nada
