@@ -29,18 +29,21 @@ class DynamicText(object):
                 self.done = True
                 if self.autoreset: self.reset()
 
-    def draw(self, screen):
-        self.box = pygame.Rect(
-                   (screen.get_width() * 0.05),
-                    (screen.get_height() * 0.65),
-                    screen.get_width() * 0.9 ,screen.get_height() * 0.2)
-        self.box = self.box.inflate(-50,-10)
-        self.box2 = pygame.Rect(
-                   (screen.get_width() * 0.05),
-                    (screen.get_height() * 0.65),
-                    screen.get_width() * 0.9 ,screen.get_height() * 0.2)
-        self.box2 = self.box2.inflate(-50,-10)
-        pygame.draw.rect(screen,(0,0,0),self.box,0)
-        pygame.draw.rect(screen,(255,255,255),self.box2,10)
+    def drawText(self, screen):
         pos = self.box2.topleft
         screen.blit(self.rendered,(pos[0]+10,pos[1]+10+self.offset))
+
+
+def drawBox(screen):
+    self.box = pygame.Rect(
+               (screen.get_width() * 0.05),
+                (screen.get_height() * 0.65),
+                screen.get_width() * 0.9 ,screen.get_height() * 0.2)
+    self.box = self.box.inflate(-50,-10)
+    self.box2 = pygame.Rect(
+               (screen.get_width() * 0.05),
+                (screen.get_height() * 0.65),
+                screen.get_width() * 0.9 ,screen.get_height() * 0.2)
+    self.box2 = self.box2.inflate(-50,-10)
+    pygame.draw.rect(screen,(0,0,0),self.box,0)
+    pygame.draw.rect(screen,(255,255,255),self.box2,10)
