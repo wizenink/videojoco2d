@@ -1,6 +1,9 @@
 import numpy as np
 from skimage import io as skio
-from scene import Scene
+import sys
+from scene import scenec
+sys.path.insert(0,"../")
+from resourceManager import *
 
 CROP = (40,60,0)
 DESERT = (200,200,200)
@@ -8,26 +11,17 @@ GRASS = (0,255,0)
 HOUSE = (0,0,0)
 ROAD = (128,128,128)
 
-TILESIZE = 40
-
-tilemap = {
-    [0,0,0]       : CROP
-    [255,255,255] : DESERT
-    [0,255,0]     : GRASS
-    [255,0,255]   : HOUSE
-    [128,128,128] : ROAD
-}
-
+default = { (0,0,0) : "grass.png", (255,255,255) : "desert.png"}
 def loadLevel(levelName):
-    levelImg = resourceManager.getLevel(levelName)
-    tilemapDict = resourceManager.getTilemap(levelMap)
-    shape = levelImg.shape
-    width = shape[0]
-    height = shape[1]
-    map = [[]]
-    for y in range(0,height):
+    levelImg = resourceManager.loadLevel(levelName)
+    width = levelImg.get_width()
+    height = levelImg.get_height()
+    buffer =  pygame.surfarray.pixels3d(levelImg)
+    map = []
+    for y in range(height):
         row = [None] * width
-        for x in range(0,width):
-            row[x] = tilemapDict[levelImg[x,y]]
+        for x in range(width):
+            row[x] = resourceManager.loadImage(default[tuple(buffer[x,y])])
         map.append(row)
-    level = Scene(levelName,width,height,map)
+    level = scenec.Scene(levelName,width,height,map,32)
+    return level

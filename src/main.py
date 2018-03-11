@@ -10,3 +10,5 @@ if __name__ == '__main__':
 	director.pushScene(escena)
 	#Ejecutamos el juego
 	director.run()
+	#Finalizamos cuando termine el loop
+	pygame.quit()

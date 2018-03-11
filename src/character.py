@@ -2,7 +2,8 @@ import pygame, sys, os
 from pygame.locals import *
 #from scene import *
 from resourceManager import *
-import numpy as np
+from director import *
+
 
 # --------------------------
 # --------------------------
@@ -25,15 +26,17 @@ PLAYER_SPEED = 0.2
 PLAYER_ANIMATION_DELAY = 4
 
 class MySprite(pygame.sprite.Sprite):
-
+    old = (0,0)
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
         self.position = (100,100)
+        self.old = self.position
         self.currentSpeed = (0,0)
         self.speed = 0
         self.rect = pygame.Rect(64,64,64,64)
 
     def setPosition(self,position):
+        self.old = self.position
         self.position = position
         self.rect.left = self.position[0]
         self.rect.bottom = self.position[1]
@@ -47,6 +50,9 @@ class MySprite(pygame.sprite.Sprite):
         xIncrease = self.currentSpeed[0]*time
         yIncrease = self.currentSpeed[1]*time
         self.increasePosition((xIncrease, yIncrease))
+    def draw(self,surface,camera):
+        surface.blit(self.image,camera.apply(self))
+
 
 class  Character(MySprite):
     """docstring for Character."""
@@ -54,7 +60,7 @@ class  Character(MySprite):
 
         MySprite.__init__(self)
 
-        self.sheet = resourceManager.loadImage(imageFile)
+        self.sheet = resourceManager.loadImage(imageFile,colorkey=0)
         self.sheet = self.sheet.convert_alpha()
 
         walkData, atackData = resourceManager.loadData(coordFile)
@@ -158,10 +164,10 @@ class  Character(MySprite):
         return
 
 class Player(Character):
-    "Cualquier personaje del juego"
+    "Personaje principal del juego"
     def __init__(self):
         # Invocamos al constructor de la clase padre con la configuracion de este personaje concreto
-        Character.__init__(self,'demo.png','demo.data', 0.2, 4);
+        Character.__init__(self,'demo.png','demo.data', 0.2, 2);
 
 
     def move(self, keyPressed, up, down, left, right,atack):
@@ -181,7 +187,52 @@ class Player(Character):
         else:
             Character.move(self,STILL)
 
+class Enemy(Character):
+    "Enemigos del juego"
+    def __init__(self, imageFile, coordFile, speed, animationDelay):
+        # Invocamos al constructor de la clase padre con la configuracion de este enemigo concreto
+        Character.__init__(self, imageFile, coordFile, speed, animationDelay);
 
+    def move_cpu(self, player):
+        # Indicamos las acciónes a realizar para el enemigo
+        return
+
+class Enemy1(Enemy):
+    "Enemigo 1"
+    def __init__(self):
+        # Invocamos al constructor de la clase padre con la configuracion de este enemigo concreto
+        Enemy.__init__(self,'enemy1.png','enemy1.data', 0.1, 2);
+
+    def move_cpu(self, player):
+        # Indicamos las acciónes a realizar para el enemigo
+        # Movemos solo a los enemigos que esten en la pantalla
+        if self.rect.left>0 and self.rect.right< DISPLAY_WIDTH and self.rect.bottom>0 and self.rect.top< DISPLAY_HEIGHT:
+
+            # Por ejemplo, intentara acercarse al jugador mas cercano en el eje x
+
+            xdiference = player.position[0] - self.position[0]
+            ydiference = player.position[1] - self.position[1]
+            #print(xdiference)
+            #print(ydiference)
+
+            mayor = abs(xdiference) >= abs(ydiference)
+
+            #Diferencia de dos para contemplar que el exprite no eté en el mismo sitio por distancia de menos de dos pixeles y se mueva igual
+            if mayor and (xdiference > 2):
+                  Character.move(self,RIGHT)
+            elif mayor and (xdiference < -2):
+                Character.move(self,LEFT)
+            elif not mayor and (ydiference > 2):
+                Character.move(self,DOWN)
+            elif not mayor and (ydiference < -2):
+                Character.move(self,UP)
+            else: Character.move(self,STILL)
+
+
+
+        # Si este personaje no esta en pantalla, no hara nada
+        else:
+            Character.move(self,STILL)
 
 
 
