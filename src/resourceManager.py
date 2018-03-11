@@ -1,7 +1,7 @@
 import pygame, sys, os
 from pygame.locals import *
 import configparser
-
+import numpy as np
 
 # Constants
 MAIN_FOLDER = "/home/juli/Dropbox/Universidade/CIIE/videojoco2d/res/"
@@ -44,13 +44,18 @@ class resourceManager(object):
             config = configparser.ConfigParser()
             config.sections()
             config.read(fullname)
-            result = []
-            result.append((int(config['walk']['rectx']),int(config['walk']['recty'])))
-            result.append(int(config['walk']['starty']))
-            result.append(int(config['walk']['frames']))
+            walk = []
+            walk.append((int(config['walk']['rectx']),int(config['walk']['recty'])))
+            walk.append(int(config['walk']['starty']))
+            walk.append(int(config['walk']['frames']))
 
-            cls.resources[name] = result
-            return result
+            atack = []
+            atack.append((int(config['atack']['rectx']),int(config['atack']['recty'])))
+            atack.append(int(config['atack']['starty']))
+            atack.append(int(config['atack']['frames']))
+
+            cls.resources[name] = (walk, atack)
+            return (walk, atack)
 
 
     @classmethod
@@ -73,3 +78,53 @@ class resourceManager(object):
             cls.resources[name] = image
             # Se devuelve
             return imagen
+
+    @classmethod
+    def loadCharacterSprites(cls, name, coordFile, colorkey = None):
+
+        image = cls.loadImage(name)
+        walkData, atackData = resourceManager.loadData(coordFile)
+
+        # Generación de cordenadas
+        # TODO Metelo no resourceManager que ten mais sentido
+
+        # walk
+        ######
+        sheetPositions = [0,0,0,0]
+        sizexFrame = walkData[0][0]
+        sizeyFrame = walkData[0][1]
+        initPixel = walkData[1]
+        numFrame = walkData[2]
+
+        for j in range(4):
+            tmp = []
+            for i in range(0, numFrame):
+                tmp.append(pygame.Rect(0+i*sizexFrame, initPixel+sizeyFrame*j, sizexFrame, sizeyFrame))
+            sheetPositions[j] = tmp
+
+        walkSprites = [[],[],[],[]]
+
+        for i in range(4):
+            for j in range(numFrame):
+                walkTmp = image.subsurface(sheetPositions[i][j])
+                walkSprites[i].append(cls.imageMod(walkTmp))
+
+        return walkSprites
+
+    @classmethod
+    def imageMod(cls,image):
+        array = np.empty((64, 64, 3), dtype=np.uint8)
+        pygame.pixelcopy.surface_to_array(array,image)
+
+        newImage = np.empty((128, 128, 3), dtype=np.uint8)
+
+        for i in range(128):
+            for j in range(128):
+                if i > 64 and j > 64:
+                    newImage[i,j] = array[i-64][j-64]
+                else:
+                    newImage[i,j] = array[0][0]
+
+        image = pygame.surfarray.make_surface(newImage)
+
+        return image

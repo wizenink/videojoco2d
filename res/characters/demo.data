@@ -3,3 +3,8 @@ starty = 512
 recty = 64
 frames = 9
 rectx = 64
+[atack]
+starty = 1344
+recty = 192
+frames = 6
+rectx = 192

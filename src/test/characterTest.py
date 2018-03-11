@@ -36,7 +36,7 @@ while True:
     pantalla.fill((0,0,0))
 
     # Dibujamos un círculo de color blanco en esa posición en el buffer
-    player1.move(pygame.key.get_pressed(), K_UP, K_DOWN, K_LEFT, K_RIGHT)
+    player1.move(pygame.key.get_pressed(), K_UP, K_DOWN, K_LEFT, K_RIGHT, K_SPACE)
     player1.update(clock.get_time())
     groupSprites.draw(pantalla)
 
