@@ -11,6 +11,11 @@ CHARACTER_SPRITE_FOLDER = os.path.join(MAIN_FOLDER,"characters")
 BLUEPRINT_LEVEL_FOLDER = os.path.join(MAIN_FOLDER,"level")
 TERRAIN_TEXTURE_FOLDER = os.path.join(MAIN_FOLDER,"texture")
 
+# Data Sprite Constants
+
+WALK_DATA = "walk"
+ATTACK_DATA = "attack"
+
 
 class resourceManager(object):
     resources = {}
@@ -48,15 +53,15 @@ class resourceManager(object):
             config.sections()
             config.read(fullname)
             walk = []
-            walk.append((int(config['walk']['rectx']),int(config['walk']['recty'])))
-            walk.append(int(config['walk']['starty']))
-            walk.append(int(config['walk']['frames']))
+            walk.append((int(config[WALK_DATA]['rectx']),int(config['walk']['recty'])))
+            walk.append(int(config[WALK_DATA]['starty']))
+            walk.append(int(config[WALK_DATA]['frames']))
 
 
             atack = []
-            atack.append((int(config['atack']['rectx']),int(config['atack']['recty'])))
-            atack.append(int(config['atack']['starty']))
-            atack.append(int(config['atack']['frames']))
+            atack.append((int(config['attack']['rectx']),int(config['attack']['recty'])))
+            atack.append(int(config['attack']['starty']))
+            atack.append(int(config['attack']['frames']))
 
             cls.resources[name] = (walk, atack)
             return (walk, atack)

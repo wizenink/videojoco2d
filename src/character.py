@@ -50,18 +50,79 @@ class MySprite(pygame.sprite.Sprite):
         xIncrease = self.currentSpeed[0]*time
         yIncrease = self.currentSpeed[1]*time
         self.increasePosition((xIncrease, yIncrease))
+
     def draw(self,surface,camera):
         surface.blit(self.image,camera.apply(self))
+
+class Hitbox(MySprite):
+
+    def __init__(self, width, hight, position):
+        super(Hitbox, self).__init__()
+        self.image = pygame.Surface((width,hight))
+        self.image.fill((255,255,255))
+        self.image.set_alpha(125)
+        self.rect = self.image.get_rect()
+        self.position = position
+
+    def setPosition(self,position, offset):
+        positionTmp = (position[0] + offset[0], position[1] + offset[1])
+        MySprite.setPosition(self,positionTmp)
+
+class BodyHitbox(Hitbox):
+    def __init__(self, width, hight, position, parentSprite, dmgGroup):
+        super().__init__(width,hight,position)
+        self.dmgGroup = dmgGroup
+        self.parent = parentSprite
+
+    def collitionUpdate(self):
+        if self.dmgGroup != None:
+            collideList = pygame.sprite.spritecollide(self,self.dmgGroup, False)
+
+            for enemy in collideList:
+                pass
+                #print(enemy)
+                #print("did " + str(enemy.parent.dmg))
+
+class AttackHitbox(Hitbox):
+    def __init__(self, width, hight, position, parentSprite, dmgGroup):
+        super().__init__(width,hight,position)
+        self.dmgGroup = dmgGroup
+        self.parent = parentSprite
+
+    def collitionUpdate(self):
+        if self.dmgGroup != None:
+            collideList = pygame.sprite.spritecollide(self,self.dmgGroup, False)
+
+            for enemy in collideList:
+                enemy.parent.life -= 5
+                print(-5)
+
 
 
 class  Character(MySprite):
     """docstring for Character."""
-    def __init__(self, imageFile, coordFile, speed, animationDelay):
+    def __init__(self, imageFile, coordFile, speed, animationDelay, dmgGroup):
 
         MySprite.__init__(self)
 
         self.sheet = resourceManager.loadImage(imageFile,colorkey=0)
         self.sheet = self.sheet.convert_alpha()
+
+        #List of all character hitboxs
+        self.hitboxes = []
+
+        #Character Hitbox
+        self.hitbox = BodyHitbox(25,47, self.position, self, dmgGroup)
+        self.offsetHitbox = (83,62)
+        self.hitboxes.append((self.hitbox,self.offsetHitbox))
+
+        #Weapon/Attack Hitbox
+        self.attackHitbox = AttackHitbox(100,40, self.position,self, dmgGroup)
+        self.attackOffsetHitbox = (53,34)
+        self.hitboxes.append((self.attackHitbox,self.attackOffsetHitbox))
+
+        #life
+        self.life = 100
 
         walkData, atackData = resourceManager.loadData(coordFile)
 
@@ -128,7 +189,8 @@ class  Character(MySprite):
                     self.atack = False
 
                 self.image = self.sheet.subsurface(self.sheetPositionsAtack[self.looking][self.numFrame])
-
+                self.attackHitbox.collitionUpdate()
+                print(":)")
 
             else:
                 if self.numFrame >= len(self.sheetPositions[self.looking])-1:
@@ -160,14 +222,24 @@ class  Character(MySprite):
         self.changeAnimation()
 
         MySprite.update(self,time)
+        if self.life <= 0:
+            __del__()
+        #Update hitboxes position
+        for hitboxinfo in self.hitboxes:
+            hitbox = hitboxinfo[0]
+            offsetHitbox = hitboxinfo[1]
+            hitbox.setPosition(self.position, offsetHitbox)
+
+        #check for collition
+        self.hitbox.collitionUpdate()
 
         return
 
 class Player(Character):
     "Personaje principal del juego"
-    def __init__(self):
+    def __init__(self, dmgGroup = None):
         # Invocamos al constructor de la clase padre con la configuracion de este personaje concreto
-        Character.__init__(self,'demo.png','demo.data', 0.2, 2);
+        Character.__init__(self,'demo.png','demo.data', 0.2, 3, dmgGroup);
 
 
     def move(self, keyPressed, up, down, left, right,atack):
@@ -189,9 +261,10 @@ class Player(Character):
 
 class Enemy(Character):
     "Enemigos del juego"
-    def __init__(self, imageFile, coordFile, speed, animationDelay):
+    def __init__(self, imageFile, coordFile, speed, animationDelay, dmgGroup = None):
         # Invocamos al constructor de la clase padre con la configuracion de este enemigo concreto
-        Character.__init__(self, imageFile, coordFile, speed, animationDelay);
+        Character.__init__(self, imageFile, coordFile, speed, animationDelay, dmgGroup);
+        self.dmg = 20
 
     def move_cpu(self, player):
         # Indicamos las acciónes a realizar para el enemigo
@@ -199,9 +272,9 @@ class Enemy(Character):
 
 class Enemy1(Enemy):
     "Enemigo 1"
-    def __init__(self):
+    def __init__(self,dmgGroup = None):
         # Invocamos al constructor de la clase padre con la configuracion de este enemigo concreto
-        Enemy.__init__(self,'enemy1.png','enemy1.data', 0.1, 2);
+        Enemy.__init__(self,'enemy1.png','enemy1.data', 0.1, 3);
 
     def move_cpu(self, player):
         # Indicamos las acciónes a realizar para el enemigo
