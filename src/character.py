@@ -94,8 +94,8 @@ class AttackHitbox(Hitbox):
             collideList = pygame.sprite.spritecollide(self,self.dmgGroup, False)
 
             for enemy in collideList:
-                enemy.parent.life -= 5
-                print(-5)
+                enemy.parent.life -= 30
+                print(-30)
 
 
 
@@ -189,8 +189,9 @@ class  Character(MySprite):
                     self.atack = False
 
                 self.image = self.sheet.subsurface(self.sheetPositionsAtack[self.looking][self.numFrame])
-                self.attackHitbox.collitionUpdate()
-                print(":)")
+                if self.numFrame == 3:
+                    self.attackHitbox.collitionUpdate()
+                    print(":)")
 
             else:
                 if self.numFrame >= len(self.sheetPositions[self.looking])-1:
