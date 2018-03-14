@@ -4,6 +4,7 @@ from pygame.locals import *
 import random
 sys.path.insert(0, "../")
 from dialog import text
+from dialog import diag
 from character import *
 from scene import serializer
 from game import camera
@@ -20,7 +21,8 @@ enemigo = Enemy1()
 
 clock = pygame.time.Clock()
 font = pygame.font.Font(None,25)
-message = text.DynamicText(font, "Xulián Basura...",0, autoreset=True)
+#message = text.DynamicText(font, "Xulián Basura...",0, autoreset=True)
+diag = diag.Dialog("Test")
 groupSprites = pygame.sprite.Group(player1,enemigo)
 level = serializer.loadLevel("bigtest.png")
 collidables = [MySprite()] * 100
@@ -29,10 +31,11 @@ for c in collidables:
     c.rect = pygame.Rect(random.randrange(0,10)*32,random.randrange(0,10)*32,32,32)
     print(c.rect)
 level.add_collidables(collidables)
-camara = camera.Camera(camera.complex_camera,100*32,100*32)
+camara = camera.Camera(camera.simple_camera,100*32,100*32)
 pygame.key.set_repeat(100)
 
 # Bucle infinito
+diag.queueScreen()
 while True:
     clock.tick(60)
     # Para cada evento posible
@@ -43,8 +46,8 @@ while True:
                     # Se sale del programa
                     pygame.quit()
                     sys.exit()
-            if evento.type == pygame.USEREVENT: message.update()
-            if (evento.type == KEYDOWN and evento.key == K_SPACE): message.update()
+            if (evento.type == KEYDOWN and evento.key == K_a): diag.queueScreen()
+            if evento.type == pygame.USEREVENT: diag.update()            #if (evento.type == KEYDOWN and evento.key == K_SPACE): message.update()
 
 
     # Rellenamos la pantalla de color negro
@@ -59,6 +62,8 @@ while True:
     player1.update(clock.get_time())
     player1.draw(pantalla,camara)
     enemigo.draw(pantalla,camara)
+    diag.draw(pantalla)
+    #message.drawBox(pantalla)
     #message.drawText(pantalla)
     #tb.draw(pantalla)
     #tb.setText("Esto es una prueba del sistema de diálogo. sansadjnsdajknasdjnasdnajsndjasbjhsafbjasjbfjbasfbjnasbjfsjabf asdbabsjdhbjasbdhashdas")
