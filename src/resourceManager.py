@@ -57,14 +57,41 @@ class resourceManager(object):
             walk.append(int(config[WALK_DATA]['starty']))
             walk.append(int(config[WALK_DATA]['frames']))
 
+            if 'attack' in config:
+                if not ('attackHitbox' in config):
+                    print("Spritesheet data file is malformed, 'attack' section found but no 'attackHitbox' section")
+                    raise SystemExit
 
-            atack = []
-            atack.append((int(config['attack']['rectx']),int(config['attack']['recty'])))
-            atack.append(int(config['attack']['starty']))
-            atack.append(int(config['attack']['frames']))
+                attack = []
+                attack.append((int(config['attack']['rectx']),int(config['attack']['recty'])))
+                attack.append(int(config['attack']['starty']))
+                attack.append(int(config['attack']['frames']))
+                attack.append(  [   int(config['attackHitbox']['uphight']),
+                                    int(config['attackHitbox']['upwidth']),
+                                    int(config['attackHitbox']['uphightoffset']),
+                                    int(config['attackHitbox']['upwidthoffset'])
+                                ])
+                attack.append(  [   int(config['attackHitbox']['lefthight']),
+                                    int(config['attackHitbox']['leftwidth']),
+                                    int(config['attackHitbox']['lefthightoffset']),
+                                    int(config['attackHitbox']['leftwidthoffset'])
+                                ])
+                attack.append(  [   int(config['attackHitbox']['righthight']),
+                                    int(config['attackHitbox']['rightwidth']),
+                                    int(config['attackHitbox']['righthightoffset']),
+                                    int(config['attackHitbox']['rightwidthoffset'])
+                                ])
+                attack.append(  [   int(config['attackHitbox']['downhight']),
+                                    int(config['attackHitbox']['downwidth']),
+                                    int(config['attackHitbox']['downhightoffset']),
+                                    int(config['attackHitbox']['downwidthoffset'])
+                                ])
 
-            cls.resources[name] = (walk, atack)
-            return (walk, atack)
+            else:
+                attack = None
+
+            cls.resources[name] = (walk, attack)
+            return (walk, attack)
 
 
     @classmethod
