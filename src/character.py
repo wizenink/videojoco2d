@@ -94,7 +94,7 @@ class AttackHitbox(Hitbox):
             collideList = pygame.sprite.spritecollide(self,self.dmgGroup, False)
 
             for enemy in collideList:
-                enemy.parent.getDmg(30,self.parent.looking,5)
+                enemy.parent.getDmg(30,self.parent.looking)
                 print(-30)
 
 
@@ -177,7 +177,7 @@ class  Character(MySprite):
         # Contador del Retardo
         self.animationDelayCont = 0
 
-    def getDmg(self, dmg, looking, timeToBlock):
+    def getDmg(self, dmg, looking, timeToBlock = 30):
         #quitamos daño
         self.life -= dmg
         self.timeBlock = timeToBlock
@@ -237,22 +237,24 @@ class  Character(MySprite):
 
     def update(self, time):
         if self.timeBlock == 0:
-                if not(self.atack):
-                    if (self.movement != STILL):
-                        self.looking = self.movement
+            if not(self.atack):
+                if (self.movement != STILL):
+                    self.looking = self.movement
 
-                        if self.movement == UP:
-                            self.currentSpeed = (0,-self.speed)
-                        elif self.movement == LEFT:
-                            self.currentSpeed = (-self.speed,0)
-                        elif self.movement == RIGHT:
-                            self.currentSpeed = (self.speed,0)
-                        elif self.movement == DOWN:
-                            self.currentSpeed = (0,self.speed)
-                    else:
-                        self.currentSpeed = (0,0)
-                else: self.timeBlock -= 1
-            self.changeAnimation()
+                    if self.movement == UP:
+                        self.currentSpeed = (0,-self.speed)
+                    elif self.movement == LEFT:
+                        self.currentSpeed = (-self.speed,0)
+                    elif self.movement == RIGHT:
+                        self.currentSpeed = (self.speed,0)
+                    elif self.movement == DOWN:
+                        self.currentSpeed = (0,self.speed)
+                else:
+                    self.currentSpeed = (0,0)
+        else:
+            self.timeBlock -= 1
+
+        self.changeAnimation()
 
         MySprite.update(self,time)
 
