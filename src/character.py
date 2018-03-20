@@ -108,34 +108,33 @@ class  Character(MySprite):
         self.sheet = resourceManager.loadImage(imageFile,colorkey=0)
         self.sheet = self.sheet.convert_alpha()
 
-        #List of all character hitboxs
-        self.hitboxes = []
+        # Load SpriteSheet Data
+        # atackData
+        walkData, atackData = resourceManager.loadData(coordFile)
 
-        #Character Hitbox
+        # Body Hitbox
         self.hitbox = BodyHitbox(25,47, self.position, self, dmgGroup)
         self.offsetHitbox = (83,62)
-        self.hitboxes.append((self.hitbox,self.offsetHitbox))
 
-        #Weapon/Attack Hitbox
-        self.attackHitbox = AttackHitbox(100,40, self.position,self, dmgGroup)
-        self.attackOffsetHitbox = (53,34)
-        self.hitboxes.append((self.attackHitbox,self.attackOffsetHitbox))
+        # List of attack hitboxes
+        self.hitboxes = []
+        if atackData != None:
+            # Order of hitboxes in the list matter [ UP, LEFT, RIGHT, DOWN ]
+            for i in range(3,7):
+                self.attackHitbox = AttackHitbox(atackData[i][0],atackData[i][1], self.position,self, dmgGroup)
+                self.attackOffsetHitbox = (atackData[i][2],atackData[i][3])
+                self.hitboxes.append((self.attackHitbox,self.attackOffsetHitbox))
 
-        #life
+        # Life
         self.life = 100
 
         #bloqueo por tiempo variables
         self.maxTimeBlock = 0
         self.timeBlock = 0
 
-        walkData, atackData = resourceManager.loadData(coordFile)
-
         self.andar = resourceManager.loadCharacterSprites(imageFile,coordFile)
 
-        # Generación de cordenadas
-        # TODO Metelo no resourceManager que ten mais sentido
-
-        # walk
+        # Walk Sprites Load
         ######
         self.sheetPositions = [0,0,0,0]
         sizexFrame = walkData[0][0]
@@ -151,21 +150,22 @@ class  Character(MySprite):
                 tmp.append(pygame.Rect(0+i*sizexFrame, initPixel+sizeyFrame*j, sizexFrame, sizeyFrame))
             self.sheetPositions[j] = tmp
 
-        # atack
+        # Attack
         #######
-        self.sheetPositionsAtack = [0,0,0,0]
-        sizexFrame = atackData[0][0]
-        sizeyFrame = atackData[0][1]
-        initPixel = atackData[1]
-        numFrame = atackData[2]
+        if atackData != None:
+            self.sheetPositionsAtack = [0,0,0,0]
+            sizexFrame = atackData[0][0]
+            sizeyFrame = atackData[0][1]
+            initPixel = atackData[1]
+            numFrame = atackData[2]
 
-        for j in range(4):
-            tmp = []
-            for i in range(0, numFrame):
-                tmp.append(pygame.Rect(0+i*sizexFrame, initPixel+sizeyFrame*j, sizexFrame, sizeyFrame))
-            self.sheetPositionsAtack[j] = tmp
+            for j in range(4):
+                tmp = []
+                for i in range(0, numFrame):
+                    tmp.append(pygame.Rect(0+i*sizexFrame, initPixel+sizeyFrame*j, sizexFrame, sizeyFrame))
+                self.sheetPositionsAtack[j] = tmp
 
-
+        # Init variables
         self.movement = STILL
         self.looking = UP
         self.atack = False
@@ -208,8 +208,9 @@ class  Character(MySprite):
 
                 self.image = self.sheet.subsurface(self.sheetPositionsAtack[self.looking][self.numFrame])
                 if self.numFrame == 3:
-                    self.attackHitbox.collitionUpdate()
+                    self.hitboxes[self.looking][0].collitionUpdate()
                     print(":)")
+                    print(self.looking)
 
             else:
                 if self.numFrame >= len(self.sheetPositions[self.looking])-1:
@@ -221,6 +222,18 @@ class  Character(MySprite):
                     self.image = self.andar[self.looking][self.numFrame]
                 else:
                     self.image = self.andar[self.looking][0]
+
+    def updateHitboxPosition(self):
+
+        # Update Body Hitbox Position
+        self.hitbox.setPosition(self.position, self.offsetHitbox)
+
+        # Update Attack hitboxes Position
+        for hitboxinfo in self.hitboxes:
+            hitbox = hitboxinfo[0]
+            offsetHitbox = hitboxinfo[1]
+            hitbox.setPosition(self.position, offsetHitbox)
+
 
     def update(self, time):
         if not(self.atack):
@@ -241,15 +254,14 @@ class  Character(MySprite):
         self.changeAnimation()
 
         MySprite.update(self,time)
-        if self.life <= 0:
-            __del__()
-        #Update hitboxes position
-        for hitboxinfo in self.hitboxes:
-            hitbox = hitboxinfo[0]
-            offsetHitbox = hitboxinfo[1]
-            hitbox.setPosition(self.position, offsetHitbox)
 
-        #check for collition
+        if self.life <= 0:
+            print("moriche")
+
+        self.updateHitboxPosition()
+
+        # Collition Zone
+        # Check for collition
         self.hitbox.collitionUpdate()
 
         return

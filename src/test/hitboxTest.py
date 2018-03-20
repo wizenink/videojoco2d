@@ -68,7 +68,10 @@ while True:
     player.move(pygame.key.get_pressed(), K_UP, K_DOWN, K_LEFT, K_RIGHT, K_SPACE)
     player.update(clock.get_time())
     player.draw(pantalla,camara)
-    player.attackHitbox.draw(pantalla,camara)
+    #player.attackHitbox.draw(pantalla,camara)
+    #for hitbox in player.hitboxes:
+    #    hitbox[0].draw(pantalla,camara)
+
 
     enemigo.draw(pantalla,camara)
     #message.drawText(pantalla)
