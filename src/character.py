@@ -4,6 +4,9 @@ from pygame.locals import *
 from resourceManager import *
 from director import *
 
+# for testing
+sys.path.insert(0, './test/')
+from groupTest import enemyGroup, playerGroup, solidGroup
 
 # --------------------------
 # --------------------------
@@ -75,13 +78,18 @@ class BodyHitbox(Hitbox):
         self.parent = parentSprite
 
     def collitionUpdate(self):
-        if self.dmgGroup != None:
+
+        if self.collideGroup != None:
             collideList = pygame.sprite.spritecollide(self,self.dmgGroup, False)
 
-            for enemy in collideList:
-                pass
-                #print(enemy)
-                #print("did " + str(enemy.parent.dmg))
+            for solidSprite in collideList:
+                #DMG
+                if solidSprite in dmgGroup:
+                    self.parent.life -= solidSprite.parent.characterDmg
+                #Move back
+                self.parent.currentSpeed = (-self.parent.currentSpeed[0], -self.parent.currentSpeed[1])
+
+
 
 class AttackHitbox(Hitbox):
     def __init__(self, width, hight, position, parentSprite, dmgGroup):
@@ -94,7 +102,7 @@ class AttackHitbox(Hitbox):
             collideList = pygame.sprite.spritecollide(self,self.dmgGroup, False)
 
             for enemy in collideList:
-                enemy.parent.getDmg(30,self.parent.looking)
+                enemy.parent.getDmg(self.characterDmg ,self.parent.looking)
                 print(-30)
 
 
@@ -170,6 +178,8 @@ class  Character(MySprite):
         self.atack = False
         self.numFrame = 0
         #self.rect = pygame.Rect(sizexFrame, sizeyFrame, 0, initPixel)
+
+        self.characterDmg = 0
 
         self.speed = speed
         # Retardo de la animación
@@ -282,7 +292,7 @@ class Player(Character):
     def __init__(self, dmgGroup = None):
         # Invocamos al constructor de la clase padre con la configuracion de este personaje concreto
         Character.__init__(self,'demo.png','demo.data', 0.2, 3, dmgGroup);
-
+        self.characterDmg = 30
 
     def move(self, keyPressed, up, down, left, right,atack):
         # Indicamos la acción a realizar segun la tecla pulsada para el jugador
@@ -306,7 +316,7 @@ class Enemy(Character):
     def __init__(self, imageFile, coordFile, speed, animationDelay, dmgGroup = None):
         # Invocamos al constructor de la clase padre con la configuracion de este enemigo concreto
         Character.__init__(self, imageFile, coordFile, speed, animationDelay, dmgGroup);
-        self.dmg = 20
+        self.characterDmg = 20
 
     def move_cpu(self, player):
         # Indicamos las acciónes a realizar para el enemigo
