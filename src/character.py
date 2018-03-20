@@ -236,6 +236,9 @@ class  Character(MySprite):
 
 
     def update(self, time):
+
+        # Movement Zone
+        ################
         if self.timeBlock == 0:
             if not(self.atack):
                 if (self.movement != STILL):
@@ -263,8 +266,13 @@ class  Character(MySprite):
 
         self.updateHitboxPosition()
 
+        #Dmg Zone
+        #########
+
+
         # Collition Zone
-        # Check for collition
+        ################
+
         self.hitbox.collitionUpdate()
 
         return
