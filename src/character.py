@@ -94,7 +94,7 @@ class AttackHitbox(Hitbox):
             collideList = pygame.sprite.spritecollide(self,self.dmgGroup, False)
 
             for enemy in collideList:
-                enemy.parent.life -= 30
+                enemy.parent.getDmg(30,self.parent.looking,5)
                 print(-30)
 
 
@@ -123,6 +123,10 @@ class  Character(MySprite):
 
         #life
         self.life = 100
+
+        #bloqueo por tiempo variables
+        self.maxTimeBlock = 0
+        self.timeBlock = 0
 
         walkData, atackData = resourceManager.loadData(coordFile)
 
@@ -173,6 +177,20 @@ class  Character(MySprite):
         self.animationDelay = animationDelay
         # Contador del Retardo
         self.animationDelayCont = 0
+
+    def getDmg(self, dmg, looking, timeToBlock):
+        #quitamos daño
+        self.life -= dmg
+        #desplazamos al afectado hacia el sentido contrario del golpe
+        if looking == UP:
+            self.currentSpeed = (0,-self.speed)
+        elif looking == LEFT:
+            self.currentSpeed = (-self.speed,0)
+        elif looking == RIGHT:
+            self.currentSpeed = (self.speed,0)
+        elif looking == DOWN:
+            self.currentSpeed = (0,self.speed)
+        
 
     def move(self, movement):
         self.movement = movement
