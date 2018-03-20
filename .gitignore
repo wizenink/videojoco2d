@@ -94,3 +94,6 @@ ENV/
 
 # Basura manzanera
 *.DS_Store
+
+# Basura ventanera
+.vscode/*
