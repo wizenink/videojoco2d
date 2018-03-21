@@ -2,7 +2,7 @@ import sys
 import pygame
 from pygame.locals import *
 sys.path.insert(0,"../scene")
-from scene import Scene
+from scenec import Scene
 
 pygame.init()
 pantalla = pygame.display.set_mode((800,600))

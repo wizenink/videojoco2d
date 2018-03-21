@@ -1,8 +1,8 @@
 import pygame
 import sys
 from pygame.locals import *
-sys.path.insert(0, "../scene")
-from serializer import *
+sys.path.insert(0, "../")
+from scene import serializer
 pygame.init()
 pantalla = pygame.display.set_mode((800,600))
 level = loadLevel("bigtest.png")
