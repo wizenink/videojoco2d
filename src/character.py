@@ -1,4 +1,5 @@
 import pygame, sys, os
+import ia
 from pygame.locals import *
 #from scene import *
 from resourceManager import *
@@ -320,42 +321,4 @@ class Enemy1(Enemy):
 
     def move_cpu(self, player):
         # Indicamos las acciónes a realizar para el enemigo
-        # Movemos solo a los enemigos que esten en la pantalla
-        if self.rect.left>0 and self.rect.right< DISPLAY_WIDTH and self.rect.bottom>0 and self.rect.top< DISPLAY_HEIGHT:
-
-            # Por ejemplo, intentara acercarse al jugador mas cercano en el eje x
-
-            xdiference = player.position[0] - self.position[0]
-            ydiference = player.position[1] - self.position[1]
-            #print(xdiference)
-            #print(ydiference)
-
-            mayor = abs(xdiference) >= abs(ydiference)
-
-            #Diferencia de dos para contemplar que el exprite no eté en el mismo sitio por distancia de menos de dos pixeles y se mueva igual
-            if mayor and (xdiference > 2):
-                  Character.move(self,RIGHT)
-            elif mayor and (xdiference < -2):
-                Character.move(self,LEFT)
-            elif not mayor and (ydiference > 2):
-                Character.move(self,DOWN)
-            elif not mayor and (ydiference < -2):
-                Character.move(self,UP)
-            else: Character.move(self,STILL)
-
-
-
-        # Si este personaje no esta en pantalla, no hara nada
-        else:
-            Character.move(self,STILL)
-
-
-
-
-
-
-
-
-
-
-#
+        ia.iaFollow(self, player)
