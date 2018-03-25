@@ -7,6 +7,8 @@ dirname = os.path.dirname(__file__)
 
 # Constants
 MAIN_FOLDER = os.path.join(dirname,"../res")
+MENU_FOLDER = os.path.join(MAIN_FOLDER,"menu")
+FONT_FOLDER = os.path.join(MAIN_FOLDER,'fonts')
 CHARACTER_SPRITE_FOLDER = os.path.join(MAIN_FOLDER,"characters")
 BLUEPRINT_LEVEL_FOLDER = os.path.join(MAIN_FOLDER,"level")
 TERRAIN_TEXTURE_FOLDER = os.path.join(MAIN_FOLDER,"texture")
@@ -21,11 +23,11 @@ class resourceManager(object):
     resources = {}
 
     @classmethod
-    def loadImage(cls, name, colorkey = None):
+    def loadImage(cls, name, colorkey = None, folder = CHARACTER_SPRITE_FOLDER):
         if name in cls.resources:
             return cls.resources[name]
         else:
-            fullname = os.path.join(CHARACTER_SPRITE_FOLDER,name)
+            fullname = os.path.join(folder,name)
             try:
                 image = pygame.image.load(fullname)
             except pygame.error:
@@ -36,7 +38,7 @@ class resourceManager(object):
 
             if colorkey is not None:
                 if colorkey is -1:
-                    colorkey = imagen.get_at((0,0))
+                    colorkey = image.get_at((0,0))
                 image.set_colorkey(colorkey, RLEACCEL)
             # Se almacena
             cls.resources[name] = image
@@ -76,15 +78,15 @@ class resourceManager(object):
                                     int(config['attackHitbox']['lefthightoffset']),
                                     int(config['attackHitbox']['leftwidthoffset'])
                                 ])
-                attack.append(  [   int(config['attackHitbox']['downhight']),
-                                    int(config['attackHitbox']['downwidth']),
-                                    int(config['attackHitbox']['downhightoffset']),
-                                    int(config['attackHitbox']['downwidthoffset'])
-                                ])
                 attack.append(  [   int(config['attackHitbox']['righthight']),
                                     int(config['attackHitbox']['rightwidth']),
                                     int(config['attackHitbox']['righthightoffset']),
                                     int(config['attackHitbox']['rightwidthoffset'])
+                                ])
+                attack.append(  [   int(config['attackHitbox']['downhight']),
+                                    int(config['attackHitbox']['downwidth']),
+                                    int(config['attackHitbox']['downhightoffset']),
+                                    int(config['attackHitbox']['downwidthoffset'])
                                 ])
 
             else:
@@ -114,6 +116,23 @@ class resourceManager(object):
             cls.resources[name] = image
             # Se devuelve
             return image
+
+    @classmethod
+    def loadFont(cls, name,size):
+        if name in cls.resources:
+            return cls.resources[name]
+        else:
+            fullname = os.path.join(FONT_FOLDER,name)
+            try:
+                font = pygame.font.Font(fullname,size)
+            except pygame.error:
+                print ('Cannot load font:',fullname)
+                raise SystemExit
+            # Se almacena
+            cls.resources[name] = font
+            # Se devuelve
+            return font
+
 
     @classmethod
     def loadCharacterSprites(cls, name, coordFile, colorkey = None):

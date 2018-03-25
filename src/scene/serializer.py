@@ -4,7 +4,7 @@ import sys
 from scene import scenec
 sys.path.insert(0,"../")
 from resourceManager import *
-
+#Creacion de mapas
 CROP = (40,60,0)
 DESERT = (200,200,200)
 GRASS = (0,255,0)
@@ -23,5 +23,5 @@ def loadLevel(levelName):
         for x in range(width):
             row[x] = resourceManager.loadImage(default[tuple(buffer[x,y])])
         map.append(row)
-    level = scenec.Scene(levelName,width,height,map,32)
+    level = scenec.Scene(levelName,width,height,map,32,None)
     return level
