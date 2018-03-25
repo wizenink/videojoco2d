@@ -14,7 +14,6 @@ class Scene:
         self.TILESIZE = tilesize
         self.director = director
         self.camera = camera.Camera(camera.complex_camera,100*32,100*32)
-        self.player = Player()
         self.collidables = []
     def add_collidables(self,collidables):
         self.collidables = collidables

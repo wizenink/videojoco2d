@@ -8,6 +8,10 @@ from resourceManager import *
 
 class Level(Scene):
 	def __init__(self,director):
+		self.enemyGroup = pygame.sprite.Group()
+		self.playerGroup = pygame.sprite.Group()
+		self.solidGroup = pygame.sprite.Group()
+		self.player = Player(dmgGroup = self.enemyGroup, solidGroup = self.solidGroup)		
 		self.solids = []
 		self.enemys = []
 		self.lvlname = "level_farm.png"

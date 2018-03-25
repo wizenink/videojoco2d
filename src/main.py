@@ -1,13 +1,16 @@
 from director import Director 
-from menu import menu
+from scenes import menu
+import pygame
 
 if __name__ == '__main__':
 	#Director
+	pygame.init()
+	pygame.mouse.set_visible(0)
 	director = Director()
 	#Escena menu
-	scene = Menu(director)
+	scene = menu.Menu(director)
 	#Apilamos escena
-	director.pushScene(escena)
+	director.pushScene(scene)
 	#Ejecutamos el juego
 	director.run()
 	#Finalizamos cuando termine el loop

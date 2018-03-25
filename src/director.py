@@ -1,38 +1,39 @@
 import pygame,pyglet
 import sys
+from game.constants import *
 from scene import * 
 from pygame.locals import * 
-
-FPS = 144
-DISPLAY_WIDTH = 640
-DISPLAY_HEIGHT = 480
 
 class Director():
 	def __init__(self):
 		#pila
-		self.stack
+		self.stack = []
+		self.clock = pygame.time.Clock()
+		self.screen = pygame.display.set_mode((DISPLAY_WIDTH,DISPLAY_HEIGHT))
+		pygame.display.set_caption("Reign of Shendralar")
 		#salir del juego
-		self.exit_game = False
-	
+		self.exit_scene = False
+
 	def pygameLoop(self,scene):
 		clock = pygame.time.Clock()
-		self.exit_game = False
+		self.exit_scene = False
 		pygame.event.clear()
-		while not self.exit_game:
+		while not self.exit_scene:
 			#Sincronizamos a 144 fps
-			time_spent = reloj.tick(FPS)
+			time_spent = clock.tick(FPS)
 
-			scene.eventos(pygame.event.get())
-			scene.update(time_spent)
-			scene.dibujar(scene.screen)
+			scene.events(pygame.event.get())
+			scene.update(clock.get_time())
+			scene.draw(self.screen)
+			scene.groupDraws(self.screen)
 
-			pygame.display.flip()
+			pygame.display.update()
 
 	def run(self):
-		pygame.init()
+		#pygame.init()
 		self.screen = pygame.display.set_mode((DISPLAY_WIDTH,DISPLAY_HEIGHT))
 
-		while(len(self.pila)>0):
+		while(len(self.stack)>0):
 			scene = self.stack[len(self.stack)-1]
 			self.pygameLoop(scene)
 		
@@ -41,8 +42,7 @@ class Director():
 
 	def stopScene(self):
 		if (len(self.stack)>0):
-			scene = self.stack[len(self.stack)-1]
-			self.exit_game = True 
+			self.exit_scene = True 
 
 	def exitScene(self):
 		self.stopScene()
