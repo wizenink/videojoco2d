@@ -17,12 +17,25 @@ class Level(Scene):
 		self.lvlname = "level_farm.png"
 		self.level = serializer.loadLevel(self.lvlname)
 		Scene.__init__(self,self.lvlname,self.level.width,self.level.height,self.level.map,32,director)
+		self.playerGroup.add(self.player.hitbox)
+		self.solidGroup.add(self.player.hitbox)
+		self.addEnemy(300,300)
 
-
-	def addEnemy(self,enemy):
+	def addEnemy(self,x,y):
+		enemy = Enemy1(dmgGroup = self.playerGroup, solidGroup = self.solidGroup)
+		enemy.setPosition((x,y))
+		enemy.updateHitboxPosition()
 		self.enemys.append(enemy)
+		self.enemyGroup.add(enemy.hitbox)
+		self.addSolid(enemy)
 
 	def addSolid(self,solid):
+		#Si es un building 
+		try:
+			self.solidGroup.add(solid.hitbox)
+		except:
+			self.solidGroup.add(solid)
+		
 		self.solids.append(solid)	
 
 	def removeEnemy(self,enemy):
@@ -59,5 +72,6 @@ class Level(Scene):
 		for solid in self.solids:
 			solid.draw(screen,self.camera)
 
-
+	def initLevel(self):
+		pass
 
