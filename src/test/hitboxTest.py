@@ -17,11 +17,20 @@ pantalla = pygame.display.set_mode((800,600))
 
 enemyGroup = pygame.sprite.Group()
 playerGroup = pygame.sprite.Group()
+solidGroup = pygame.sprite.Group()
 
-enemigo = Enemy1()
-player = Player(enemyGroup)
+player = Player(dmgGroup = enemyGroup, solidGroup = solidGroup)
+enemigo = Enemy1(dmgGroup = playerGroup, solidGroup = solidGroup)
+casa = Building((600,400))
+
 playerGroup.add(player.hitbox)
 enemyGroup.add(enemigo.hitbox)
+solidGroup.add(player.hitbox)
+solidGroup.add(enemigo.hitbox)
+solidGroup.add(casa)
+
+player.setPosition((300,300))
+player.updateHitboxPosition()
 
 clock = pygame.time.Clock()
 font = pygame.font.Font(None,25)
@@ -68,6 +77,7 @@ while True:
     player.move(pygame.key.get_pressed(), K_UP, K_DOWN, K_LEFT, K_RIGHT, K_SPACE)
     player.update(clock.get_time())
     player.draw(pantalla,camara)
+    casa.draw(pantalla, camara)
     #player.attackHitbox.draw(pantalla,camara)
     #for hitbox in player.hitboxes:
     #    hitbox[0].draw(pantalla,camara)

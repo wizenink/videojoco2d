@@ -1,4 +1,5 @@
 import pygame, sys, os
+import ia
 from pygame.locals import *
 #from scene import *
 from resourceManager import *
@@ -76,7 +77,6 @@ class BodyHitbox(Hitbox):
         super().__init__(width,hight,position)
         self.dmgGroup = dmgGroup
         self.parent = parentSprite
-        print(solidGroup)
         self.solidGroup = solidGroup
 
     def collitionUpdate(self):
@@ -219,9 +219,6 @@ class  Character(MySprite):
                 self.image = self.sheet.subsurface(self.sheetPositionsAtack[self.looking][self.numFrame])
                 if self.numFrame == 3:
                     self.hitboxes[self.looking][0].collitionUpdate()
-                    print(self.hitboxes)
-                    print(":)")
-                    print(self.looking)
 
             else:
                 if self.numFrame >= len(self.sheetPositions[self.looking])-1:
@@ -371,42 +368,4 @@ class Enemy1(Enemy):
 
     def move_cpu(self, player):
         # Indicamos las acciónes a realizar para el enemigo
-        # Movemos solo a los enemigos que esten en la pantalla
-        if self.rect.left>0 and self.rect.bottom>0:
-
-            # Por ejemplo, intentara acercarse al jugador mas cercano en el eje x
-
-            xdiference = player.position[0] - self.position[0]
-            ydiference = player.position[1] - self.position[1]
-            #print(xdiference)
-            #print(ydiference)
-
-            mayor = abs(xdiference) >= abs(ydiference)
-
-            #Diferencia de dos para contemplar que el exprite no eté en el mismo sitio por distancia de menos de dos pixeles y se mueva igual
-            if mayor and (xdiference > 2):
-                  Character.move(self,RIGHT)
-            elif mayor and (xdiference < -2):
-                Character.move(self,LEFT)
-            elif not mayor and (ydiference > 2):
-                Character.move(self,DOWN)
-            elif not mayor and (ydiference < -2):
-                Character.move(self,UP)
-            else: Character.move(self,STILL)
-
-
-
-        # Si este personaje no esta en pantalla, no hara nada
-        else:
-            Character.move(self,STILL)
-
-
-
-
-
-
-
-
-
-
-#
+        ia.iaFollow(self, player)
