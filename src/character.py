@@ -5,8 +5,8 @@ from resourceManager import *
 from director import *
 
 # for testing
-sys.path.insert(0, './test/')
-from groupTest import enemyGroup, playerGroup, solidGroup
+# sys.path.insert(0, './test/')
+# from groupTest import *
 
 # --------------------------
 # --------------------------
@@ -72,20 +72,22 @@ class Hitbox(MySprite):
         MySprite.setPosition(self,positionTmp)
 
 class BodyHitbox(Hitbox):
-    def __init__(self, width, hight, position, parentSprite, dmgGroup):
+    def __init__(self, width, hight, position, parentSprite, dmgGroup, solidGroup):
         super().__init__(width,hight,position)
         self.dmgGroup = dmgGroup
         self.parent = parentSprite
+        print(solidGroup)
+        self.solidGroup = solidGroup
 
     def collitionUpdate(self):
 
-        if self.collideGroup != None:
-            collideList = pygame.sprite.spritecollide(self,self.dmgGroup, False)
+        collideList = pygame.sprite.spritecollide(self, self.solidGroup, False)
 
-            for solidSprite in collideList:
-                #DMG
-                if solidSprite in dmgGroup:
-                    self.parent.life -= solidSprite.parent.characterDmg
+        for solidSprite in collideList:
+            #DMG
+            if self.dmgGroup != None:
+                if solidSprite in self.dmgGroup:
+                    self.parent.life -= solidSprite.parent.dmg
                 #Move back
                 self.parent.currentSpeed = (-self.parent.currentSpeed[0], -self.parent.currentSpeed[1])
 
@@ -102,14 +104,14 @@ class AttackHitbox(Hitbox):
             collideList = pygame.sprite.spritecollide(self,self.dmgGroup, False)
 
             for enemy in collideList:
-                enemy.parent.getDmg(self.characterDmg ,self.parent.looking)
+                enemy.parent.getDmg(self.parent.dmg ,self.parent.looking, timeToBlock = 30)
                 print(-30)
 
 
 
 class  Character(MySprite):
     """docstring for Character."""
-    def __init__(self, imageFile, coordFile, speed, animationDelay, dmgGroup):
+    def __init__(self, imageFile, coordFile, speed, animationDelay, dmgGroup, solidGroup):
 
         MySprite.__init__(self)
 
@@ -121,7 +123,7 @@ class  Character(MySprite):
         walkData, atackData = resourceManager.loadData(coordFile)
 
         # Body Hitbox
-        self.hitbox = BodyHitbox(25,47, self.position, self, dmgGroup)
+        self.hitbox = BodyHitbox(25,47, self.position, self, dmgGroup, solidGroup)
         self.offsetHitbox = (83,62)
 
         # List of attack hitboxes
@@ -133,16 +135,10 @@ class  Character(MySprite):
                 self.attackOffsetHitbox = (atackData[i][2],atackData[i][3])
                 self.hitboxes.append((self.attackHitbox,self.attackOffsetHitbox))
 
-        # Life
-        self.life = 100
-
-        #bloqueo por tiempo variables
-        self.timeBlock = 0
-
         self.andar = resourceManager.loadCharacterSprites(imageFile,coordFile)
 
         # Walk Sprites Load
-        ######
+        ###################
         self.sheetPositions = [0,0,0,0]
         sizexFrame = walkData[0][0]
         sizeyFrame = walkData[0][1]
@@ -173,13 +169,17 @@ class  Character(MySprite):
                 self.sheetPositionsAtack[j] = tmp
 
         # Init variables
+        # Life
+        self.life = 100
+        #bloqueo por tiempo variables
+        self.timeBlock = 0
         self.movement = STILL
         self.looking = UP
         self.atack = False
         self.numFrame = 0
-        #self.rect = pygame.Rect(sizexFrame, sizeyFrame, 0, initPixel)
 
-        self.characterDmg = 0
+        self.solidGroup = solidGroup
+        self.dmg = 0
 
         self.speed = speed
         # Retardo de la animación
@@ -187,7 +187,7 @@ class  Character(MySprite):
         # Contador del Retardo
         self.animationDelayCont = 0
 
-    def getDmg(self, dmg, looking, timeToBlock = 30):
+    def getDmg(self, dmg, looking, timeToBlock = 10):
         #quitamos daño
         self.life -= dmg
         self.timeBlock = timeToBlock
@@ -219,6 +219,7 @@ class  Character(MySprite):
                 self.image = self.sheet.subsurface(self.sheetPositionsAtack[self.looking][self.numFrame])
                 if self.numFrame == 3:
                     self.hitboxes[self.looking][0].collitionUpdate()
+                    print(self.hitboxes)
                     print(":)")
                     print(self.looking)
 
@@ -249,6 +250,8 @@ class  Character(MySprite):
 
         # Movement Zone
         ################
+        positionTmp = self.position #Save position for collision detection
+
         if self.timeBlock == 0:
             if not(self.atack):
                 if (self.movement != STILL):
@@ -264,35 +267,46 @@ class  Character(MySprite):
                         self.currentSpeed = (0,self.speed)
                 else:
                     self.currentSpeed = (0,0)
+            self.changeAnimation()
         else:
             self.timeBlock -= 1
 
-        self.changeAnimation()
+
 
         MySprite.update(self,time)
-
-        if self.life <= 0:
-            print("moriche")
-
         self.updateHitboxPosition()
 
-        #Dmg Zone
-        #########
+        # Collision Detection
+        #####################
 
 
-        # Collition Zone
-        ################
+        self.solidGroup.remove(self.hitbox)
+        collideList = pygame.sprite.spritecollide(self.hitbox, self.solidGroup, False)
+        for solidSprite in collideList:
+            if not isinstance(solidSprite, InmobileSprite):
+                self.getDmg(solidSprite.parent.dmg, solidSprite.parent.looking, timeToBlock = 30)
+                solidSprite.parent.getDmg(self.dmg, self.looking,timeToBlock = 0)
 
-        self.hitbox.collitionUpdate()
+        if collideList:
+            self.setPosition(positionTmp)
+            self.updateHitboxPosition()
+
+
+
+        self.solidGroup.add(self.hitbox)
+
+        if self.life == 0:
+            print("moriche")
+            self.life = 0
 
         return
 
 class Player(Character):
     "Personaje principal del juego"
-    def __init__(self, dmgGroup = None):
+    def __init__(self, dmgGroup = None, solidGroup = None):
         # Invocamos al constructor de la clase padre con la configuracion de este personaje concreto
-        Character.__init__(self,'demo.png','demo.data', 0.2, 3, dmgGroup);
-        self.characterDmg = 30
+        Character.__init__(self,'demo.png','demo.data', 0.2, 3, dmgGroup, solidGroup);
+        self.dmg = 30
 
     def move(self, keyPressed, up, down, left, right,atack):
         # Indicamos la acción a realizar segun la tecla pulsada para el jugador
@@ -311,12 +325,39 @@ class Player(Character):
         else:
             Character.move(self,STILL)
 
+class InmobileSprite(MySprite):
+
+    def __init__(self, imageFile, position):
+
+        MySprite.__init__(self)
+
+        self.sheet = resourceManager.loadImage(imageFile)
+        #self.sheet = self.sheet.convert_alpha()
+        self.sheet = pygame.transform.scale(self.sheet,(120,140))
+        self.image = self.sheet
+        self.rect = self.image.get_rect()
+        self.setPosition(position)
+        self.image.set_colorkey((0,0,0))
+
+    def update(self, time):
+        pass
+
+class Building(InmobileSprite):
+    def __init__(self,position):
+        InmobileSprite.__init__(self,"building.png", position)
+        self.dmg = 0
+        self.parent = self
+
+
+    def getDmg(self, dmg, looking, timeToBlock = 10):
+        pass
+
 class Enemy(Character):
     "Enemigos del juego"
-    def __init__(self, imageFile, coordFile, speed, animationDelay, dmgGroup = None):
+    def __init__(self, imageFile, coordFile, speed, animationDelay, dmgGroup = None, solidGroup = None):
         # Invocamos al constructor de la clase padre con la configuracion de este enemigo concreto
-        Character.__init__(self, imageFile, coordFile, speed, animationDelay, dmgGroup);
-        self.characterDmg = 20
+        Character.__init__(self, imageFile, coordFile, speed, animationDelay, dmgGroup, solidGroup)
+        self.dmg = 20
 
     def move_cpu(self, player):
         # Indicamos las acciónes a realizar para el enemigo
@@ -324,14 +365,14 @@ class Enemy(Character):
 
 class Enemy1(Enemy):
     "Enemigo 1"
-    def __init__(self,dmgGroup = None):
+    def __init__(self,dmgGroup = None, solidGroup = None):
         # Invocamos al constructor de la clase padre con la configuracion de este enemigo concreto
-        Enemy.__init__(self,'enemy1.png','enemy1.data', 0.1, 3);
+        Enemy.__init__(self,'enemy1.png','enemy1.data', 0.1, 3, dmgGroup = dmgGroup, solidGroup = solidGroup);
 
     def move_cpu(self, player):
         # Indicamos las acciónes a realizar para el enemigo
         # Movemos solo a los enemigos que esten en la pantalla
-        if self.rect.left>0 and self.rect.right< DISPLAY_WIDTH and self.rect.bottom>0 and self.rect.top< DISPLAY_HEIGHT:
+        if self.rect.left>0 and self.rect.bottom>0:
 
             # Por ejemplo, intentara acercarse al jugador mas cercano en el eje x
 
