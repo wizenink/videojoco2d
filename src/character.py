@@ -380,7 +380,7 @@ class Enemy1(Enemy):
     "Enemigo 1"
     def __init__(self, director, dmgGroup = None, solidGroup = None):
         # Invocamos al constructor de la clase padre con la configuracion de este enemigo concreto
-        Enemy.__init__(self,'enemy1.png','enemy1.data', 0.1, 3, director, dmgGroup = dmgGroup, solidGroup = solidGroup);
+        Enemy.__init__(self,'eskeleton.png','eskeleton.data', 0.1, 3, director, dmgGroup = dmgGroup, solidGroup = solidGroup);
 
     def move_cpu(self, player):
         # Indicamos las acciónes a realizar para el enemigo
