@@ -292,7 +292,7 @@ class  Character(MySprite):
 
         self.solidGroup.add(self.hitbox)
 
-        if self.life == 0:
+        if self.life < 0:
             print("moriche")
             self.life = 0
 
@@ -344,8 +344,7 @@ class Building(InmobileSprite):
         InmobileSprite.__init__(self,"building.png", position)
         self.dmg = 0
         self.parent = self
-
-
+        
     def getDmg(self, dmg, looking, timeToBlock = 10):
         pass
 

@@ -18,7 +18,7 @@ class Scene:
 
     def music(self):
         print("Should override this method")
-        
+
     def add_collidables(self,collidables):
         self.collidables = collidables
 
@@ -29,12 +29,10 @@ class Scene:
         print("Should override this method")
 
     def draw(self,displaysurf):
-        for y in range(self.height):
-            for x in range(self.width):
-                i = (x * self.TILESIZE + self.camera.getX(), y * self.TILESIZE + self.camera.getY())
+        for x in range(self.width):
+            for y in range(self.height):
+                i = (y * self.TILESIZE + self.camera.getX(), x * self.TILESIZE + self.camera.getY())
                 displaysurf.blit(self.map[x][y],i)
         for c in self.collidables:
             x,y = c.rect.topleft
             displaysurf.blit(c.image,(x+self.camera.getX(),y+self.camera.getY()))
-
-    
