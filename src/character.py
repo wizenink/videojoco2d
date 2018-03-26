@@ -379,4 +379,4 @@ class Enemy1(Enemy):
 
     def move_cpu(self, player):
         # Indicamos las acciónes a realizar para el enemigo
-        ia.iaFollow(self, player)
+        ia.iaFollowsContinuos2(self, player)
