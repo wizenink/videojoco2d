@@ -111,7 +111,7 @@ class AttackHitbox(Hitbox):
 
 class  Character(MySprite):
     """docstring for Character."""
-    def __init__(self, imageFile, coordFile, speed, animationDelay, dmgGroup, solidGroup):
+    def __init__(self, imageFile, coordFile, speed, animationDelay, director, dmgGroup, solidGroup):
 
         MySprite.__init__(self)
 
@@ -184,6 +184,8 @@ class  Character(MySprite):
         # Init variables
         # Life
         self.life = 100
+        self.director = director
+
         #bloqueo por tiempo variables
         self.timeBlock = 0
         self.movement = STILL
@@ -312,27 +314,30 @@ class  Character(MySprite):
 
 class Player(Character):
     "Personaje principal del juego"
-    def __init__(self, dmgGroup = None, solidGroup = None):
+    def __init__(self, director, dmgGroup = None, solidGroup = None):
         # Invocamos al constructor de la clase padre con la configuracion de este personaje concreto
-        Character.__init__(self,'demo.png','demo.data', 0.2, 3, dmgGroup, solidGroup);
+        Character.__init__(self,'player.png','player.data', 0.2, 3, director, dmgGroup, solidGroup);
         self.dmg = 30
 
     def move(self, keyPressed, up, down, left, right,atack):
         # Indicamos la acción a realizar segun la tecla pulsada para el jugador
-        if keyPressed[up]:
-            Character.move(self,UP)
-        elif keyPressed[left]:
-            Character.move(self,LEFT)
-        elif keyPressed[right]:
-            Character.move(self,RIGHT)
-        elif keyPressed[down]:
-            Character.move(self,DOWN)
-        elif keyPressed[atack]:
-            self.atack = True
-            self.numFrame = -1
+        if not self.atack:
+            if keyPressed[up]:
+                Character.move(self,UP)
+            elif keyPressed[left]:
+                Character.move(self,LEFT)
+            elif keyPressed[right]:
+                Character.move(self,RIGHT)
+            elif keyPressed[down]:
+                Character.move(self,DOWN)
+            elif keyPressed[atack]:
+                Character.move(self,STILL)
+                self.atack = True
+                self.numFrame = -1
+                self.director.sound.generalSoundManage(GAME_SOUND_EFFECT_EVENT_ARMAESPADAATAQUE1)
 
-        else:
-            Character.move(self,STILL)
+            else:
+                Character.move(self,STILL)
 
 class InmobileSprite(MySprite):
 
@@ -356,15 +361,15 @@ class Building(InmobileSprite):
         InmobileSprite.__init__(self,"building.png", position)
         self.dmg = 0
         self.parent = self
-        
+
     def getDmg(self, dmg, looking, timeToBlock = 10):
         pass
 
 class Enemy(Character):
     "Enemigos del juego"
-    def __init__(self, imageFile, coordFile, speed, animationDelay, dmgGroup = None, solidGroup = None):
+    def __init__(self, imageFile, coordFile, speed, animationDelay, director, dmgGroup = None, solidGroup = None):
         # Invocamos al constructor de la clase padre con la configuracion de este enemigo concreto
-        Character.__init__(self, imageFile, coordFile, speed, animationDelay, dmgGroup, solidGroup)
+        Character.__init__(self, imageFile, coordFile, speed, animationDelay, director, dmgGroup, solidGroup)
         self.dmg = 20
 
     def move_cpu(self, player):
@@ -373,9 +378,9 @@ class Enemy(Character):
 
 class Enemy1(Enemy):
     "Enemigo 1"
-    def __init__(self,dmgGroup = None, solidGroup = None):
+    def __init__(self, director, dmgGroup = None, solidGroup = None):
         # Invocamos al constructor de la clase padre con la configuracion de este enemigo concreto
-        Enemy.__init__(self,'enemy1.png','enemy1.data', 0.1, 3, dmgGroup = dmgGroup, solidGroup = solidGroup);
+        Enemy.__init__(self,'enemy1.png','enemy1.data', 0.1, 3, director, dmgGroup = dmgGroup, solidGroup = solidGroup);
 
     def move_cpu(self, player):
         # Indicamos las acciónes a realizar para el enemigo
