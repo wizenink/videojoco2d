@@ -341,13 +341,12 @@ class Player(Character):
 
 class InmobileSprite(MySprite):
 
-    def __init__(self, imageFile, position):
+    def __init__(self, imageFile, position, folder = BUILD_FOLDER):
 
         MySprite.__init__(self)
-
-        self.sheet = resourceManager.loadImage(imageFile)
-        #self.sheet = self.sheet.convert_alpha()
-        self.sheet = pygame.transform.scale(self.sheet,(120,140))
+        self.sheet = resourceManager.loadImage(imageFile, folder = folder)
+        self.sheet = self.sheet.convert_alpha()
+        #self.sheet = pygame.transform.scale(self.sheet,(120,140))
         self.image = self.sheet
         self.rect = self.image.get_rect()
         self.setPosition(position)
@@ -357,8 +356,8 @@ class InmobileSprite(MySprite):
         pass
 
 class Building(InmobileSprite):
-    def __init__(self,position):
-        InmobileSprite.__init__(self,"building.png", position)
+    def __init__(self,position,buildname = 'building.png'):
+        InmobileSprite.__init__(self,buildname, position)
         self.dmg = 0
         self.parent = self
 

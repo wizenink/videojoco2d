@@ -6,7 +6,7 @@ from character import *
 #Esta clase es SOLO para escenas de niveles, ya que aqui usamos la camara
 
 class Scene:
-    def __init__(self,name,width,height,map,tilesize,solids,director):
+    def __init__(self,name,width,height,map,tilesize,director):
         self.name = name
         self.height = height
         self.width = width
@@ -15,6 +15,8 @@ class Scene:
         self.director = director
         self.camera = camera.Camera(camera.complex_camera,100*32,100*32)
         self.collidables = []
+        self.i = (0,0)
+
 
     def music(self):
         print("Should override this method")
@@ -31,10 +33,7 @@ class Scene:
     def draw(self,displaysurf):
         for x in range(self.width):
             for y in range(self.height):
-                this = (self.map[x][y])
-                if this[1] == True:
-                    collidable = Hitbox(32,32,(x,y))
-                    solids.add(collidable)
-                i = (y * self.TILESIZE + self.camera.getX(), x * self.TILESIZE + self.camera.getY())
-                displaysurf.blit(this[0],i)
+                self.i = (y * self.TILESIZE + self.camera.getX(), x * self.TILESIZE + self.camera.getY())
+                displaysurf.blit((self.map[x][y])[0],self.i)
+
 

@@ -5,6 +5,7 @@ sys.path.insert(0,"../")
 from scene.scenec import *
 from scene import serializer
 from resourceManager import *
+from character import *
 
 #RGB 100,100,100 ROCA
 #RGB 255,255,255 GRASS
@@ -20,10 +21,9 @@ class Level(Scene):
 		self.solids = []
 		self.enemys = []
 		self.lvlname = "level_farm.png"
-		levelName,width,height,map = serializer.loadLevel(self.lvlname)
-		Scene.__init__(self,self.lvlname,width,height,map,32,self.solidGroup,director)
+		width,height,map = serializer.loadLevel(self.lvlname)
+		Scene.__init__(self,self.lvlname,width,height,map,32,director)
 		self.initLevel()
-		print(self.solidGroup)
 
 	def music(self):
 		self.director.sound.generalSoundManage(GAME_SOUND_MUSIC_EVENT_MUSIC_1,repeat = -1)
@@ -79,11 +79,25 @@ class Level(Scene):
 		for solid in self.solids:
 			solid.draw(screen,self.camera)
 
+	def searchCollidables(self):
+		for x in range(self.width):
+			for y in range(self.height):
+				if (self.map[x][y])[1] == True:
+					collidable = InmobileSprite("empty.png",(y*32.5,x*32.5),folder = TILE_FOLDER)
+					self.solidGroup.add(collidable)
+					#self.solids.append(collidable)
+
+
 	def initLevel(self):
+		
+		self.searchCollidables()
+
 		self.playerGroup.add(self.player.hitbox)
 		self.solidGroup.add(self.player.hitbox)
 		self.player.setPosition((315,1382))
 		self.player.updateHitboxPosition()
 
-
+		casa = Building((600,400))
+		self.solidGroup.add(casa)
+		self.solids.append(casa)
 		self.addEnemy(300,300)

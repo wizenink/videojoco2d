@@ -18,7 +18,7 @@ TEST = (0,0,0)
 #RGB 94,113,255 WATER
 #RGB 94,255,98 TREE
 def collidable(tupla):
-    if tupla == WATER or tupla == TREE:
+    if tupla == "water.png" or tupla == "tree.png":
         return True
     return False
 default = { GRASS : "grass.png", WATER : "water.png", ROCK : "rock.png", TREE : "tree.png", TEST : 'grass.png'}
@@ -37,4 +37,4 @@ def loadLevel(levelName):
             else:
                 row[x] = (resourceManager.loadImage((tupla),folder = TILE_FOLDER) , False)
         map.append(row)
-    return levelName,width,height,map
+    return width,height,map
