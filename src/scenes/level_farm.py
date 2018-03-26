@@ -83,7 +83,7 @@ class Level(Scene):
 		for x in range(self.width):
 			for y in range(self.height):
 				if (self.map[x][y])[1] == True:
-					collidable = InmobileSprite("empty.png",(y*32.5,x*32.5),folder = TILE_FOLDER)
+					collidable = InmobileSprite("empty.png",((y)*32+self.camera.getX(),(x+1)*32+self.camera.getY()),folder = TILE_FOLDER)
 					self.solidGroup.add(collidable)
 					#self.solids.append(collidable)
 
