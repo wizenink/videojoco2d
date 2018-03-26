@@ -90,17 +90,17 @@ def iaFollowsContinuos2(self, player):
 	self.xLastPosition = self.position[0]
 	self.yLastPosition = self.position[1]
 
-	if sameX and lastMove==character.RIGHT:
+	if sameX and lastMove == character.RIGHT:
 		self.rightBlock = True
-	elif sameX and lastMove==character.LEFT:
+	elif sameX and lastMove == character.LEFT:
 		self.leftBlock = True
-	elif sameX and lastMove==character.DOWN:
+	elif sameX and lastMove == character.DOWN:
 		self.downBlock = True
-	elif sameX and lastMove==character.UP:
+	elif sameX and lastMove == character.UP:
 		self.upBlock = True
 
 	#Diferencia de dos para contemplar que el esprite no esté en el mismo sitio por distancia de menos de dos pixeles y se mueva igual
-	if xMoreDistance and not self.rightBlock:
+	if (xdiference > 2) and not self.rightBlock:
 		#if xdiference < x:
 		#	self.attack()
 		self.move(character.RIGHT)
@@ -109,7 +109,7 @@ def iaFollowsContinuos2(self, player):
 		self.leftBlock = False
 		self.downBlock = False
 		self.upBlock = False
-	elif xMoreDistance and not self.leftBlock:
+	elif (xdiference < -2) and not self.leftBlock:
 		#if xdiference > x:
 		#	self.attack()
 		self.move(character.LEFT)
@@ -118,7 +118,7 @@ def iaFollowsContinuos2(self, player):
 		self.rightBlock = False
 		self.downBlock = False
 		self.upBlock = False
-	elif not xMoreDistance and not self.downBlock:
+	elif (ydiference > 2) and not self.downBlock:
 		#if xdiference < y:
 		#	self.attack()
 		self.move(character.DOWN)
@@ -127,7 +127,7 @@ def iaFollowsContinuos2(self, player):
 		self.rightBlock = False
 		self.leftBlock = False
 		self.upBlock = False
-	elif not xMoreDistance and not self.upBlock:
+	elif (ydiference < -2) and not self.upBlock:
 		#if xdiference > y:
 		#	self.attack()
 		self.move(character.UP)
@@ -144,6 +144,5 @@ def iaFollowsContinuos2(self, player):
 		self.leftBlock = False
 		self.downBlock = False
 		self.upBlock = False
-			
-		
-		
+
+
