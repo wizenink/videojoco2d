@@ -33,7 +33,8 @@ class Scene:
             for y in range(self.height):
                 this = (self.map[x][y])
                 if this[1] == True:
-                    solids.add(this[0])
+                    collidable = Hitbox(32,32,(x,y))
+                    solids.add(collidable)
                 i = (y * self.TILESIZE + self.camera.getX(), x * self.TILESIZE + self.camera.getY())
                 displaysurf.blit(this[0],i)
 
