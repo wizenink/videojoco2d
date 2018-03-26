@@ -17,7 +17,10 @@ TEST = (0,0,0)
 #RGB 255,255,255 GRASS
 #RGB 94,113,255 WATER
 #RGB 94,255,98 TREE
-
+def collidable(tupla):
+    if tupla == WATER or tupla == TREE:
+        return True
+    return False
 default = { GRASS : "grass.png", WATER : "water.png", ROCK : "rock.png", TREE : "tree.png", TEST : 'grass.png'}
 def loadLevel(levelName):
     levelImg = resourceManager.loadLevel(levelName)
@@ -28,7 +31,10 @@ def loadLevel(levelName):
     for y in range(height):
         row = [None] * width
         for x in range(width):
-            row[x] = resourceManager.loadImage(default[tuple(buffer[x,y])],folder = TILE_FOLDER)
+            tupla = default[tuple(buffer[x,y])]
+            if collidable(tupla):
+                row[x] = (resourceManager.loadImage((tupla),folder = TILE_FOLDER), True)
+            else:
+                row[x] = (resourceManager.loadImage((tupla),folder = TILE_FOLDER) , False)
         map.append(row)
-    level = scenec.Scene(levelName,width,height,map,32,None)
-    return level
+    return levelName,width,height,map

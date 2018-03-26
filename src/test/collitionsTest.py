@@ -5,7 +5,7 @@ import random
 sys.path.insert(0, "../")
 from dialog import text
 from character import *
-from scene import serializer
+from scene import serializer,scenec
 from game import camera
 # from groupTest import *
 
@@ -40,7 +40,9 @@ message = text.DynamicText(font, "Xulián Basura...",0, autoreset=True)
 #groupSprites = pygame.sprite.Group(player,enemigo)
 
 hitboxGroup = pygame.sprite.Group(player.hitbox)
-level = serializer.loadLevel("bigtest.png")
+levelName,width,height,map = serializer.loadLevel("bigtest.png")
+level = scenec.Scene(levelName,width,height,map,32,solidGroup,None)
+
 
 #collidables = [MySprite()] * 100
 #for c in collidables:

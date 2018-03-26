@@ -20,9 +20,10 @@ class Level(Scene):
 		self.solids = []
 		self.enemys = []
 		self.lvlname = "level_farm.png"
-		self.level = serializer.loadLevel(self.lvlname)
-		Scene.__init__(self,self.lvlname,self.level.width,self.level.height,self.level.map,32,director)
+		levelName,width,height,map = serializer.loadLevel(self.lvlname)
+		Scene.__init__(self,self.lvlname,width,height,map,32,self.solidGroup,director)
 		self.initLevel()
+		print(self.solidGroup)
 
 	def music(self):
 		self.director.sound.generalSoundManage(GAME_SOUND_MUSIC_EVENT_MUSIC_1,repeat = -1)
@@ -81,7 +82,7 @@ class Level(Scene):
 	def initLevel(self):
 		self.playerGroup.add(self.player.hitbox)
 		self.solidGroup.add(self.player.hitbox)
-		self.player.setPosition((800,800))
+		self.player.setPosition((315,1382))
 		self.player.updateHitboxPosition()
 
 

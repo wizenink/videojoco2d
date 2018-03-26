@@ -6,7 +6,7 @@ from character import *
 #Esta clase es SOLO para escenas de niveles, ya que aqui usamos la camara
 
 class Scene:
-    def __init__(self,name,width,height,map,tilesize,director):
+    def __init__(self,name,width,height,map,tilesize,solids,director):
         self.name = name
         self.height = height
         self.width = width
@@ -31,8 +31,9 @@ class Scene:
     def draw(self,displaysurf):
         for x in range(self.width):
             for y in range(self.height):
+                this = (self.map[x][y])
+                if this[1] == True:
+                    solids.add(this[0])
                 i = (y * self.TILESIZE + self.camera.getX(), x * self.TILESIZE + self.camera.getY())
-                displaysurf.blit(self.map[x][y],i)
-        for c in self.collidables:
-            x,y = c.rect.topleft
-            displaysurf.blit(c.image,(x+self.camera.getX(),y+self.camera.getY()))
+                displaysurf.blit(this[0],i)
+
