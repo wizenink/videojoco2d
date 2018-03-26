@@ -15,7 +15,7 @@ pygame.init()
 BLANCO = (255,255,255)
 
 # Creamos la pantalla
-pantalla = pygame.display.set_mode((800,600))
+pantalla = pygame.display.set_mode((WIN_WIDTH,WIN_HEIGHT))
 
 enemyGroup = pygame.sprite.Group()
 playerGroup = pygame.sprite.Group()
