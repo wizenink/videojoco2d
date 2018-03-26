@@ -9,6 +9,7 @@ WATER = (94,113,255)
 ROCK = (100,100,100)
 GRASS = (255,255,255)
 TREE = (94,255,98)
+TEST = (0,0,0)
 
 
 
@@ -17,7 +18,7 @@ TREE = (94,255,98)
 #RGB 94,113,255 WATER
 #RGB 94,255,98 TREE
 
-default = { GRASS : "grass.png", WATER : "water.png", ROCK : "rock.png", TREE : "tree.png"}
+default = { GRASS : "grass.png", WATER : "water.png", ROCK : "rock.png", TREE : "tree.png", TEST : 'grass.png'}
 def loadLevel(levelName):
     levelImg = resourceManager.loadLevel(levelName)
     width = levelImg.get_width()

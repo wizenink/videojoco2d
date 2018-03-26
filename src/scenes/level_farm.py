@@ -84,4 +84,5 @@ class Level(Scene):
 		self.player.setPosition((800,800))
 		self.player.updateHitboxPosition()
 
+
 		self.addEnemy(300,300)

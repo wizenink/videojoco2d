@@ -71,7 +71,7 @@ while True:
     pantalla.fill((0,0,0))
     camara.update(player)
     #camara.apply(enemigo)
-    level.draw(pantalla,camara)
+    level.draw(pantalla)
     # Dibujamos un círculo de color blanco en esa posición en el buffer
     player.move(pygame.key.get_pressed(), K_UP, K_DOWN, K_LEFT, K_RIGHT, K_SPACE)
     player.update(clock.get_time())
