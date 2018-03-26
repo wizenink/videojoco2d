@@ -1,38 +1,43 @@
-import pygame,pyglet
+import pygame
 import sys
+from game.constants import *
 from scene import * 
 from pygame.locals import * 
-
-FPS = 144
-DISPLAY_WIDTH = 640
-DISPLAY_HEIGHT = 480
-
+from sound.soundManager import *
 class Director():
 	def __init__(self):
 		#pila
-		self.stack
+		self.stack = []
+		self.clock = pygame.time.Clock()
+		self.screen = pygame.display.set_mode((DISPLAY_WIDTH,DISPLAY_HEIGHT))
+		pygame.display.set_caption("Reign of Shendralar")
 		#salir del juego
-		self.exit_game = False
-	
+		self.exit_scene = False
+		dirname = os.path.dirname(__file__)
+		sound_folder = os.path.join(dirname,"../")
+		self.sound = GeneralSoundManager(sound_folder)
+
 	def pygameLoop(self,scene):
 		clock = pygame.time.Clock()
-		self.exit_game = False
+		self.exit_scene = False
 		pygame.event.clear()
-		while not self.exit_game:
+		scene.music()
+		while not self.exit_scene:
 			#Sincronizamos a 144 fps
-			time_spent = reloj.tick(FPS)
+			time_spent = clock.tick(FPS)
 
-			scene.eventos(pygame.event.get())
-			scene.update(time_spent)
-			scene.dibujar(scene.screen)
+			scene.events(pygame.event.get())
+			scene.update(clock.get_time())
+			scene.draw(self.screen)
+			scene.groupDraws(self.screen)
 
-			pygame.display.flip()
+			pygame.display.update()
 
 	def run(self):
-		pygame.init()
+		#pygame.init()
 		self.screen = pygame.display.set_mode((DISPLAY_WIDTH,DISPLAY_HEIGHT))
 
-		while(len(self.pila)>0):
+		while(len(self.stack)>0):
 			scene = self.stack[len(self.stack)-1]
 			self.pygameLoop(scene)
 		
@@ -41,8 +46,7 @@ class Director():
 
 	def stopScene(self):
 		if (len(self.stack)>0):
-			scene = self.stack[len(self.stack)-1]
-			self.exit_game = True 
+			self.exit_scene = True 
 
 	def exitScene(self):
 		self.stopScene()
@@ -55,6 +59,7 @@ class Director():
 
 	def swapScene(self,scene):
 		self.stopScene()
+		self.sound.generalSoundManage(GAME_SOUND_MUSIC_EVENT_MUSIC_STOP)
 		if (len(self.stack)>0):
 			self.stack.pop()
 		self.stack.append(scene)

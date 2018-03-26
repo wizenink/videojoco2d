@@ -7,31 +7,38 @@ from dialog import text
 from character import *
 from scene import serializer
 from game import camera
+# from groupTest import *
+
 # Inicializar la librería de pygame
 pygame.init()
 
 BLANCO = (255,255,255)
 
 # Creamos la pantalla
-pantalla = pygame.display.set_mode((800,600))
+pantalla = pygame.display.set_mode((WIN_WIDTH,WIN_HEIGHT))
 
 enemyGroup = pygame.sprite.Group()
 playerGroup = pygame.sprite.Group()
 solidGroup = pygame.sprite.Group()
 
-enemigo = Enemy1()
-player = Player(enemyGroup)
+player = Player(dmgGroup = enemyGroup, solidGroup = solidGroup)
+enemigo = Enemy1(dmgGroup = playerGroup, solidGroup = solidGroup)
+casa = Building((600,400))
+
 playerGroup.add(player.hitbox)
 enemyGroup.add(enemigo.hitbox)
 solidGroup.add(player.hitbox)
 solidGroup.add(enemigo.hitbox)
+solidGroup.add(casa)
+
+player.setPosition((300,300))
+player.updateHitboxPosition()
 
 clock = pygame.time.Clock()
 font = pygame.font.Font(None,25)
 message = text.DynamicText(font, "Xulián Basura...",0, autoreset=True)
 #groupSprites = pygame.sprite.Group(player,enemigo)
 
-groupSprites = pygame.sprite.Group(player)
 hitboxGroup = pygame.sprite.Group(player.hitbox)
 level = serializer.loadLevel("bigtest.png")
 
@@ -63,17 +70,20 @@ while True:
     # Rellenamos la pantalla de color negro
     pantalla.fill((0,0,0))
     camara.update(player)
-    camara.apply(player)
-    level.draw(pantalla,camara)
+    #camara.apply(enemigo)
+    level.draw(pantalla)
     # Dibujamos un círculo de color blanco en esa posición en el buffer
-    enemigo.move_cpu(player)
-    enemigo.update(clock.get_time())
     player.move(pygame.key.get_pressed(), K_UP, K_DOWN, K_LEFT, K_RIGHT, K_SPACE)
     player.update(clock.get_time())
+    enemigo.move_cpu(player)
+    enemigo.update(clock.get_time())
     player.draw(pantalla,camara)
-    #player.attackHitbox.draw(pantalla,camara)
-    #for hitbox in player.hitboxes:
-    #    hitbox[0].draw(pantalla,camara)
+    player.hitbox.draw(pantalla,camara)
+    enemigo.hitbox.draw(pantalla,camara)
+    casa.draw(pantalla,camara)
+
+    for hitbox in player.hitboxes:
+        hitbox[0].draw(pantalla,camara)
 
 
     enemigo.draw(pantalla,camara)
