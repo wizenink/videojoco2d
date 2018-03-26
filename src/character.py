@@ -132,6 +132,16 @@ class  Character(MySprite):
         #bloqueo por tiempo variables
         self.timeBlock = 0
 
+        self.lastMove = STILL
+
+        self.rightBlock = False
+        self.leftBlock = False
+        self.downBlock = False
+        self.upBlock = False
+
+        self.xLastPosition = self.position[0]
+        self.yLastPosition = self.position[1]
+
         self.andar = resourceManager.loadCharacterSprites(imageFile,coordFile)
 
         # Walk Sprites Load
@@ -255,10 +265,11 @@ class  Character(MySprite):
                         self.currentSpeed = (0,self.speed)
                 else:
                     self.currentSpeed = (0,0)
+            self.changeAnimation()
         else:
             self.timeBlock -= 1
 
-        self.changeAnimation()
+        #self.changeAnimation()
 
         MySprite.update(self,time)
 
