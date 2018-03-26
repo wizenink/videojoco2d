@@ -15,6 +15,10 @@ class Scene:
         self.director = director
         self.camera = camera.Camera(camera.complex_camera,100*32,100*32)
         self.collidables = []
+
+    def music(self):
+        print("Should override this method")
+        
     def add_collidables(self,collidables):
         self.collidables = collidables
 

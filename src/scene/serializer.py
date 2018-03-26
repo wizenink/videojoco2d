@@ -5,13 +5,19 @@ from scene import scenec
 sys.path.insert(0,"../")
 from resourceManager import *
 #Creacion de mapas
-CROP = (40,60,0)
-DESERT = (200,200,200)
-GRASS = (0,255,0)
-HOUSE = (0,0,0)
-ROAD = (128,128,128)
+WATER = (94,113,255)
+ROCK = (100,100,100)
+GRASS = (255,255,255)
+TREE = (94,255,98)
 
-default = { (0,0,0) : "grass.png", (255,255,255) : "desert.png"}
+
+
+#RGB 100,100,100 ROCA
+#RGB 255,255,255 GRASS
+#RGB 94,113,255 WATER
+#RGB 94,255,98 TREE
+
+default = { GRASS : "grass.png", WATER : "water.png", ROCK : "rock.png", TREE : "tree.png"}
 def loadLevel(levelName):
     levelImg = resourceManager.loadLevel(levelName)
     width = levelImg.get_width()
@@ -21,7 +27,7 @@ def loadLevel(levelName):
     for y in range(height):
         row = [None] * width
         for x in range(width):
-            row[x] = resourceManager.loadImage(default[tuple(buffer[x,y])])
+            row[x] = resourceManager.loadImage(default[tuple(buffer[x,y])],folder = TILE_FOLDER)
         map.append(row)
     level = scenec.Scene(levelName,width,height,map,32,None)
     return level

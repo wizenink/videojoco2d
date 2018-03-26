@@ -7,6 +7,7 @@ from resourceManager import *
 from scenes import level_farm
 import sys
 sys.path.insert(0,"../")
+from sound.soundManager import *
 from game.constants import *
 
 class ElementGUI:
@@ -101,10 +102,19 @@ class ScreenGUI:
 							
 			if event.type == KEYDOWN and event.key == K_UP:
 				self.elementSelected = (self.elementSelected - 1) % len(self.elementsGUI)
+				self.clickSound()
 			if event.type == KEYDOWN and event.key == K_DOWN:
 				self.elementSelected = (self.elementSelected + 1) % len(self.elementsGUI)
+				self.clickSound()
 			if event.type == KEYDOWN and event.key == K_RETURN:
 				self.elementsGUI[self.elementSelected].action()
+				self.startSound()
+
+	def clickSound(self):
+		self.menu.director.sound.generalSoundManage(GAME_SOUND_MENU_EVENT_MOVE_UP)
+
+	def startSound(self):
+		self.menu.director.sound.generalSoundManage(GAME_SOUND_MENU_EVENT_OK)
 
 	def draw(self,screen):
 		#Drawing background image
@@ -138,6 +148,7 @@ class Menu(Scene):
 		self.cursor = pygame.transform.scale(resourceManager.loadImage("cursor.png",-1,folder = MENU_FOLDER),(32,32))
 		self.cursor_clicked = pygame.transform.scale(resourceManager.loadImage("cursor_clicked.png",-1,folder = MENU_FOLDER),(32,32))
 
+
 	#dibuja el cursor custom
 	def drawCursor(self,screen,x,y):
 		if self.mouse_down:
@@ -145,6 +156,9 @@ class Menu(Scene):
 		else:
 			screen.blit(self.cursor,(x,y))
 
+
+	def music(self):
+		self.director.sound.generalSoundManage(GAME_SOUND_MUSIC_EVENT_MUSIC_6, repeat = -1)
 	def update(self, *args):
 		return
 
@@ -174,7 +188,7 @@ class Menu(Scene):
 	
 	def runGame(self):
 		first = level_farm.Level(self.director)
-		self.director.pushScene(first)
+		self.director.swapScene(first)
 
 	def showMainScreen(self):
 		self.actualScreen = 0

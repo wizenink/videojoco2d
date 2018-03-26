@@ -6,6 +6,11 @@ from scene.scenec import *
 from scene import serializer
 from resourceManager import *
 
+#RGB 100,100,100 ROCA
+#RGB 255,255,255 GRASS
+#RGB 94,113,255 WATER
+#RGB 94,255,98 TREE
+
 class Level(Scene):
 	def __init__(self,director):
 		self.enemyGroup = pygame.sprite.Group()
@@ -17,9 +22,10 @@ class Level(Scene):
 		self.lvlname = "level_farm.png"
 		self.level = serializer.loadLevel(self.lvlname)
 		Scene.__init__(self,self.lvlname,self.level.width,self.level.height,self.level.map,32,director)
-		self.playerGroup.add(self.player.hitbox)
-		self.solidGroup.add(self.player.hitbox)
-		self.addEnemy(300,300)
+		self.initLevel()
+
+	def music(self):
+		self.director.sound.generalSoundManage(GAME_SOUND_MUSIC_EVENT_MUSIC_1,repeat = -1)
 
 	def addEnemy(self,x,y):
 		enemy = Enemy1(dmgGroup = self.playerGroup, solidGroup = self.solidGroup)
@@ -73,5 +79,9 @@ class Level(Scene):
 			solid.draw(screen,self.camera)
 
 	def initLevel(self):
-		pass
+		self.playerGroup.add(self.player.hitbox)
+		self.solidGroup.add(self.player.hitbox)
+		self.player.setPosition((800,800))
+		self.player.updateHitboxPosition()
 
+		self.addEnemy(300,300)
