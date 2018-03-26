@@ -1,4 +1,4 @@
-import pygame 
+import pygame
 import pyganim #maybe not needed
 import sys
 sys.path.insert(0,"../")
@@ -16,7 +16,7 @@ class Level(Scene):
 		self.enemyGroup = pygame.sprite.Group()
 		self.playerGroup = pygame.sprite.Group()
 		self.solidGroup = pygame.sprite.Group()
-		self.player = Player(dmgGroup = self.enemyGroup, solidGroup = self.solidGroup)		
+		self.player = Player(director, dmgGroup = self.enemyGroup, solidGroup = self.solidGroup)
 		self.solids = []
 		self.enemys = []
 		self.lvlname = "level_farm.png"
@@ -29,7 +29,7 @@ class Level(Scene):
 		self.director.sound.generalSoundManage(GAME_SOUND_MUSIC_EVENT_MUSIC_1,repeat = -1)
 
 	def addEnemy(self,x,y):
-		enemy = Enemy1(dmgGroup = self.playerGroup, solidGroup = self.solidGroup)
+		enemy = Enemy1(self.director,dmgGroup = self.playerGroup, solidGroup = self.solidGroup)
 		enemy.setPosition((x,y))
 		enemy.updateHitboxPosition()
 		self.enemys.append(enemy)
@@ -37,19 +37,19 @@ class Level(Scene):
 		self.addSolid(enemy)
 
 	def addSolid(self,solid):
-		#Si es un building 
+		#Si es un building
 		try:
 			self.solidGroup.add(solid.hitbox)
 		except:
 			self.solidGroup.add(solid)
-		
-		self.solids.append(solid)	
+
+		self.solids.append(solid)
 
 	def removeEnemy(self,enemy):
 		self.enemys.remove(enemy)
 
 	def removeSolid(self,solid):
-		self.solids.remove(solid)	
+		self.solids.remove(solid)
 
 	def events(self,events):
 		for event in events:
