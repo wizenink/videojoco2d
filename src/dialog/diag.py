@@ -6,7 +6,7 @@ class Dialog:
         self.maxChars = 20
         self.font = pygame.font.Font(None,25)
         self.queue = []
-        
+
     def queueScreen(self):
         if self.dialogList == []:
             return
@@ -14,7 +14,7 @@ class Dialog:
         self.queue = []
         for t in self.dialogList[0]:
             self.queue.append(DynamicText(self.font,t,offset,autoreset=False))
-            offset +=15
+            offset +=18
         offset = 0
         self.dialogList.pop(0)
 

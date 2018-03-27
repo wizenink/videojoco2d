@@ -13,10 +13,10 @@ class Director():
 		pygame.display.set_caption("Reign of Shendralar")
 		#salir del juego
 		self.exit_scene = False
-		self.pause = False
 		dirname = os.path.dirname(__file__)
 		sound_folder = os.path.join(dirname,"../")
 		self.sound = GeneralSoundManager(sound_folder)
+		self.pause = False
 
 	def pygameLoop(self,scene):
 		clock = pygame.time.Clock()
@@ -34,6 +34,8 @@ class Director():
 				scene.groupDraws(self.screen)
 
 				pygame.display.update()
+				#Para la escena despues de cargarla para mostrar el dialogo
+				
 			else:
 				scene.updateDialog(self.screen)
 				pygame.display.update()

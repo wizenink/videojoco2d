@@ -16,7 +16,7 @@ class Scene:
         self.camera = camera.Camera(camera.complex_camera,100*32,100*32)
         self.collidables = []
         self.i = (0,0)
-
+        self.start = False
 
     def music(self):
         print("Should override this method")
@@ -35,5 +35,3 @@ class Scene:
             for y in range(self.height):
                 self.i = (y * self.TILESIZE + self.camera.getX(), x * self.TILESIZE + self.camera.getY())
                 displaysurf.blit((self.map[x][y])[0],self.i)
-
-
