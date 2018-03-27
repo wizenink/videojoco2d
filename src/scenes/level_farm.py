@@ -110,8 +110,7 @@ class Level(Scene):
 
 
 	def addDialog(self, textDialog):
-		testDialog = [["Quiero drama velazque plx dame drma que me ahburo","velazke ablaaaaameeeee equis favoh plz y dimelo","","velazke io zoy wapa? vlazque plz io zoy wapa plx dimeloh ne"],["This is","the second page","cool,right?"]]
-		dialog = Dialog("test",testDialog)
+		dialog = Dialog("test",textDialog)
 		self.dialogs.append(dialog)
 
 
@@ -168,7 +167,11 @@ class Level(Scene):
 		self.solidGroup.add(self.player.hitbox)
 		self.player.setPosition((315,1382))
 		self.player.updateHitboxPosition()
-		self.addDialog(None)
+		firstDialog = [["En el reino de Shendralar, cada diez años, su rey Tux",
+		"convoca una purga para diezmar y amedrentar a su pueblo",
+		"Sus sicarios se disponen a atacar el pueblo."],
+		["Habrá algún héroe dispuesto a impedirlo..."]]
+		self.addDialog(firstDialog)
 
 		self.addGreenTree((1337.60,2385.00))
 		self.addGreenTree((1357.60,2520.00))

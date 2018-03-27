@@ -5,10 +5,11 @@ class Scene:
     def __init__(self,name,director):
         self.name = name
         self.director = director
+        self.start = False
 
     def music(self):
-        print("Should override this method") 
-        
+        print("Should override this method")
+
     def events(self,events):
         print("Should override this method")
 
@@ -17,6 +18,6 @@ class Scene:
 
     def draw(self,*args):
         print("Should override this method")
-    
+
     def groupDraws(self,*args):
         print("Should override this method")
