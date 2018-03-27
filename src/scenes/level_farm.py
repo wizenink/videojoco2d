@@ -25,6 +25,8 @@ class Level(Scene):
 		Scene.__init__(self,self.lvlname,width,height,map,32,director)
 		self.initLevel()
 
+		#Test variables
+		self.debug = 0
 	def music(self):
 		self.director.sound.generalSoundManage(GAME_SOUND_MUSIC_EVENT_MUSIC_1,repeat = -1)
 
@@ -56,8 +58,13 @@ class Level(Scene):
 				# Si el event es la pulsación de la tecla Escape
 				if event.type == KEYDOWN and event.key == K_ESCAPE:
 						# Se sale del programa
-						pygame.quit()
-						sys.exit()
+						if self.debug:
+							self.addGreenTree(self.player.position)
+							print(self.player.position)
+						else:
+							pygame.quit()
+							sys.exit()
+
 				#if event.type == pygame.USEREVENT: message.update()s
 				#if (event.type == KEYDOWN and event.key == K_SPACE): message.update()
 
@@ -87,6 +94,50 @@ class Level(Scene):
 					self.solidGroup.add(collidable)
 					#self.solids.append(collidable)
 
+	def addTent(self,pos):
+		tent = Building(pos,buildname = 'cab.png')
+
+		self.solidGroup.add(tent)
+		self.solids.append(tent)
+	
+	def addFarm(self,pos):
+		farm = Building(pos,buildname = 'farm.png')
+
+		self.solidGroup.add(farm)
+		self.solids.append(farm)
+
+	def addHouse(self,pos):
+		house = Building(pos,buildname = 'building.png')
+
+		self.solidGroup.add(house)
+		self.solids.append(house)
+
+	def addMisc(self,pos,x):
+		if x == 1:
+			misc = Building(pos,buildname = 'farm_misc1.png')
+		elif x == 2:
+			misc = Building(pos,buildname = 'farm_misc2.png')
+		elif x == 3:
+			misc = Building(pos,buildname = 'farm_misc3.png')
+		elif x == 4:
+			misc = Building(pos,buildname = 'plants.png')
+		elif x == 5:
+			misc = Building(pos,buildname = 'fiddlesticks.png')
+		
+		self.solidGroup.add(misc)
+		self.solids.append(misc)
+
+	def addRedTree(self,pos):
+		tree = Building(pos,buildname = 'redtree.png')
+
+		self.solidGroup.add(tree)
+		self.solids.append(tree)
+
+	def addGreenTree(self,pos):
+		greenTree = Building(pos,buildname = 'greentree.png')
+
+		self.solidGroup.add(greenTree)
+		self.solids.append(greenTree)
 
 	def initLevel(self):
 		
@@ -97,7 +148,22 @@ class Level(Scene):
 		self.player.setPosition((315,1382))
 		self.player.updateHitboxPosition()
 
-		casa = Building((600,400))
-		self.solidGroup.add(casa)
-		self.solids.append(casa)
+
+		self.addGreenTree((1337.60,2385.00))
+		self.addGreenTree((1357.60,2520.00))
+		self.addGreenTree((1204.60,2520.00))
+		self.addGreenTree((1090.60,2458.00))
+		self.addGreenTree((1173.60,2371.00))
+		self.addMisc((477.99,1603.80),5)
+		self.addMisc((515.39,1616.40),4)
+		self.addMisc((508.59,1349.19),3)
+		self.addRedTree((1199.80,1920.80))
+		self.addRedTree((2937.80,1765.80))
+		self.addHouse((340.39,1341.79))
+		self.addTent((370,2243))
+		self.addTent((442,2277))
+		self.addTent((260,2267))
+		self.addMisc((370,2290),2)
+
+
 		self.addEnemy(300,300)

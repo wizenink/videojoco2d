@@ -345,12 +345,12 @@ class InmobileSprite(MySprite):
 
         MySprite.__init__(self)
         self.sheet = resourceManager.loadImage(imageFile, folder = folder)
-        self.sheet = self.sheet.convert_alpha()
+        self.sheet = self.sheet.convert()
         #self.sheet = pygame.transform.scale(self.sheet,(120,140))
         self.image = self.sheet
+        self.image.set_colorkey((255,0,255))
         self.rect = self.image.get_rect()
         self.setPosition(position)
-        self.image.set_colorkey((0,0,0))
 
     def update(self, time):
         pass
