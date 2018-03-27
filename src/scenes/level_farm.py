@@ -6,6 +6,8 @@ from scene.scenec import *
 from scene import serializer
 from resourceManager import *
 from character import *
+sys.path.insert(0,"./dialog")
+from diag import *
 
 #RGB 100,100,100 ROCA
 #RGB 255,255,255 GRASS
@@ -20,6 +22,7 @@ class Level(Scene):
 		self.player = Player(director, dmgGroup = self.enemyGroup, solidGroup = self.solidGroup)
 		self.solids = []
 		self.enemys = []
+		self.dialogs = []
 		self.lvlname = "level_farm.png"
 		width,height,map = serializer.loadLevel(self.lvlname)
 		Scene.__init__(self,self.lvlname,width,height,map,32,director)
@@ -55,6 +58,12 @@ class Level(Scene):
 
 	def events(self,events):
 		for event in events:
+				# Pausa
+				if event.type == KEYDOWN and event.key == K_p:
+					self.director.pause = not self.director.pause
+				if event.type == KEYDOWN and event.key == K_o:
+					if self.dialogs:
+						self.dialogs[0].queueScreen()
 				# Si el event es la pulsación de la tecla Escape
 				if event.type == KEYDOWN and event.key == K_ESCAPE:
 						# Se sale del programa
@@ -94,12 +103,24 @@ class Level(Scene):
 					self.solidGroup.add(collidable)
 					#self.solids.append(collidable)
 
+	def updateDialog(self,screen):
+		if self.dialogs:
+			self.dialogs[0].update()
+			self.dialogs[0].draw(screen)
+
+
+	def addDialog(self, textDialog):
+		testDialog = [["Quiero drama velazque plx dame drma que me ahburo","velazke ablaaaaameeeee equis favoh plz y dimelo","","velazke io zoy wapa? vlazque plz io zoy wapa plx dimeloh ne"],["This is","the second page","cool,right?"]]
+		dialog = Dialog("test",testDialog)
+		self.dialogs.append(dialog)
+
+
 	def addTent(self,pos):
 		tent = Building(pos,buildname = 'cab.png')
 
 		self.solidGroup.add(tent)
 		self.solids.append(tent)
-	
+
 	def addFarm(self,pos):
 		farm = Building(pos,buildname = 'farm.png')
 
@@ -123,7 +144,7 @@ class Level(Scene):
 			misc = Building(pos,buildname = 'plants.png')
 		elif x == 5:
 			misc = Building(pos,buildname = 'fiddlesticks.png')
-		
+
 		self.solidGroup.add(misc)
 		self.solids.append(misc)
 
@@ -140,14 +161,14 @@ class Level(Scene):
 		self.solids.append(greenTree)
 
 	def initLevel(self):
-		
+
 		self.searchCollidables()
 
 		self.playerGroup.add(self.player.hitbox)
 		self.solidGroup.add(self.player.hitbox)
 		self.player.setPosition((315,1382))
 		self.player.updateHitboxPosition()
-
+		self.addDialog(None)
 
 		self.addGreenTree((1337.60,2385.00))
 		self.addGreenTree((1357.60,2520.00))
@@ -166,4 +187,4 @@ class Level(Scene):
 		self.addMisc((370,2290),2)
 
 
-		self.addEnemy(300,300)
+		self.addEnemy(315,1682)

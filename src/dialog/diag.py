@@ -1,11 +1,12 @@
-from .text import *
+from text import *
 import pygame
 class Dialog:
-    def  __init__(self,dialogName):
-        self.dialogList = [["this is","A dialog page","with dialog offsets"],["This is","the second page","cool,right?"]] # will be a 2d array [[]]. Each subarray an screen dialog.
+    def  __init__(self,dialogName, dialogList):
+        self.dialogList = dialogList #[["this is","A dialog page","with dialog offsets"],["This is","the second page","cool,right?"]] # will be a 2d array [[]]. Each subarray an screen dialog.
         self.maxChars = 20
         self.font = pygame.font.Font(None,25)
-
+        self.queue = []
+        
     def queueScreen(self):
         if self.dialogList == []:
             return

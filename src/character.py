@@ -351,6 +351,11 @@ class InmobileSprite(MySprite):
         self.image.set_colorkey((255,0,255))
         self.rect = self.image.get_rect()
         self.setPosition(position)
+        self.dmg = 0
+        self.parent = self
+
+    def getDmg(self, dmg, looking, timeToBlock = 10):
+        pass
 
     def update(self, time):
         pass
@@ -358,11 +363,7 @@ class InmobileSprite(MySprite):
 class Building(InmobileSprite):
     def __init__(self,position,buildname = 'building.png'):
         InmobileSprite.__init__(self,buildname, position)
-        self.dmg = 0
-        self.parent = self
 
-    def getDmg(self, dmg, looking, timeToBlock = 10):
-        pass
 
 class Enemy(Character):
     "Enemigos del juego"
