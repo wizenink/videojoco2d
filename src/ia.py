@@ -1,4 +1,8 @@
 import character
+import math
+
+def getEuclideanDistance(object1,object2):
+	return math.ceil(math.sqrt((math.pow((object2.position[0] - object1.position[0]),2) + math.pow((object2.position[1] - object1.position[1]),2))))
 
 def iaFollow(self, player):
 	# Movemos solo a los enemigos que esten en la pantalla
@@ -90,17 +94,17 @@ def iaFollowsContinuos2(self, player):
 	self.xLastPosition = self.position[0]
 	self.yLastPosition = self.position[1]
 
-	if sameX and lastMove == character.RIGHT:
+	if sameX and (lastMove == character.RIGHT):
 		self.rightBlock = True
-	elif sameX and lastMove == character.LEFT:
+	elif sameX and (lastMove == character.LEFT):
 		self.leftBlock = True
-	elif sameX and lastMove == character.DOWN:
+	elif sameY and (lastMove == character.DOWN):
 		self.downBlock = True
-	elif sameX and lastMove == character.UP:
+	elif sameY and (lastMove == character.UP):
 		self.upBlock = True
 
 	#Diferencia de dos para contemplar que el esprite no esté en el mismo sitio por distancia de menos de dos pixeles y se mueva igual
-	if (xdiference > 2) and not self.rightBlock:
+	if (xMoreDistance or (self.downBlock or self.upBlock)) and (xdiference > 0) and not self.rightBlock:
 		#if xdiference < x:
 		#	self.attack()
 		self.move(character.RIGHT)
@@ -109,7 +113,7 @@ def iaFollowsContinuos2(self, player):
 		self.leftBlock = False
 		self.downBlock = False
 		self.upBlock = False
-	elif (xdiference < -2) and not self.leftBlock:
+	elif (xMoreDistance or (self.downBlock or self.upBlock)) and (xdiference < 0) and not self.leftBlock:
 		#if xdiference > x:
 		#	self.attack()
 		self.move(character.LEFT)
@@ -118,7 +122,7 @@ def iaFollowsContinuos2(self, player):
 		self.rightBlock = False
 		self.downBlock = False
 		self.upBlock = False
-	elif (ydiference > 2) and not self.downBlock:
+	elif (not xMoreDistance or (self.rightBlock or self.leftBlock))  and (ydiference > 0) and not self.downBlock:
 		#if xdiference < y:
 		#	self.attack()
 		self.move(character.DOWN)
@@ -127,7 +131,7 @@ def iaFollowsContinuos2(self, player):
 		self.rightBlock = False
 		self.leftBlock = False
 		self.upBlock = False
-	elif (ydiference < -2) and not self.upBlock:
+	elif (not xMoreDistance or (self.rightBlock or self.leftBlock))  and (ydiference < 0) and not self.upBlock:
 		#if xdiference > y:
 		#	self.attack()
 		self.move(character.UP)
@@ -140,9 +144,11 @@ def iaFollowsContinuos2(self, player):
 		self.move(character.STILL)
 		self.lastMove = character.STILL
 		#Desbloqueamos el resto de bloqueos
-		self.rightBlock = False
-		self.leftBlock = False
-		self.downBlock = False
-		self.upBlock = False
+		#self.rightBlock = False
+		#self.leftBlock = False
+		#self.downBlock = False
+		#self.upBlock = False
+
+	print(self.lastMove)
 
 
