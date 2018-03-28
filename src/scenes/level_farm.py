@@ -21,7 +21,7 @@ offset_y = 70
 class Level(Scene):
 	def __init__(self,director):
 		#Test variables
-		self.debug = 1
+		self.debug = 0
 		##############
 		self.enemyGroup = pygame.sprite.Group()
 		self.playerGroup = pygame.sprite.Group()
