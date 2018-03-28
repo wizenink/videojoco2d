@@ -35,3 +35,6 @@ class Scene:
             for y in range(self.height):
                 self.i = (y * self.TILESIZE + self.camera.getX(), x * self.TILESIZE + self.camera.getY())
                 displaysurf.blit((self.map[x][y])[0],self.i)
+
+    def drawUI(self,screen):
+        print("Should override this method")

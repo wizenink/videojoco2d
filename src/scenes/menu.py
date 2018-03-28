@@ -124,7 +124,8 @@ class ScreenGUI:
 		screen.blit(self.selection,(45,225 +(self.elementSelected * 40)))
 		for element in self.elementsGUI:
 			element.draw(screen)
-					
+
+
 class MainScreenGUI(ScreenGUI):
 	def __init__(self,menu):
 		ScreenGUI.__init__(self,menu,'main_screen.jpg')
@@ -192,5 +193,7 @@ class Menu(Scene):
 
 	def showMainScreen(self):
 		self.actualScreen = 0
-		
+
+	def drawUI(self, screen):
+		pass
 

@@ -6,6 +6,7 @@ from scene.scenec import *
 from scene import serializer
 from resourceManager import *
 from character import *
+from util.levelDesigner import *
 sys.path.insert(0,"./dialog")
 from diag import *
 
@@ -14,22 +15,32 @@ from diag import *
 #RGB 94,113,255 WATER
 #RGB 94,255,98 TREE
 
+offset_x = 65
+offset_y = 70
+
 class Level(Scene):
 	def __init__(self,director):
+		#Test variables
+		self.debug = 1
+		##############
 		self.enemyGroup = pygame.sprite.Group()
 		self.playerGroup = pygame.sprite.Group()
 		self.solidGroup = pygame.sprite.Group()
-		self.player = Player(director, dmgGroup = self.enemyGroup, solidGroup = self.solidGroup)
+		#Si estamos en modo debug no colisionaremos con nada
+		if (self.debug):
+			self.player = Player(director, dmgGroup = self.enemyGroup, solidGroup = pygame.sprite.Group())			
+		else:
+			self.player = Player(director, dmgGroup = self.enemyGroup, solidGroup = self.solidGroup)
 		self.solids = []
 		self.enemys = []
 		self.dialogs = []
 		self.lvlname = "level_farm.png"
+		self.lvlfile = "level_farm.txt"
+		self.designer = Designer(self.lvlfile)
 		width,height,map = serializer.loadLevel(self.lvlname)
 		Scene.__init__(self,self.lvlname,width,height,map,32,director)
 		self.initLevel()
 
-		#Test variables
-		self.debug = 0
 	def music(self):
 		self.director.sound.generalSoundManage(GAME_SOUND_MUSIC_EVENT_MUSIC_1,repeat = -1)
 
@@ -56,9 +67,73 @@ class Level(Scene):
 	def removeSolid(self,solid):
 		self.solids.remove(solid)
 
+	def addItem(self,event):
+		#GreenTree
+		if event.type == KEYDOWN and event.key == K_1:
+			self.addGreenTree((self.player.position[0]+offset_x,self.player.position[1]+offset_y))
+			self.designer.writeFile("greentree",(self.player.position[0]+offset_x,self.player.position[1]+70))
+		#RedTree
+		elif event.type == KEYDOWN and event.key == K_2:
+			self.addRedTree((self.player.position[0]+offset_x,self.player.position[1]+offset_y))
+			self.designer.writeFile("redtree",(self.player.position[0]+offset_x,self.player.position[1]+70))
+		#Tent
+		elif event.type == KEYDOWN and event.key == K_3:
+			self.addTent((self.player.position[0]+offset_x,self.player.position[1]+offset_y))
+			self.designer.writeFile("tent",(self.player.position[0]+offset_x,self.player.position[1]+70))
+		#Misc2
+		elif event.type == KEYDOWN and event.key == K_4:
+			self.addMisc((self.player.position[0]+offset_x,self.player.position[1]+offset_y),2)
+			self.designer.writeFile("misc2",(self.player.position[0]+offset_x,self.player.position[1]+70))
+		#Plants
+		elif event.type == KEYDOWN and event.key == K_5:
+			self.addMisc((self.player.position[0]+offset_x,self.player.position[1]+offset_y),4)
+			self.designer.writeFile("plants",(self.player.position[0]+offset_x,self.player.position[1]+70))
+		#House
+		elif event.type == KEYDOWN and event.key == K_6:
+			self.addHouse((self.player.position[0]+offset_x,self.player.position[1]+offset_y))
+			self.designer.writeFile("house",(self.player.position[0]+offset_x,self.player.position[1]+70))
+		#Fiddlesticks
+		elif event.type == KEYDOWN and event.key == K_7:
+			self.addMisc((self.player.position[0]+offset_x,self.player.position[1]+offset_y),5)
+			self.designer.writeFile("fiddlesticks",(self.player.position[0]+offset_x,self.player.position[1]+70))
+		#Misc1
+		elif event.type == KEYDOWN and event.key == K_8:
+			self.addMisc((self.player.position[0]+offset_x,self.player.position[1]+offset_y),1)
+			self.designer.writeFile("misc1",(self.player.position[0]+offset_x,self.player.position[1]+70))
+		#Misc3
+		elif event.type == KEYDOWN and event.key == K_9:
+			self.addMisc((self.player.position[0]+offset_x,self.player.position[1]+offset_y),3)
+			self.designer.writeFile("misc3",(self.player.position[0]+offset_x,self.player.position[1]+70))
+
+	def loadItemsFromFile(self):
+		items = self.designer.readFile()
+		for item in items:
+			if item[0] == "greentree":
+				self.addGreenTree(item[1])
+			elif item[0] == "redtree":
+				self.addRedTree(item[1])
+			elif item[0] == "tent":
+				self.addTent(item[1])
+			elif item[0] == "misc2":
+				self.addMisc(item[1],2)
+			elif item[0] == "plants":
+				self.addMisc(item[1],4) 
+			elif item[0] == "house":
+				self.addHouse(item[1])
+			elif item[0] == "fiddlesticks":
+				self.addMisc(item[1],5)
+			elif item[0] == "misc1":
+				self.addMisc(item[1],1)
+			elif item[0] == "misc3":
+				self.addMisc(item[1],3)
+
 	def events(self,events):
 		for event in events:
 				# Pausa
+				if self.debug:
+					self.addItem(event)
+					if event.type == KEYDOWN and event.key == K_c:
+						self.solids = []
 				if event.type == KEYDOWN and event.key == K_p:
 					self.director.pause = not self.director.pause
 				if event.type == KEYDOWN and event.key == K_o:
@@ -67,12 +142,8 @@ class Level(Scene):
 				# Si el event es la pulsación de la tecla Escape
 				if event.type == KEYDOWN and event.key == K_ESCAPE:
 						# Se sale del programa
-						if self.debug:
-							self.addGreenTree(self.player.position)
-							print(self.player.position)
-						else:
-							pygame.quit()
-							sys.exit()
+					pygame.quit()
+					sys.exit()
 
 				#if event.type == pygame.USEREVENT: message.update()s
 				#if (event.type == KEYDOWN and event.key == K_SPACE): message.update()
@@ -94,6 +165,9 @@ class Level(Scene):
 			enemy.draw(screen,self.camera)
 		for solid in self.solids:
 			solid.draw(screen,self.camera)
+	
+	def drawUI(self,screen):
+		pass
 
 	def searchCollidables(self):
 		for x in range(self.width):
@@ -173,6 +247,9 @@ class Level(Scene):
 		["Habrá algún héroe dispuesto a impedirlo..."]]
 		self.addDialog(firstDialog)
 
+		self.loadItemsFromFile()
+		self.addEnemy(315,1682)
+'''
 		self.addGreenTree((1337.60,2385.00))
 		self.addGreenTree((1357.60,2520.00))
 		self.addGreenTree((1204.60,2520.00))
@@ -188,6 +265,6 @@ class Level(Scene):
 		self.addTent((442,2277))
 		self.addTent((260,2267))
 		self.addMisc((370,2290),2)
+'''
 
-
-		self.addEnemy(315,1682)
+		
