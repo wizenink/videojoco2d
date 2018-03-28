@@ -21,7 +21,7 @@ offset_y = 70
 class Level(Scene):
 	def __init__(self,director):
 		#Test variables
-		self.debug = 0
+		self.debug = 1
 		##############
 		self.enemyGroup = pygame.sprite.Group()
 		self.playerGroup = pygame.sprite.Group()
@@ -131,6 +131,7 @@ class Level(Scene):
 		for event in events:
 				# Pausa
 				if self.debug:
+					pygame.mouse.set_visible(1)
 					self.addItem(event)
 					if event.type == KEYDOWN and event.key == K_c:
 						self.solids = []
@@ -249,22 +250,6 @@ class Level(Scene):
 
 		self.loadItemsFromFile()
 		self.addEnemy(315,1682)
-'''
-		self.addGreenTree((1337.60,2385.00))
-		self.addGreenTree((1357.60,2520.00))
-		self.addGreenTree((1204.60,2520.00))
-		self.addGreenTree((1090.60,2458.00))
-		self.addGreenTree((1173.60,2371.00))
-		self.addMisc((477.99,1603.80),5)
-		self.addMisc((515.39,1616.40),4)
-		self.addMisc((508.59,1349.19),3)
-		self.addRedTree((1199.80,1920.80))
-		self.addRedTree((2937.80,1765.80))
-		self.addHouse((340.39,1341.79))
-		self.addTent((370,2243))
-		self.addTent((442,2277))
-		self.addTent((260,2267))
-		self.addMisc((370,2290),2)
-'''
+
 
 		
