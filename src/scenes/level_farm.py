@@ -104,6 +104,9 @@ class Level(Scene):
 		elif event.type == KEYDOWN and event.key == K_9:
 			self.addMisc((self.player.position[0]+offset_x,self.player.position[1]+offset_y),3)
 			self.designer.writeFile("misc3",(self.player.position[0]+offset_x,self.player.position[1]+70))
+		elif event.type == KEYDOWN and event.key == K_0:
+			self.addCastle((self.player.position[0]+offset_x,self.player.position[1]+offset_y))
+			self.designer.writeFile("castle",(self.player.position[0]+offset_x,self.player.position[1]+70))
 
 	def loadItemsFromFile(self):
 		items = self.designer.readFile()
@@ -126,7 +129,9 @@ class Level(Scene):
 				self.addMisc(item[1],1)
 			elif item[0] == "misc3":
 				self.addMisc(item[1],3)
-
+			elif item[0] == "castle":
+				self.addCastle(item[1])
+				
 	def events(self,events):
 		for event in events:
 				# Pausa
@@ -188,6 +193,11 @@ class Level(Scene):
 		dialog = Dialog("test",textDialog)
 		self.dialogs.append(dialog)
 
+	def addCastle(self,pos):
+		castle = Building(pos,buildname = 'castle.png')
+
+		self.solidGroup.add(castle)
+		self.solids.append(castle)
 
 	def addTent(self,pos):
 		tent = Building(pos,buildname = 'cab.png')
