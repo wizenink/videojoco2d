@@ -11,6 +11,7 @@ WATER = (94,113,255)
 ROCK = (100,100,100)
 GRASS = (255,255,255)
 TREE = (94,255,98)
+TREE2 = (95,255,99)
 FLOWERS = (255,0,120)
 TEST = (0,0,0)
 UPPER_GRASS = (255,255,20)
@@ -61,6 +62,7 @@ def loadLevel(levelName):
             WATER : "water.png", 
             ROCK : "rock.png", 
             TREE : "tree.png", 
+            TREE2 : "tree.png",
             TEST : 'grass.png'}
             tupla = default[tuple(buffer[x,y])]
             if collidable(tupla):
