@@ -4,7 +4,7 @@ from pygame.locals import *
 from scene.scenem import *
 from scene import serializer
 from resourceManager import *
-from scenes import level_farm
+from scenes import level_farm, level_trisquel_forest
 import sys
 sys.path.insert(0,"../")
 from sound.soundManager import *

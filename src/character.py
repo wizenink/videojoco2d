@@ -135,6 +135,7 @@ class  Character(MySprite):
                 self.attackOffsetHitbox = (atackData[i][2],atackData[i][3])
                 self.hitboxes.append((self.attackHitbox,self.attackOffsetHitbox))
 
+        #Variables ia
         #bloqueo por tiempo variables
         self.timeBlock = 0
 
@@ -145,6 +146,9 @@ class  Character(MySprite):
         self.downBlock = False
         self.upBlock = False
         self.blockCount = 0
+
+        self.xInitialPosition = self.position[0]
+        self.yInitialPosition = self.position[1]
 
         self.xLastPosition = self.position[0]
         self.yLastPosition = self.position[1]
@@ -198,6 +202,7 @@ class  Character(MySprite):
         self.dmg = 0
 
         self.speed = speed
+        self.initialSpeed = self.speed
         # Retardo de la animación
         self.animationDelay = animationDelay
         # Contador del Retardo
@@ -385,4 +390,4 @@ class Enemy1(Enemy):
 
     def move_cpu(self, player):
         # Indicamos las acciónes a realizar para el enemigo
-        ia.iaFollowsContinuos2(self, player)
+        ia.iaVerticalGuardian(self, player)

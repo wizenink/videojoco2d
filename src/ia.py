@@ -165,6 +165,76 @@ def iaFollowsContinuos2(self, player):
 		#self.downBlock = False
 		#self.upBlock = False
 
-	print(self.lastMove)
+def iaHorizontalGuardian(self, player):
+	# Variables sobre la posicion anterior
+	sameX = False
 
+	#intento de movimiento anterior
+	lastMove = self.lastMove
 
+	#Actualizamos variables sobre posición anterior
+	if self.xLastPosition == self.position[0]:
+		sameX = True
+	
+	# Por ejemplo, intentara acercarse al jugador mas cercano en el eje x o y
+	#Calcular distancias en eje x e y
+	ydiference = player.position[1] - self.position[1]
+
+	#Actualizamos la posición anterior a la actual para la proxima llamada
+	self.xLastPosition = self.position[0]
+
+	if sameX and (lastMove == character.RIGHT):
+		self.rightBlock = True
+		self.leftBlock = False
+	elif sameX and (lastMove == character.LEFT):
+		self.leftBlock = True
+		self.rightBlock = False
+
+	if (ydiference < 20) and (ydiference > -20):
+		self.speed = self.initialSpeed + 0.1
+	else:  
+		self.speed = self.initialSpeed
+	
+	if not self.rightBlock:
+		self.move(character.RIGHT)
+		self.lastMove = character.RIGHT
+	elif not self.leftBlock:
+		self.move(character.LEFT)
+		self.lastMove = character.LEFT
+
+def iaVerticalGuardian(self, player):
+	# Variables sobre la posicion anterior
+	sameY = False
+
+	#intento de movimiento anterior
+	lastMove = self.lastMove
+
+	#Actualizamos variables sobre posición anterior
+	if self.yLastPosition == self.position[1]:
+		sameY = True
+	
+	# Por ejemplo, intentara acercarse al jugador mas cercano en el eje x o y
+	#Calcular distancias en eje x e y
+	xdiference = player.position[0] - self.position[0]
+
+	#Actualizamos la posición anterior a la actual para la proxima llamada
+	self.yLastPosition = self.position[1]
+
+	if sameY and (lastMove == character.UP):
+		self.upBlock = True
+		self.downBlock = False
+	elif sameY and (lastMove == character.DOWN):
+		self.downBlock = True
+		self.upBlock = False
+
+	if (xdiference < 20) and (xdiference > -20):
+		self.speed = self.initialSpeed + 0.1
+	else:  
+		self.speed = self.initialSpeed
+	
+	if not self.upBlock:
+		self.move(character.UP)
+		self.lastMove = character.UP
+	elif not self.downBlock:
+		self.move(character.DOWN)
+		self.lastMove = character.DOWN
