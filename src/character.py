@@ -144,6 +144,7 @@ class  Character(MySprite):
         self.leftBlock = False
         self.downBlock = False
         self.upBlock = False
+        self.blockCount = 0
 
         self.xLastPosition = self.position[0]
         self.yLastPosition = self.position[1]

@@ -96,12 +96,16 @@ def iaFollowsContinuos2(self, player):
 
 	if sameX and (lastMove == character.RIGHT):
 		self.rightBlock = True
+		self.blockCount += 5
 	elif sameX and (lastMove == character.LEFT):
 		self.leftBlock = True
+		self.blockCount += 5
 	elif sameY and (lastMove == character.DOWN):
 		self.downBlock = True
+		self.blockCount += 5
 	elif sameY and (lastMove == character.UP):
 		self.upBlock = True
+		self.blockCount += 5
 
 	#Diferencia de dos para contemplar que el esprite no esté en el mismo sitio por distancia de menos de dos pixeles y se mueva igual
 	if (xMoreDistance or (self.downBlock or self.upBlock)) and (xdiference > 0) and not self.rightBlock:
@@ -110,36 +114,48 @@ def iaFollowsContinuos2(self, player):
 		self.move(character.RIGHT)
 		self.lastMove = character.RIGHT
 		#Desbloqueamos el resto de bloqueos
-		self.leftBlock = False
-		self.downBlock = False
-		self.upBlock = False
+		if self.blockCount == 0:
+			self.leftBlock = False
+			self.downBlock = False
+			self.upBlock = False
+		else:
+			self.blockCount -= 1
 	elif (xMoreDistance or (self.downBlock or self.upBlock)) and (xdiference < 0) and not self.leftBlock:
 		#if xdiference > x:
 		#	self.attack()
 		self.move(character.LEFT)
 		self.lastMove = character.LEFT
 		#Desbloqueamos el resto de bloqueos
-		self.rightBlock = False
-		self.downBlock = False
-		self.upBlock = False
+		if self.blockCount == 0:
+			self.rightBlock = False
+			self.downBlock = False
+			self.upBlock = False
+		else:
+			self.blockCount -= 1
 	elif (not xMoreDistance or (self.rightBlock or self.leftBlock))  and (ydiference > 0) and not self.downBlock:
 		#if xdiference < y:
 		#	self.attack()
 		self.move(character.DOWN)
 		self.lastMove = character.DOWN
 		#Desbloqueamos el resto de bloqueos
-		self.rightBlock = False
-		self.leftBlock = False
-		self.upBlock = False
+		if self.blockCount == 0:
+			self.rightBlock = False
+			self.leftBlock = False
+			self.upBlock = False
+		else:
+			self.blockCount -= 1
 	elif (not xMoreDistance or (self.rightBlock or self.leftBlock))  and (ydiference < 0) and not self.upBlock:
 		#if xdiference > y:
 		#	self.attack()
 		self.move(character.UP)
 		self.lastMove = character.UP
 		#Desbloqueamos el resto de bloqueos
-		self.rightBlock = False
-		self.leftBlock = False
-		self.downBlock = False
+		if self.blockCount == 0:
+			self.rightBlock = False
+			self.leftBlock = False
+			self.downBlock = False
+		else:
+			self.blockCount -= 1
 	else:
 		self.move(character.STILL)
 		self.lastMove = character.STILL
