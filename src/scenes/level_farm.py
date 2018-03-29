@@ -34,7 +34,7 @@ class Level(Scene):
 		self.solids = []
 		self.enemys = []
 		self.dialogs = []
-		self.lvlname = "level_farm.png"
+		self.lvlname = "level_castle_lindisfarne.png"
 		self.lvlfile = "level_farm.txt"
 		self.designer = Designer(self.lvlfile)
 		width,height,map = serializer.loadLevel(self.lvlname)
