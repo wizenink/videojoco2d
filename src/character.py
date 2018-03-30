@@ -451,10 +451,11 @@ class Warmond(Enemy):
     summonTimerCD = 50
     summonTimer = 0
     NENEMIES = 3
+    spawnThread = None
     def __init__(self,director,scene,dmgGroup,solidGroup):
         self.scene = scene
         Enemy.__init__(self,"warmond.png","warmond.data",0.1,3,director,dmgGroup,solidGroup)
-        _thread.start_new_thread(self.spawner,())
+
 
     def spawner(self):
         while True:
@@ -466,7 +467,14 @@ class Warmond(Enemy):
                     self.scene.addEnemy(rx,ry,)
                     print("Thread spawned some shit")
                 self.summonTimer = 0
-            time.sleep(0.1)
+            print(self.dead)
+            if self.dead:
+                sys.exit()
+            time.sleep(2)
+
     def move_cpu(self,player):
         ia.iaFollow(self,player)
+
+        if self.spawnThread == None:
+            self.spawnThread = _thread.start_new_thread(self.spawner,())
         return
