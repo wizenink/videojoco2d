@@ -19,8 +19,5 @@ class Scene:
     def draw(self,*args):
         print("Should override this method")
 
-    def drawUI(self, screen):
-        print("Should override this method")
-
     def groupDraws(self,*args):
         print("Should override this method")

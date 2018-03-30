@@ -171,10 +171,9 @@ class Level(Scene):
 		self.player.draw(screen,self.camera)
 		for enemy in self.enemys:
 			enemy.draw(screen,self.camera)
+			enemy.drawUI(screen,self.camera)
 		for solid in self.solids:
 			solid.draw(screen,self.camera)
-	
-	def drawUI(self,screen):
 		self.player.drawUI(screen)
 
 	def searchCollidables(self):

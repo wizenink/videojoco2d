@@ -357,7 +357,6 @@ class Player(Character):
 
     def drawUI(self,screen):
         screen.blit(self.lifeSprites[int((self.life) / 10)-1],(DISPLAY_WIDTH*0.05,DISPLAY_HEIGHT*0.9))
-
 class InmobileSprite(MySprite):
 
     def __init__(self, imageFile, position, folder = BUILD_FOLDER):
@@ -395,7 +394,22 @@ class Enemy(Character):
         # Indicamos las acciónes a realizar para el enemigo
         return
 
-    
+  
+    def drawUI(self,screen,camera):
+        health_color = (0,0,0)
+        if self.life > 75:
+            health_color = (0,255,0)
+        elif self.life > 50:
+            health_color = (255,125,0)
+        elif self.life > 25:
+            health_color = (255,0,0)
+        else:
+            health_color = (0,0,0)
+        
+        offset_x = 68
+        offset_y = 64
+        pygame.draw.rect(screen,health_color,( camera.apply(self)[0]+offset_x,camera.apply(self)[1]+offset_y,self.life / 2,5))
+
 
 class Enemy1(Enemy):
     "Enemigo 1"

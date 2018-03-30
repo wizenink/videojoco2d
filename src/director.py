@@ -32,7 +32,7 @@ class Director():
 				scene.update(clock.get_time())
 				scene.draw(self.screen)
 				scene.groupDraws(self.screen)
-				scene.drawUI(self.screen)
+				#scene.drawUI(self.screen)
 				pygame.display.update()
 				#Para la escena despues de cargarla para mostrar el dialogo
 				
