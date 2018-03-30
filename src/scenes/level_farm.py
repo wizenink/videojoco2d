@@ -29,7 +29,7 @@ class Level(Scene):
 		self.solidGroup = pygame.sprite.Group()
 		#Si estamos en modo debug no colisionaremos con nada
 		if (self.debug):
-			self.player = Player(director, dmgGroup = self.enemyGroup, solidGroup = pygame.sprite.Group())			
+			self.player = Player(director, dmgGroup = self.enemyGroup, solidGroup = pygame.sprite.Group())
 		else:
 			self.player = Player(director, dmgGroup = self.enemyGroup, solidGroup = self.solidGroup)
 		self.solids = []
@@ -121,7 +121,7 @@ class Level(Scene):
 			elif item[0] == "misc2":
 				self.addMisc(item[1],2)
 			elif item[0] == "plants":
-				self.addMisc(item[1],4) 
+				self.addMisc(item[1],4)
 			elif item[0] == "house":
 				self.addHouse(item[1])
 			elif item[0] == "fiddlesticks":
@@ -132,33 +132,40 @@ class Level(Scene):
 				self.addMisc(item[1],3)
 			elif item[0] == "castle":
 				self.addCastle(item[1])
-				
+
 	def events(self,events):
 		for event in events:
-				# Pausa
-				if self.debug:
-					pygame.mouse.set_visible(1)
-					self.addItem(event)
-					if event.type == KEYDOWN and event.key == K_c:
-						self.solids = []
-				if event.type == KEYDOWN and event.key == K_p:
-					self.director.pause = not self.director.pause
-				if event.type == KEYDOWN and event.key == K_o:
+			# Pausa
+			if self.debug:
+				pygame.mouse.set_visible(1)
+				self.addItem(event)
+				if event.type == KEYDOWN and event.key == K_c:
+					self.solids = []
+			if event.type == KEYDOWN and event.key == K_p:
+				self.director.dialog = not self.director.dialog
+			# Si el event es la pulsación de la tecla Escape
+			if event.type == KEYDOWN and event.key == K_ESCAPE:
+					# Se sale del programa
+				menuscene = menu.MenuPause(self.director)
+				self.director.pushScene(menuscene)
+
+
+			#if event.type == pygame.USEREVENT: message.update()s
+			#if (event.type == KEYDOWN and event.key == K_SPACE): message.update()
+
+			if not self.director.dialog:
+				self.player.move(pygame.key.get_pressed(), K_UP, K_DOWN, K_LEFT, K_RIGHT, K_SPACE)
+				for enemy in self.enemys:
+					enemy.move_cpu(self.player)
+			else:
+				if event.type == KEYDOWN and event.key == K_SPACE:
 					if self.dialogs:
-						self.dialogs[0].queueScreen()
-				# Si el event es la pulsación de la tecla Escape
-				if event.type == KEYDOWN and event.key == K_ESCAPE:
-						# Se sale del programa
-					menuscene = menu.MenuPause(self.director)
-					self.director.pushScene(menuscene)
-					
+						if self.dialogs[0]:
+							self.dialogs[0].qUpdate()
+						else:
+							self.dialogs.pop(0)
+							self.director.dialog = False
 
-				#if event.type == pygame.USEREVENT: message.update()s
-				#if (event.type == KEYDOWN and event.key == K_SPACE): message.update()
-
-		self.player.move(pygame.key.get_pressed(), K_UP, K_DOWN, K_LEFT, K_RIGHT, K_SPACE)
-		for enemy in self.enemys:
-			enemy.move_cpu(self.player)
 
 	def update(self,time):
 		self.camera.update(self.player)
@@ -261,6 +268,3 @@ class Level(Scene):
 
 		self.loadItemsFromFile()
 		self.addEnemy(315,1682)
-
-
-		

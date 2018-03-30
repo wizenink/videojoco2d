@@ -18,6 +18,7 @@ class Dialog:
         offset = 0
         self.dialogList.pop(0)
 
+    # True if current dialog box is over
     def alldone(self):
         return all(x.done for x in self.queue)
 
