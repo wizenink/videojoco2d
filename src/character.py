@@ -447,6 +447,41 @@ class Enemy1(Enemy):
         #ia.iaVerticalGuardian(self, player)
         ia.iaFollow(self,player)
 
+
+class Fire(InmobileSprite):
+    "Just Fire"
+    oldTime = 0
+    lifespan = 6
+    def __init__(self, imageFile, position, folder = BUILD_FOLDER):
+
+        InmobileSprite.__init__(self,imageFile,position,folder)
+        self.sheet = resourceManager.loadImage(imageFile, folder = folder)
+        self.sheet = self.sheet.convert()
+        #self.sheet = pygame.transform.scale(self.sheet,(120,140))
+        self.image = self.sheet
+        self.image.set_colorkey((255,0,255))
+        self.rect = self.image.get_rect()
+        self.setPosition(position)
+        self.dmg = 10
+        self.parent = self
+
+    def getDmg(self, dmg, looking, timeToBlock = 10):
+        pass
+
+    def update(self, time):
+        #No IA, Just Fire T.T
+        now = time.time()
+        if self.oldTime == 0:
+            self.oldTime = now
+            return
+        delta = now - self.oldTime
+        self.acc += delta
+        if self.acc >= lifespan:
+            self.acc = 0
+            self.life = 0
+        self.oldTime = now
+
+
 class Warmond(Enemy):
     "Nigromante Warmond"
     lastTime = 0
@@ -478,25 +513,45 @@ class Warmond(Enemy):
                 self.scene.addEnemy(rx,ry)
         self.lastTime = now
 
-    def spawner(self):
-        camera = self.scene.camera
-        while True:
-            self.summonTimer += 1
-            if self.summonTimer >= self.summonTimerCD:
-                for i in range(self.NENEMIES):
-                    print("Iteration n:",i)
-                    #rx = random.randint(int(camera.apply(self)[0]-10),int(camera.apply(self)[0]+10))
-                    #ry = random.randint(int(camera.apply(self)[1]-10),int(camera.apply(self)[1]+10))
+    def move_cpu(self,player):
+        ia.iaFollow(self,player)
+        self.spawner2()
+        #if self.spawnThread == None:
+        #    self.spawnThread = _thread.start_new_thread(self.spawner,())
+        return
 
-                    rx = random.randint(int(305),int(325))
-                    ry = random.randint(int(1375),int(1395))
-                    self.scene.addEnemy(rx,ry)
-                    print("Thread spawned some shit")
-                self.summonTimer = 0
-            print(self.dead)
-            if self.dead:
-                sys.exit()
-            time.sleep(2)
+
+
+class Disas(Enemy):
+    "Mago Disas"
+    lastTime = 0
+    acctime = 0
+    summonTimerCD = 3
+    summonTimer = 0
+    NFIRES = 4
+    spawnThread = None
+    def __init__(self,director,scene,dmgGroup,solidGroup):
+        self.scene = scene
+        Enemy.__init__(self,"disas.png","disas.data",0.1,3,director,dmgGroup,solidGroup)
+
+    def spawner2(self):
+        camera = self.scene.camera
+        now = time.time()
+        if self.lastTime == 0:
+            self.lastTime = now
+            return
+
+        delta = now - self.lastTime
+        self.acctime += delta
+        if self.acctime >= 10:
+            self.acctime = 0
+            #rx = random.randint(int(camera.apply(self)[0]-10),int(camera.apply(self)[0]+10))
+            #ry = random.randint(int(camera.apply(self)[1]-10),int(camera.apply(self)[1]+10))
+            for i in range(self.NFIRES):
+                rx = random.randint(int(self.scene.player.position[0]-512),int(self.scene.player.position[0]+512))
+                ry = random.randint(int(self.scene.player.position[1]-512),int(self.scene.player.position[1]+512))
+                self.scene.addEnemy(rx,ry)
+        self.lastTime = now
 
     def move_cpu(self,player):
         ia.iaFollow(self,player)
