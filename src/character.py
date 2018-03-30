@@ -1,4 +1,6 @@
 import pygame, sys, os
+import _thread
+import random
 import ia
 from pygame.locals import *
 #from scene import *
@@ -147,7 +149,7 @@ class  Character(MySprite):
         self.downBlock = False
         self.upBlock = False
         self.blockCount = 0
-
+        self.dmgGroup = dmgGroup
         self.xInitialPosition = self.position[0]
         self.yInitialPosition = self.position[1]
 
@@ -324,7 +326,7 @@ class  Character(MySprite):
         self.solidGroup.remove(self.hitbox)
         collideList = pygame.sprite.spritecollide(self.hitbox, self.solidGroup, False)
         for solidSprite in collideList:
-            if not isinstance(solidSprite, InmobileSprite):
+            if (not isinstance(solidSprite, InmobileSprite)) and ( solidSprite in self.dmgGroup.sprites()):
                 self.getDmg(solidSprite.parent.dmg, solidSprite.parent.looking, timeToBlock = 30)
                 solidSprite.parent.getDmg(self.dmg, self.looking,timeToBlock = 0)
 
@@ -407,7 +409,7 @@ class Building(InmobileSprite):
 
 class Enemy(Character):
     "Enemigos del juego"
-    def __init__(self, imageFile, coordFile, speed, animationDelay, director, dmgGroup = None, solidGroup = None):
+    def __init__(self, imageFile, coordFile, speed, animationDelay, director, dmgGroup, solidGroup):
         # Invocamos al constructor de la clase padre con la configuracion de este enemigo concreto
         Character.__init__(self, imageFile, coordFile, speed, animationDelay, director, dmgGroup, solidGroup)
         self.dmg = 20
@@ -435,10 +437,36 @@ class Enemy(Character):
 
 class Enemy1(Enemy):
     "Enemigo 1"
-    def __init__(self, director, dmgGroup = None, solidGroup = None):
+    def __init__(self, director, dmgGroup, solidGroup):
         # Invocamos al constructor de la clase padre con la configuracion de este enemigo concreto
-        Enemy.__init__(self,'enemy1.png','enemy1.data', 0.1, 4, director, dmgGroup = dmgGroup, solidGroup = solidGroup);
+        Enemy.__init__(self,'eskeleton.png','eskeleton.data', 0.1, 3, director, dmgGroup, solidGroup)
 
     def move_cpu(self, player):
         # Indicamos las acciónes a realizar para el enemigo
-        ia.iaFollow(self, player)
+        #ia.iaVerticalGuardian(self, player)
+        ia.iaFollow(self,player)
+
+class Warmond(Enemy):
+    "Nigromante Warmond"
+    summonTimerCD = 50
+    summonTimer = 0
+    NENEMIES = 3
+    def __init__(self,director,scene,dmgGroup,solidGroup):
+        self.scene = scene
+        Enemy.__init__(self,"warmond.png","warmond.data",0.1,3,director,dmgGroup,solidGroup)
+        _thread.start_new_thread(self.spawner,())
+
+    def spawner(self):
+        while True:
+            self.summonTimer += 1
+            if self.summonTimer >= self.summonTimerCD:
+                for i in range(self.NENEMIES):
+                    rx = random.randint(int(self.scene.player.position[0]-10),int(self.scene.player.position[0]+10))
+                    ry = random.randint(int(self.scene.player.position[1]-10),int(self.scene.player.position[1]+10))
+                    self.scene.addEnemy(rx,ry,)
+                    print("Thread spawned some shit")
+                self.summonTimer = 0
+            time.sleep(0.1)
+    def move_cpu(self,player):
+        ia.iaFollow(self,player)
+        return
