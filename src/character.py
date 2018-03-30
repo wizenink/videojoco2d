@@ -1,4 +1,5 @@
 import pygame, sys, os
+import time
 import _thread
 import random
 import ia
@@ -448,6 +449,8 @@ class Enemy1(Enemy):
 
 class Warmond(Enemy):
     "Nigromante Warmond"
+    lastTime = 0
+    acctime = 0
     summonTimerCD = 3
     summonTimer = 0
     NENEMIES = 4
@@ -456,6 +459,24 @@ class Warmond(Enemy):
         self.scene = scene
         Enemy.__init__(self,"warmond.png","warmond.data",0.1,3,director,dmgGroup,solidGroup)
 
+    def spawner2(self):
+        camera = self.scene.camera
+        now = time.time()
+        if self.lastTime == 0:
+            self.lastTime = now
+            return
+
+        delta = now - self.lastTime
+        self.acctime += delta
+        if self.acctime >= 10:
+            self.acctime = 0
+            #rx = random.randint(int(camera.apply(self)[0]-10),int(camera.apply(self)[0]+10))
+            #ry = random.randint(int(camera.apply(self)[1]-10),int(camera.apply(self)[1]+10))
+            for i in range(self.NENEMIES):
+                rx = random.randint(int(self.position[0]-512),int(self.position[0]+512))
+                ry = random.randint(int(self.position[1]-512),int(self.position[1]+512))
+                self.scene.addEnemy(rx,ry)
+        self.lastTime = now
 
     def spawner(self):
         camera = self.scene.camera
@@ -464,10 +485,11 @@ class Warmond(Enemy):
             if self.summonTimer >= self.summonTimerCD:
                 for i in range(self.NENEMIES):
                     print("Iteration n:",i)
-                    #rx = random.randint(int(self.scene.player.position[0]-10),int(self.scene.player.position[0]+10))
-                    #ry = random.randint(int(self.scene.player.position[1]-10),int(self.scene.player.position[1]+10))
-                    rx = random.randint(int(camera.apply(self)[0]-10),int(camera.apply(self)[0]+10))
-                    ry = random.randint(int(camera.apply(self)[1]-10),int(camera.apply(self)[1]+10))
+                    #rx = random.randint(int(camera.apply(self)[0]-10),int(camera.apply(self)[0]+10))
+                    #ry = random.randint(int(camera.apply(self)[1]-10),int(camera.apply(self)[1]+10))
+
+                    rx = random.randint(int(305),int(325))
+                    ry = random.randint(int(1375),int(1395))
                     self.scene.addEnemy(rx,ry)
                     print("Thread spawned some shit")
                 self.summonTimer = 0
@@ -478,7 +500,7 @@ class Warmond(Enemy):
 
     def move_cpu(self,player):
         ia.iaFollow(self,player)
-
-        if self.spawnThread == None:
-            self.spawnThread = _thread.start_new_thread(self.spawner,())
+        self.spawner2()
+        #if self.spawnThread == None:
+        #    self.spawnThread = _thread.start_new_thread(self.spawner,())
         return
