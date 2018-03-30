@@ -434,4 +434,4 @@ class Enemy1(Enemy):
 
     def move_cpu(self, player):
         # Indicamos las acciónes a realizar para el enemigo
-        ia.iaVerticalGuardian(self, player)
+        ia.iaVerticalFollowGuardian(self, player)
