@@ -4,6 +4,7 @@ from pygame.locals import *
 #from scene import *
 from resourceManager import *
 from director import *
+from game.constants import *
 
 # for testing
 # sys.path.insert(0, './test/')
@@ -324,6 +325,15 @@ class Player(Character):
         # Invocamos al constructor de la clase padre con la configuracion de este personaje concreto
         Character.__init__(self,'player.png','player.data', 0.2, 3, director, dmgGroup, solidGroup);
         self.dmg = 30
+        self.lifeSprites = []
+        self.addSprites()
+
+    def addSprites(self):
+        for i in range(1,11):
+            image = resourceManager.loadImage("lifebar_"+str(i)+".png",folder = UI_FOLDER)
+            image.set_colorkey((255,255,255))
+            image.convert()
+            self.lifeSprites.append(image)
 
     def move(self, keyPressed, up, down, left, right,atack):
         # Indicamos la acción a realizar segun la tecla pulsada para el jugador
@@ -344,6 +354,9 @@ class Player(Character):
 
             else:
                 Character.move(self,STILL)
+
+    def drawUI(self,screen):
+        screen.blit(self.lifeSprites[int((self.life) / 10)-1],(DISPLAY_WIDTH*0.05,DISPLAY_HEIGHT*0.9))
 
 class InmobileSprite(MySprite):
 
@@ -381,6 +394,8 @@ class Enemy(Character):
     def move_cpu(self, player):
         # Indicamos las acciónes a realizar para el enemigo
         return
+
+    
 
 class Enemy1(Enemy):
     "Enemigo 1"

@@ -175,7 +175,7 @@ class Level(Scene):
 			solid.draw(screen,self.camera)
 	
 	def drawUI(self,screen):
-		pass
+		self.player.drawUI(screen)
 
 	def searchCollidables(self):
 		for x in range(self.width):
