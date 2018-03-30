@@ -121,7 +121,7 @@ class  Character(MySprite):
 
         # Load SpriteSheet Data
         # atackData
-        walkData, atackData = resourceManager.loadData(coordFile)
+        walkData, atackData, self.deadData = resourceManager.loadData(coordFile)
 
         # Body Hitbox
         self.hitbox = BodyHitbox(25,47, self.position, self, dmgGroup, solidGroup)
@@ -154,7 +154,8 @@ class  Character(MySprite):
         self.xLastPosition = self.position[0]
         self.yLastPosition = self.position[1]
 
-        self.andar = resourceManager.loadCharacterSprites(imageFile,coordFile)
+        self.walkSprites, self.deadSprites = resourceManager.loadCharacterSprites(imageFile,coordFile)
+
 
         # Walk Sprites Load
         ###################
@@ -164,7 +165,7 @@ class  Character(MySprite):
         initPixel = walkData[1]
         numFrame = walkData[2]
 
-        self.image = self.sheet.subsurface(pygame.Rect(0,576,64,64))
+        #self.image = self.sheet.subsurface(pygame.Rect(0,576,64,64))
 
         for j in range(4):
             tmp = []
@@ -198,6 +199,7 @@ class  Character(MySprite):
         self.looking = UP
         self.atack = False
         self.numFrame = 0
+        self.numDeadFrame = -1
 
         self.solidGroup = solidGroup
         self.dmg = 0
@@ -227,6 +229,19 @@ class  Character(MySprite):
     def move(self, movement):
         self.movement = movement
 
+    def killAnimation(self):
+
+        self.animationDelayCont -= 1
+
+        if (self.animationDelayCont < 0):
+            self.animationDelayCont = self.animationDelay
+            self.numFrame += 1
+
+            if self.numDeadFrame > self.deadData[2]-1:
+                self.image = self.deadSprites[self.deadData[2]-1]
+            else:
+                self.image = self.deadSprites[self.numDeadFrame]
+
     def changeAnimation(self):
         self.animationDelayCont -= 1
 
@@ -249,9 +264,9 @@ class  Character(MySprite):
                     self.numFrame = len(self.sheetPositions[self.looking])-1
 
                 if self.movement != STILL:
-                    self.image = self.andar[self.looking][self.numFrame]
+                    self.image = self.walkSprites[self.looking][self.numFrame]
                 else:
-                    self.image = self.andar[self.looking][0]
+                    self.image = self.walkSprites[self.looking][0]
 
     def updateHitboxPosition(self):
 
@@ -271,25 +286,28 @@ class  Character(MySprite):
         ################
         positionTmp = self.position #Save position for collision detection
 
-        if self.timeBlock == 0:
-            if not(self.atack):
-                if (self.movement != STILL):
-                    self.looking = self.movement
+        if self.life > 0:
+            if self.timeBlock == 0:
+                if not(self.atack):
+                    if (self.movement != STILL):
+                        self.looking = self.movement
 
-                    if self.movement == UP:
-                        self.currentSpeed = (0,-self.speed)
-                    elif self.movement == LEFT:
-                        self.currentSpeed = (-self.speed,0)
-                    elif self.movement == RIGHT:
-                        self.currentSpeed = (self.speed,0)
-                    elif self.movement == DOWN:
-                        self.currentSpeed = (0,self.speed)
-                else:
-                    self.currentSpeed = (0,0)
-            self.changeAnimation()
+                        if self.movement == UP:
+                            self.currentSpeed = (0,-self.speed)
+                        elif self.movement == LEFT:
+                            self.currentSpeed = (-self.speed,0)
+                        elif self.movement == RIGHT:
+                            self.currentSpeed = (self.speed,0)
+                        elif self.movement == DOWN:
+                            self.currentSpeed = (0,self.speed)
+                    else:
+                        self.currentSpeed = (0,0)
+                self.changeAnimation()
+            else:
+                self.timeBlock -= 1
         else:
-            self.timeBlock -= 1
-
+            self.currentSpeed = (0,0)
+            self.killAnimation()
 
         MySprite.update(self,time)
         self.updateHitboxPosition()
@@ -313,9 +331,6 @@ class  Character(MySprite):
 
         self.solidGroup.add(self.hitbox)
 
-        if self.life < 0:
-            print("moriche")
-            self.life = 0
 
         return
 
@@ -394,7 +409,7 @@ class Enemy(Character):
         # Indicamos las acciónes a realizar para el enemigo
         return
 
-  
+
     def drawUI(self,screen,camera):
         health_color = (0,0,0)
         if self.life > 75:
@@ -405,7 +420,7 @@ class Enemy(Character):
             health_color = (255,0,0)
         else:
             health_color = (0,0,0)
-        
+
         offset_x = 68
         offset_y = 64
         pygame.draw.rect(screen,health_color,( camera.apply(self)[0]+offset_x,camera.apply(self)[1]+offset_y,self.life / 2,5))
@@ -415,7 +430,7 @@ class Enemy1(Enemy):
     "Enemigo 1"
     def __init__(self, director, dmgGroup = None, solidGroup = None):
         # Invocamos al constructor de la clase padre con la configuracion de este enemigo concreto
-        Enemy.__init__(self,'eskeleton.png','eskeleton.data', 0.1, 3, director, dmgGroup = dmgGroup, solidGroup = solidGroup);
+        Enemy.__init__(self,'enemy1.png','enemy1.data', 0.1, 3, director, dmgGroup = dmgGroup, solidGroup = solidGroup);
 
     def move_cpu(self, player):
         # Indicamos las acciónes a realizar para el enemigo

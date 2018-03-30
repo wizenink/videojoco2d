@@ -3,3 +3,30 @@ starty = 512
 recty = 64
 frames = 9
 rectx = 64
+[attack]
+starty = 1344
+recty = 192
+frames = 6
+rectx = 192
+[attackHitbox]
+uphight = 100
+upwidth = 40
+uphightoffset = 53
+upwidthoffset = 34
+lefthight = 80
+leftwidth = 40
+lefthightoffset = 23
+leftwidthoffset = 54
+righthight = 80
+rightwidth = 40
+righthightoffset = 93
+rightwidthoffset = 54
+downhight = 100
+downwidth = 40
+downhightoffset = 53
+downwidthoffset = 84
+[deadAnimation]
+starty = 1280
+recty = 64
+frames = 6
+rectx = 64

@@ -3,3 +3,8 @@ starty = 512
 recty = 64
 frames = 9
 rectx = 64
+[deadAnimation]
+starty = 1280
+recty = 64
+frames = 6
+rectx = 64

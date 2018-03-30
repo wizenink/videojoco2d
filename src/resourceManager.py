@@ -62,6 +62,11 @@ class resourceManager(object):
             walk.append(int(config[WALK_DATA]['starty']))
             walk.append(int(config[WALK_DATA]['frames']))
 
+            deadAnimation = []
+            deadAnimation.append((int(config['deadAnimation']['rectx']),int(config['deadAnimation']['recty'])))
+            deadAnimation.append(int(config['deadAnimation']['starty']))
+            deadAnimation.append(int(config['deadAnimation']['frames']))
+
             if 'attack' in config:
                 if not ('attackHitbox' in config):
                     print("Spritesheet data file is malformed, 'attack' section found but no 'attackHitbox' section")
@@ -95,8 +100,8 @@ class resourceManager(object):
             else:
                 attack = None
 
-            cls.resources[name] = (walk, attack)
-            return (walk, attack)
+            cls.resources[name] = (walk, attack, deadAnimation)
+            return (walk, attack, deadAnimation)
 
 
     @classmethod
@@ -141,10 +146,7 @@ class resourceManager(object):
     def loadCharacterSprites(cls, name, coordFile, colorkey = None):
 
         image = cls.loadImage(name)
-        walkData, atackData = resourceManager.loadData(coordFile)
-
-        # Generación de cordenadas
-        # TODO Metelo no resourceManager que ten mais sentido
+        walkData, atackData, deadData = resourceManager.loadData(coordFile)
 
         # walk
         ######
@@ -161,13 +163,35 @@ class resourceManager(object):
             sheetPositions[j] = tmp
 
         walkSprites = [[],[],[],[]]
-
         for i in range(4):
             for j in range(numFrame):
                 walkTmp = image.subsurface(sheetPositions[i][j])
                 walkSprites[i].append(cls.imageMod(walkTmp))
 
-        return walkSprites
+        # dead
+        ######
+        sheetPositions = []
+        print(sheetPositions)
+        sizexFrame = deadData[0][0]
+        sizeyFrame = deadData[0][1]
+        initPixel = deadData[1]
+        numFrame = deadData[2]
+        print(sizexFrame)
+        print(sizeyFrame)
+        print(initPixel)
+        print(numFrame)
+
+        for i in range(0, numFrame):
+            sheetPositions.append(pygame.Rect(0+i*sizexFrame, initPixel+sizeyFrame-sizeyFrame, sizexFrame, sizeyFrame))
+            print(sheetPositions)
+        deadSprites = []
+        print(sheetPositions)
+        for j in range(0,numFrame):
+            deadTmp = image.subsurface(sheetPositions[j])
+            deadSprites.append(cls.imageMod(deadTmp))
+
+
+        return walkSprites, deadSprites
 
     @classmethod
     def imageMod(cls,image):
