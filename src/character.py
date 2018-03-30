@@ -130,7 +130,7 @@ class  Character(MySprite):
         # List of attack hitboxes
         self.hitboxes = []
         if atackData != None:
-            # Order of hitboxes in the list matter [ UP, LEFT, RIGHT, DOWN ]
+            # Order of hitboxes in the list matter [ UP, LEFT, DOWN, RIGHT]
             for i in range(3,7):
                 self.attackHitbox = AttackHitbox(atackData[i][0],atackData[i][1], self.position,self, dmgGroup)
                 self.attackOffsetHitbox = (atackData[i][2],atackData[i][3])
@@ -191,6 +191,7 @@ class  Character(MySprite):
         # Init variables
         # Life
         self.life = 100
+        self.dead = False
         self.director = director
 
         #bloqueo por tiempo variables
@@ -232,15 +233,17 @@ class  Character(MySprite):
     def killAnimation(self):
 
         self.animationDelayCont -= 1
-
         if (self.animationDelayCont < 0):
             self.animationDelayCont = self.animationDelay
             self.numDeadFrame += 1
 
-            if self.numDeadFrame > self.deadData[2]-1:
-                self.image = self.deadSprites[self.deadData[2]-1]
-            else:
+            if self.numDeadFrame < self.deadData[2]-1:
                 self.image = self.deadSprites[self.numDeadFrame]
+            else:
+                self.image = self.deadSprites[self.deadData[2]-1]
+                if self.numDeadFrame > self.deadData[2]-1+10:
+                    self.dead = True
+
 
     def changeAnimation(self):
         self.animationDelayCont -= 1
@@ -255,6 +258,7 @@ class  Character(MySprite):
 
                 self.image = self.sheet.subsurface(self.sheetPositionsAtack[self.looking][self.numFrame])
                 if self.numFrame == 3:
+                    print(self.hitboxes[self.looking][0])
                     self.hitboxes[self.looking][0].collitionUpdate()
 
             else:
@@ -308,6 +312,7 @@ class  Character(MySprite):
         else:
             self.currentSpeed = (0,0)
             self.killAnimation()
+
 
         MySprite.update(self,time)
         self.updateHitboxPosition()
@@ -372,6 +377,8 @@ class Player(Character):
 
     def drawUI(self,screen):
         screen.blit(self.lifeSprites[int((self.life) / 10)-1],(DISPLAY_WIDTH*0.05,DISPLAY_HEIGHT*0.9))
+
+
 class InmobileSprite(MySprite):
 
     def __init__(self, imageFile, position, folder = BUILD_FOLDER):
@@ -434,4 +441,4 @@ class Enemy1(Enemy):
 
     def move_cpu(self, player):
         # Indicamos las acciónes a realizar para el enemigo
-        ia.iaVerticalFollowGuardian(self, player)
+        ia.iaFollow(self, player)

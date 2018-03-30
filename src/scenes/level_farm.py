@@ -51,7 +51,7 @@ class Level(Scene):
 		enemy.updateHitboxPosition()
 		self.enemys.append(enemy)
 		self.enemyGroup.add(enemy.hitbox)
-		self.addSolid(enemy)
+		#self.addSolid(enemy)
 
 	def addSolid(self,solid):
 		#Si es un building
@@ -171,8 +171,15 @@ class Level(Scene):
 		self.camera.update(self.player)
 		self.camera.apply(self.player)
 		self.player.update(time)
+
 		for enemy in self.enemys:
-			enemy.update(time)
+			if enemy.dead:
+				self.solidGroup.remove(enemy.hitbox)
+				self.enemyGroup.remove(enemy.hitbox)
+				self.enemys.remove(enemy)
+				#self.solids.remove(enemy)
+			else:
+				enemy.update(time)
 
 	def groupDraws(self,screen):
 		self.player.draw(screen,self.camera)

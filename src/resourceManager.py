@@ -86,16 +86,17 @@ class resourceManager(object):
                                     int(config['attackHitbox']['lefthightoffset']),
                                     int(config['attackHitbox']['leftwidthoffset'])
                                 ])
-                attack.append(  [   int(config['attackHitbox']['righthight']),
-                                    int(config['attackHitbox']['rightwidth']),
-                                    int(config['attackHitbox']['righthightoffset']),
-                                    int(config['attackHitbox']['rightwidthoffset'])
-                                ])
                 attack.append(  [   int(config['attackHitbox']['downhight']),
                                     int(config['attackHitbox']['downwidth']),
                                     int(config['attackHitbox']['downhightoffset']),
                                     int(config['attackHitbox']['downwidthoffset'])
                                 ])
+                attack.append(  [   int(config['attackHitbox']['righthight']),
+                                    int(config['attackHitbox']['rightwidth']),
+                                    int(config['attackHitbox']['righthightoffset']),
+                                    int(config['attackHitbox']['rightwidthoffset'])
+                                ])
+
 
             else:
                 attack = None
