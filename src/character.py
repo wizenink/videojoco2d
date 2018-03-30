@@ -424,7 +424,6 @@ class Enemy1(Enemy):
         #ia.iaVerticalGuardian(self, player)
         ia.iaFollow(self,player)
 
-
 class Warmond(Enemy):
     "Nigromante Warmond"
     summonTimerCD = 50
@@ -440,9 +439,9 @@ class Warmond(Enemy):
             self.summonTimer += 1
             if self.summonTimer >= self.summonTimerCD:
                 for i in range(self.NENEMIES):
-                    rx = random.randint(int(self.scene.player.position[0]-100),int(self.scene.player.position[0]+100))
-                    ry = random.randint(int(self.scene.player.position[1]-100),int(self.scene.player.position[1]+100))
-                    self.scene.addEnemy(rx,ry)
+                    rx = random.randint(int(self.scene.player.position[0]-10),int(self.scene.player.position[0]+10))
+                    ry = random.randint(int(self.scene.player.position[1]-10),int(self.scene.player.position[1]+10))
+                    self.scene.addEnemy(rx,ry,)
                     print("Thread spawned some shit")
                 self.summonTimer = 0
             time.sleep(0.1)
