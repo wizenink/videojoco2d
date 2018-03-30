@@ -214,3 +214,13 @@ class resourceManager(object):
         image = pygame.surfarray.make_surface(newImage)
         image.set_colorkey((0,0,0))
         return image
+
+    @classmethod
+    def loadStaticAnimation(cls,image):
+        image = cls.loadImage(image)
+        result = []
+
+        for i in range(0,4):
+            result.append(image.subsurface(pygame.Rect(0+i*64, 0, 64, 64)))
+
+        return result
