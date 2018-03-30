@@ -74,3 +74,5 @@ class Director():
 	def pushScene(self,scene):
 		self.stopScene()
 		self.stack.append(scene)
+
+

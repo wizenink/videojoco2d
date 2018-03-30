@@ -6,6 +6,7 @@ from scene.scenec import *
 from scene import serializer
 from resourceManager import *
 from character import *
+from scenes import menu
 from util.levelDesigner import *
 sys.path.insert(0,"./dialog")
 from diag import *
@@ -34,7 +35,7 @@ class Level(Scene):
 		self.solids = []
 		self.enemys = []
 		self.dialogs = []
-		self.lvlname = "level_castle_lindisfarne.png"
+		self.lvlname = "level_farm.png"
 		self.lvlfile = "level_farm.txt"
 		self.designer = Designer(self.lvlfile)
 		width,height,map = serializer.loadLevel(self.lvlname)
@@ -148,8 +149,9 @@ class Level(Scene):
 				# Si el event es la pulsación de la tecla Escape
 				if event.type == KEYDOWN and event.key == K_ESCAPE:
 						# Se sale del programa
-					pygame.quit()
-					sys.exit()
+					menuscene = menu.MenuPause(self.director)
+					self.director.pushScene(menuscene)
+					
 
 				#if event.type == pygame.USEREVENT: message.update()s
 				#if (event.type == KEYDOWN and event.key == K_SPACE): message.update()

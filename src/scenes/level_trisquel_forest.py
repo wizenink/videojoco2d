@@ -34,7 +34,7 @@ class Level(Scene):
 		self.solids = []
 		self.enemys = []
 		self.dialogs = []
-		self.lvlname = "level_trisquel.png"
+		self.lvlname = "level_trisquel_forest.png"
 		self.lvlfile = "level_trisquel.txt"
 		self.designer = Designer(self.lvlfile)
 		width,height,map = serializer.loadLevel(self.lvlname)
@@ -240,7 +240,7 @@ class Level(Scene):
 
 		self.playerGroup.add(self.player.hitbox)
 		self.solidGroup.add(self.player.hitbox)
-		self.player.setPosition((315,1382))
+		self.player.setPosition(( 155.8000000000004,3202.8000000000106))
 		self.player.updateHitboxPosition()
 
 

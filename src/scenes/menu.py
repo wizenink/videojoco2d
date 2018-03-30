@@ -64,18 +64,67 @@ class TextGUI(ElementGUI):
 		screen.blit(self.image,self.rect)
 
 class TextPlay(TextGUI):
-	def __init__(self,screen):
+	def __init__(self,screen,pos):
 		font = resourceManager.loadFont("BLKCHCRY.TTF",26)
-		TextGUI.__init__(self,screen,font,(55,47,45),"Play",(95,250))
+		TextGUI.__init__(self,screen,font,(55,47,45),"Play",(95,250 + (pos * 40)))
 	def action(self):
 		self.screen.menu.runGame()
 
-class TextExit(TextGUI):
-	def __init__(self,screen):
+class TextResume(TextGUI):
+	def __init__(self,screen,pos):
 		font = resourceManager.loadFont("BLKCHCRY.TTF",26)
-		TextGUI.__init__(self,screen,font,(55,47,45),"Exit",(95,290))
+		TextGUI.__init__(self,screen,font,(55,47,45),"Resume",(95,250 + (pos * 40)))
+	def action(self):
+		self.screen.menu.resumeGame()
+
+class TextExit(TextGUI):
+	def __init__(self,screen,pos):
+		font = resourceManager.loadFont("BLKCHCRY.TTF",26)
+		TextGUI.__init__(self,screen,font,(55,47,45),"Exit",(95,250 + (pos * 40)))
 	def action(self):
 		self.screen.menu.exitProgram()
+
+class TextOptions(TextGUI):
+	def __init__(self,screen,pos):
+		font = resourceManager.loadFont("BLKCHCRY.TTF",26)
+		TextGUI.__init__(self,screen,font,(55,47,45),"Options",(95,250 + (pos * 40)))
+	def action(self):
+		self.screen.menu.options()
+
+class TextReturn(TextGUI):
+	def __init__(self,screen,pos):
+		font = resourceManager.loadFont("BLKCHCRY.TTF",26)
+		TextGUI.__init__(self,screen,font,(55,47,45),"Return",(95,250 + (pos * 40)))
+	def action(self):
+		self.screen.menu.menureturn()
+
+class TextResolution(TextGUI):
+	def __init__(self,screen,pos):
+		font = resourceManager.loadFont("BLKCHCRY.TTF",26)
+		TextGUI.__init__(self,screen,font,(55,47,45),"Resolution",(95,250 + (pos * 40)))
+	def action(self):
+		self.screen.menu.menuResolution()
+
+class TextResolution1(TextGUI):
+	def __init__(self,screen,pos):
+		font = resourceManager.loadFont("BLKCHCRY.TTF",26)
+		TextGUI.__init__(self,screen,font,(55,47,45),"640x480",(95,250 + (pos * 40)))
+	def action(self):
+		self.screen.menu.changeResolution(640,480)
+
+class TextResolution2(TextGUI):
+	def __init__(self,screen,pos):
+		font = resourceManager.loadFont("BLKCHCRY.TTF",26)
+		TextGUI.__init__(self,screen,font,(55,47,45),"1280x960",(95,250 + (pos * 40)))
+	def action(self):
+		self.screen.menu.changeResolution(1280,960)
+
+class TextResolution3(TextGUI):
+	def __init__(self,screen,pos):
+		font = resourceManager.loadFont("BLKCHCRY.TTF",26)
+		TextGUI.__init__(self,screen,font,(55,47,45),"1920x1080",(95,250 + (pos * 40)))
+	def action(self):
+		self.screen.menu.changeResolution(1920,1080)
 
 class ScreenGUI:
 	def __init__(self,menu,nameImage):
@@ -134,21 +183,66 @@ class MainScreenGUI(ScreenGUI):
 		#exitButton = ExitButton(self)
 		#self.elementsGUI.append(playButton)
 		#self.elementsGUI.append(exitButton)
-		textPlay = TextPlay(self)
-		textExit = TextExit(self)
+		textPlay = TextPlay(self,0)
+		textExit = TextExit(self,1)
 		self.elementsGUI.append(textPlay)
 		self.elementsGUI.append(textExit)
+		
+
+class MenuPauseGUI(ScreenGUI):
+	def __init__(self,menu):
+		ScreenGUI.__init__(self,menu,'main_screen.jpg')
+		
+		#playButton = PlayButton(self)
+		#exitButton = ExitButton(self)
+		#self.elementsGUI.append(playButton)
+		#self.elementsGUI.append(exitButton)
+		textResume = TextResume(self,0)
+		textExit = TextExit(self,1)
+		self.elementsGUI.append(textResume)
+		self.elementsGUI.append(textExit)
+	
+class MenuOptionsGUI(ScreenGUI):
+	def __init__(self,menu):
+		ScreenGUI.__init__(self,menu,'main_screen.jpg')
+		
+		#playButton = PlayButton(self)
+		#exitButton = ExitButton(self)
+		#self.elementsGUI.append(playButton)
+		#self.elementsGUI.append(exitButton)
+		textReturn = TextReturn(self,0)
+		self.elementsGUI.append(textReturn)
+
+class MenuResolutionGUI(ScreenGUI):
+	def __init__(self,menu):
+		ScreenGUI.__init__(self,menu,'main_screen.jpg')
+		
+		#playButton = PlayButton(self)
+		#exitButton = ExitButton(self)
+		#self.elementsGUI.append(playButton)
+		#self.elementsGUI.append(exitButton)
+		textReturn = TextReturn(self,3)
+		textResolution1 = TextResolution1(self,0)
+		textResolution2 = TextResolution2(self,1)
+		textResolution3 = TextResolution3(self,2)
+		self.elementsGUI.append(textResolution1)
+		self.elementsGUI.append(textResolution2)
+		self.elementsGUI.append(textResolution3)
+		self.elementsGUI.append(textReturn)
+
+
 	
 class Menu(Scene):
 	def __init__(self,director):
 		Scene.__init__(self,"main_menu",director)
 		self.screenList = []
 		self.screenList.append(MainScreenGUI(self))
+		self.screenList.append(MenuOptionsGUI(self))
+		self.screenList.append(MenuResolutionGUI(self))
 		self.showMainScreen()
 		self.mouse_down = False 
 		self.cursor = pygame.transform.scale(resourceManager.loadImage("cursor.png",-1,folder = MENU_FOLDER),(32,32))
 		self.cursor_clicked = pygame.transform.scale(resourceManager.loadImage("cursor_clicked.png",-1,folder = MENU_FOLDER),(32,32))
-
 
 	#dibuja el cursor custom
 	def drawCursor(self,screen,x,y):
@@ -156,7 +250,6 @@ class Menu(Scene):
 			screen.blit(self.cursor_clicked,(x,y))
 		else:
 			screen.blit(self.cursor,(x,y))
-
 
 	def music(self):
 		self.director.sound.generalSoundManage(GAME_SOUND_MUSIC_EVENT_MUSIC_6, repeat = -1)
@@ -176,7 +269,13 @@ class Menu(Scene):
 		#self.mouse_down = pygame.mouse.get_pressed()[0]
 		
 		self.screenList[self.actualScreen].events(events_list)
-	
+
+	def menuResolution(self):
+		self.actualScreen = 2
+
+	def options(self):
+		self.actualScreen = 1
+
 	def draw(self,screen):
 		self.screenList[self.actualScreen].draw(screen)
 		pos = pygame.mouse.get_pos()
@@ -187,8 +286,15 @@ class Menu(Scene):
 	def exitProgram(self):
 		self.director.exitProgram()
 	
+	def changeResolution(self,x,y):
+		self.director.screen = pygame.display.set_mode((x,y))
+
+	def menureturn(self):
+		self.showMainScreen()
+
+
 	def runGame(self):
-		first = level_castle_lindisfarne.Level(self.director)
+		first = level_farm.Level(self.director)
 		self.director.swapScene(first)
 
 	def showMainScreen(self):
@@ -196,4 +302,69 @@ class Menu(Scene):
 
 	def drawUI(self, screen):
 		pass
+
+class MenuPause(Scene):
+	def __init__(self,director):
+		Scene.__init__(self,"main_menu",director)
+		self.screenList = []
+		self.screenList.append(MenuPauseGUI(self))
+		self.screenList.append(MenuOptionsGUI(self))
+		self.showMainScreen()
+		self.mouse_down = False 
+		self.cursor = pygame.transform.scale(resourceManager.loadImage("cursor.png",-1,folder = MENU_FOLDER),(32,32))
+		self.cursor_clicked = pygame.transform.scale(resourceManager.loadImage("cursor_clicked.png",-1,folder = MENU_FOLDER),(32,32))
+
+	#dibuja el cursor custom
+	def drawCursor(self,screen,x,y):
+		if self.mouse_down:
+			screen.blit(self.cursor_clicked,(x,y))
+		else:
+			screen.blit(self.cursor,(x,y))
+
+	def music(self):
+		self.director.sound.generalSoundManage(GAME_SOUND_MUSIC_EVENT_MUSIC_6, repeat = -1)
+
+	def update(self, *args):
+		return
+
+	def groupDraws(self, *args):
+		pass
+	
+	def events(self,events_list):
+		for event in events_list:
+			if event.type == KEYDOWN:
+				if event.key == K_ESCAPE:
+					self.resumeGame()
+			elif event.type == pygame.QUIT:
+				self.director.exitProgram()
+		#self.mouse_down = pygame.mouse.get_pressed()[0]
+		
+		self.screenList[self.actualScreen].events(events_list)
+	
+	def draw(self,screen):
+		self.screenList[self.actualScreen].draw(screen)
+		pos = pygame.mouse.get_pos()
+		x = pos[0]
+		y = pos[1]
+		self.drawCursor(screen,x,y)
+
+
+	def menureturn(self):
+		self.showMainScreen()
+
+	def options(self):
+		self.actualScreen = 1
+
+	def exitProgram(self):
+		self.director.exitProgram()
+	
+	def resumeGame(self):
+		self.director.exitScene()
+
+	def showMainScreen(self):
+		self.actualScreen = 0
+
+	def drawUI(self, screen):
+		pass
+
 
