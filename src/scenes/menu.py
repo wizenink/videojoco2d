@@ -22,10 +22,10 @@ class ElementGUI:
 		(posx,posy) = pos
 		if (posx>=self.rect.left) and (posx<=self.rect.right) and (posy>=self.rect.top) and (posy <= self.rect.bottom):
 			return True
-		else: 
+		else:
 			return False
 
-	def draw(self): 
+	def draw(self):
 		print("Should be overrided")
 
 	def action(self):
@@ -148,7 +148,7 @@ class ScreenGUI:
 					if element.elementPosition(event.pos):
 						if (element == self.elementClick):
 							element.action()
-							
+
 			if event.type == KEYDOWN and event.key == K_UP:
 				self.elementSelected = (self.elementSelected - 1) % len(self.elementsGUI)
 				self.clickSound()
@@ -178,7 +178,7 @@ class ScreenGUI:
 class MainScreenGUI(ScreenGUI):
 	def __init__(self,menu):
 		ScreenGUI.__init__(self,menu,'main_screen.jpg')
-		
+
 		#playButton = PlayButton(self)
 		#exitButton = ExitButton(self)
 		#self.elementsGUI.append(playButton)
@@ -187,12 +187,12 @@ class MainScreenGUI(ScreenGUI):
 		textExit = TextExit(self,1)
 		self.elementsGUI.append(textPlay)
 		self.elementsGUI.append(textExit)
-		
+
 
 class MenuPauseGUI(ScreenGUI):
 	def __init__(self,menu):
 		ScreenGUI.__init__(self,menu,'main_screen.jpg')
-		
+
 		#playButton = PlayButton(self)
 		#exitButton = ExitButton(self)
 		#self.elementsGUI.append(playButton)
@@ -201,11 +201,11 @@ class MenuPauseGUI(ScreenGUI):
 		textExit = TextExit(self,1)
 		self.elementsGUI.append(textResume)
 		self.elementsGUI.append(textExit)
-	
+
 class MenuOptionsGUI(ScreenGUI):
 	def __init__(self,menu):
 		ScreenGUI.__init__(self,menu,'main_screen.jpg')
-		
+
 		#playButton = PlayButton(self)
 		#exitButton = ExitButton(self)
 		#self.elementsGUI.append(playButton)
@@ -216,7 +216,7 @@ class MenuOptionsGUI(ScreenGUI):
 class MenuResolutionGUI(ScreenGUI):
 	def __init__(self,menu):
 		ScreenGUI.__init__(self,menu,'main_screen.jpg')
-		
+
 		#playButton = PlayButton(self)
 		#exitButton = ExitButton(self)
 		#self.elementsGUI.append(playButton)
@@ -231,7 +231,7 @@ class MenuResolutionGUI(ScreenGUI):
 		self.elementsGUI.append(textReturn)
 
 
-	
+
 class Menu(Scene):
 	def __init__(self,director):
 		Scene.__init__(self,"main_menu",director)
@@ -240,7 +240,7 @@ class Menu(Scene):
 		self.screenList.append(MenuOptionsGUI(self))
 		self.screenList.append(MenuResolutionGUI(self))
 		self.showMainScreen()
-		self.mouse_down = False 
+		self.mouse_down = False
 		self.cursor = pygame.transform.scale(resourceManager.loadImage("cursor.png",-1,folder = MENU_FOLDER),(32,32))
 		self.cursor_clicked = pygame.transform.scale(resourceManager.loadImage("cursor_clicked.png",-1,folder = MENU_FOLDER),(32,32))
 
@@ -251,6 +251,9 @@ class Menu(Scene):
 		else:
 			screen.blit(self.cursor,(x,y))
 
+	def updateDialog(self,screen):
+		return
+	
 	def music(self):
 		self.director.sound.generalSoundManage(GAME_SOUND_MUSIC_EVENT_MUSIC_6, repeat = -1)
 	def update(self, *args):
@@ -258,7 +261,7 @@ class Menu(Scene):
 
 	def groupDraws(self, *args):
 		pass
-	
+
 	def events(self,events_list):
 		for event in events_list:
 			if event.type == KEYDOWN:
@@ -267,7 +270,7 @@ class Menu(Scene):
 			elif event.type == pygame.QUIT:
 				self.director.exitProgram()
 		#self.mouse_down = pygame.mouse.get_pressed()[0]
-		
+
 		self.screenList[self.actualScreen].events(events_list)
 
 	def menuResolution(self):
@@ -285,7 +288,7 @@ class Menu(Scene):
 
 	def exitProgram(self):
 		self.director.exitProgram()
-	
+
 	def changeResolution(self,x,y):
 		self.director.screen = pygame.display.set_mode((x,y))
 
@@ -310,7 +313,7 @@ class MenuPause(Scene):
 		self.screenList.append(MenuPauseGUI(self))
 		self.screenList.append(MenuOptionsGUI(self))
 		self.showMainScreen()
-		self.mouse_down = False 
+		self.mouse_down = False
 		self.cursor = pygame.transform.scale(resourceManager.loadImage("cursor.png",-1,folder = MENU_FOLDER),(32,32))
 		self.cursor_clicked = pygame.transform.scale(resourceManager.loadImage("cursor_clicked.png",-1,folder = MENU_FOLDER),(32,32))
 
@@ -329,7 +332,7 @@ class MenuPause(Scene):
 
 	def groupDraws(self, *args):
 		pass
-	
+
 	def events(self,events_list):
 		for event in events_list:
 			if event.type == KEYDOWN:
@@ -338,9 +341,9 @@ class MenuPause(Scene):
 			elif event.type == pygame.QUIT:
 				self.director.exitProgram()
 		#self.mouse_down = pygame.mouse.get_pressed()[0]
-		
+
 		self.screenList[self.actualScreen].events(events_list)
-	
+
 	def draw(self,screen):
 		self.screenList[self.actualScreen].draw(screen)
 		pos = pygame.mouse.get_pos()
@@ -357,7 +360,7 @@ class MenuPause(Scene):
 
 	def exitProgram(self):
 		self.director.exitProgram()
-	
+
 	def resumeGame(self):
 		self.director.exitScene()
 
@@ -366,5 +369,3 @@ class MenuPause(Scene):
 
 	def drawUI(self, screen):
 		pass
-
-

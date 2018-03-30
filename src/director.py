@@ -6,6 +6,7 @@ from pygame.locals import *
 from sound.soundManager import *
 class Director():
 	def __init__(self):
+		self.isPaused = False
 		#pila
 		self.stack = []
 		self.clock = pygame.time.Clock()

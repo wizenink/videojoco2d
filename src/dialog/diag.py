@@ -22,6 +22,9 @@ class Dialog:
     def alldone(self):
         return all(x.done for x in self.queue)
 
+    def allDialogDone(self):
+        return len(self.dialogList) == 0
+    
     def clear(self):
         self.queue = []
 

@@ -21,8 +21,10 @@ offset_y = 70
 
 class Level(Scene):
 	def __init__(self,director):
+		pygame.time.set_timer(WARMOND_SUMMONTIMER,200)
 		#Test variables
 		self.debug = 0
+		self.firstTime = False
 		##############
 		self.enemyGroup = pygame.sprite.Group()
 		self.playerGroup = pygame.sprite.Group()
@@ -47,6 +49,13 @@ class Level(Scene):
 
 	def addEnemy(self,x,y):
 		enemy = Enemy1(self.director,dmgGroup = self.playerGroup, solidGroup = self.solidGroup)
+		enemy.setPosition((x,y))
+		enemy.updateHitboxPosition()
+		self.enemys.append(enemy)
+		self.enemyGroup.add(enemy.hitbox)
+		self.addSolid(enemy)
+
+	def addEnemy2(self,x,y,enemy):
 		enemy.setPosition((x,y))
 		enemy.updateHitboxPosition()
 		self.enemys.append(enemy)
@@ -150,6 +159,7 @@ class Level(Scene):
 				self.director.pushScene(menuscene)
 
 
+
 			#if event.type == pygame.USEREVENT: message.update()s
 			#if (event.type == KEYDOWN and event.key == K_SPACE): message.update()
 
@@ -160,9 +170,10 @@ class Level(Scene):
 			else:
 				if event.type == KEYDOWN and event.key == K_SPACE:
 					if self.dialogs:
-						if self.dialogs[0]:
+						if not self.dialogs[0].allDialogDone():
 							self.dialogs[0].qUpdate()
 						else:
+							print("No more dialogs")
 							self.dialogs.pop(0)
 							self.director.dialog = False
 
@@ -171,6 +182,9 @@ class Level(Scene):
 		self.camera.update(self.player)
 		self.camera.apply(self.player)
 		self.player.update(time)
+		if not self.firstTime:
+			self.director.dialog = not self.director.dialog
+			self.firstTime = True
 		for enemy in self.enemys:
 			enemy.update(time)
 
@@ -266,5 +280,7 @@ class Level(Scene):
 		["Habrá algún héroe dispuesto a impedirlo..."]]
 		self.addDialog(firstDialog)
 
+		boss = Warmond(self.director,self,self.playerGroup,self.solidGroup)
+		self.addEnemy2(350,1750,boss)
 		self.loadItemsFromFile()
 		self.addEnemy(315,1682)

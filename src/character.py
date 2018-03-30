@@ -1,4 +1,6 @@
 import pygame, sys, os
+import _thread
+import random
 import ia
 from pygame.locals import *
 #from scene import *
@@ -394,7 +396,7 @@ class Enemy(Character):
         # Indicamos las acciónes a realizar para el enemigo
         return
 
-  
+
     def drawUI(self,screen,camera):
         health_color = (0,0,0)
         if self.life > 75:
@@ -405,7 +407,7 @@ class Enemy(Character):
             health_color = (255,0,0)
         else:
             health_color = (0,0,0)
-        
+
         offset_x = 68
         offset_y = 64
         pygame.draw.rect(screen,health_color,( camera.apply(self)[0]+offset_x,camera.apply(self)[1]+offset_y,self.life / 2,5))
@@ -415,8 +417,35 @@ class Enemy1(Enemy):
     "Enemigo 1"
     def __init__(self, director, dmgGroup = None, solidGroup = None):
         # Invocamos al constructor de la clase padre con la configuracion de este enemigo concreto
-        Enemy.__init__(self,'eskeleton.png','eskeleton.data', 0.1, 3, director, dmgGroup = dmgGroup, solidGroup = solidGroup);
+        Enemy.__init__(self,'eskeleton.png','eskeleton.data', 0.1, 3, director, dmgGroup = dmgGroup, solidGroup = solidGroup)
 
     def move_cpu(self, player):
         # Indicamos las acciónes a realizar para el enemigo
-        ia.iaVerticalGuardian(self, player)
+        #ia.iaVerticalGuardian(self, player)
+        ia.iaFollow(self,player)
+
+
+class Warmond(Enemy):
+    "Nigromante Warmond"
+    summonTimerCD = 50
+    summonTimer = 0
+    NENEMIES = 3
+    def __init__(self,director,scene,dmgGroup = None,solidGroup = None):
+        self.scene = scene
+        Enemy.__init__(self,"warmond.png","warmond.data",0.1,3,director,dmgGroup,solidGroup)
+        _thread.start_new_thread(self.spawner,())
+
+    def spawner(self):
+        while True:
+            self.summonTimer += 1
+            if self.summonTimer >= self.summonTimerCD:
+                for i in range(self.NENEMIES):
+                    rx = random.randint(int(self.scene.player.position[0]-100),int(self.scene.player.position[0]+100))
+                    ry = random.randint(int(self.scene.player.position[1]-100),int(self.scene.player.position[1]+100))
+                    self.scene.addEnemy(rx,ry)
+                    print("Thread spawned some shit")
+                self.summonTimer = 0
+            time.sleep(0.1)
+    def move_cpu(self,player):
+        ia.iaFollow(self,player)
+        return
