@@ -16,7 +16,7 @@ class Director():
 		dirname = os.path.dirname(__file__)
 		sound_folder = os.path.join(dirname,"../")
 		self.sound = GeneralSoundManager(sound_folder)
-		self.pause = False
+		self.dialog = False
 
 	def pygameLoop(self,scene):
 		clock = pygame.time.Clock()
@@ -28,17 +28,22 @@ class Director():
 			time_spent = clock.tick(FPS)
 			scene.events(pygame.event.get())
 
-			if not self.pause:
-				scene.update(clock.get_time())
-				scene.draw(self.screen)
-				scene.groupDraws(self.screen)
-				#scene.drawUI(self.screen)
-				pygame.display.update()
-				#Para la escena despues de cargarla para mostrar el dialogo
-				
+			if self.dialog:
+				self.dialogLoop(scene)
 			else:
-				scene.updateDialog(self.screen)
-				pygame.display.update()
+				self.gameLoop(scene,clock)
+
+	def dialogLoop(self,scene):
+		scene.updateDialog(self.screen)
+		pygame.display.update()
+
+	def gameLoop(self,scene,clock):
+		scene.update(clock.get_time())
+		scene.draw(self.screen)
+		scene.groupDraws(self.screen)
+		#scene.drawUI(self.screen)
+		pygame.display.update()
+		#Para la escena despues de cargarla para mostrar el dialogo
 
 	def run(self):
 		#pygame.init()
@@ -74,5 +79,3 @@ class Director():
 	def pushScene(self,scene):
 		self.stopScene()
 		self.stack.append(scene)
-
-
