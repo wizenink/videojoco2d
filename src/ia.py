@@ -81,6 +81,10 @@ def iaFollowsContinuos2(self, player):
 	xdiference = player.position[0] - self.position[0]
 	ydiference = player.position[1] - self.position[1]
 
+	#misma x o y que jugador
+	sameXPlayer = (player.position[0] == self.position[0])
+	sameYPlayer = (player.position[1] == self.position[1])
+
 	#Variable para conocer mayor distancia
 	xMoreDistance = abs(xdiference) >= abs(ydiference)
 
@@ -108,7 +112,7 @@ def iaFollowsContinuos2(self, player):
 		self.blockCount += 5
 
 	#Diferencia de dos para contemplar que el esprite no esté en el mismo sitio por distancia de menos de dos pixeles y se mueva igual
-	if (xMoreDistance or (self.downBlock or self.upBlock)) and (xdiference > 0) and not self.rightBlock:
+	if (xMoreDistance or (self.downBlock or self.upBlock)) and (xdiference > 0) and not self.rightBlock and not (self.rightBlock and sameXPlayer):
 		#if xdiference < x:
 		#	self.attack()
 		self.move(character.RIGHT)
@@ -120,7 +124,7 @@ def iaFollowsContinuos2(self, player):
 			self.upBlock = False
 		else:
 			self.blockCount -= 1
-	elif (xMoreDistance or (self.downBlock or self.upBlock)) and (xdiference < 0) and not self.leftBlock:
+	elif (xMoreDistance or (self.downBlock or self.upBlock)) and (xdiference < 0) and not self.leftBlock and not (self.leftBlock and sameXPlayer):
 		#if xdiference > x:
 		#	self.attack()
 		self.move(character.LEFT)
@@ -132,7 +136,7 @@ def iaFollowsContinuos2(self, player):
 			self.upBlock = False
 		else:
 			self.blockCount -= 1
-	elif (not xMoreDistance or (self.rightBlock or self.leftBlock))  and (ydiference > 0) and not self.downBlock:
+	elif (not xMoreDistance or (self.rightBlock or self.leftBlock))  and (ydiference > 0) and not self.downBlock and not (self.downBlock and sameYPlayer):
 		#if xdiference < y:
 		#	self.attack()
 		self.move(character.DOWN)
@@ -144,7 +148,7 @@ def iaFollowsContinuos2(self, player):
 			self.upBlock = False
 		else:
 			self.blockCount -= 1
-	elif (not xMoreDistance or (self.rightBlock or self.leftBlock))  and (ydiference < 0) and not self.upBlock:
+	elif (not xMoreDistance or (self.rightBlock or self.leftBlock))  and (ydiference < 0) and not self.upBlock and not (self.upBlock and sameYPlayer):
 		#if xdiference > y:
 		#	self.attack()
 		self.move(character.UP)
@@ -165,7 +169,112 @@ def iaFollowsContinuos2(self, player):
 		#self.downBlock = False
 		#self.upBlock = False
 
+def iaFollowsContinuos3(self, player):
+	
+	# Variables sobre la posicion anterior
+	sameX = False
+	sameY = False
+
+	#intento de movimiento anterior
+	lastMove = self.lastMove
+
+	# Por ejemplo, intentara acercarse al jugador mas cercano en el eje x o y
+	#Calcular distancias en eje x e y
+	xdiference = player.position[0] - self.position[0]
+	ydiference = player.position[1] - self.position[1]
+
+	#misma x o y que jugador
+	sameXPlayer = (player.position[0] == self.position[0])
+	sameYPlayer = (player.position[1] == self.position[1])
+
+	#Variable para conocer mayor distancia
+	xMoreDistance = abs(xdiference) >= abs(ydiference)
+
+	#Actualizamos variables sobre posición anterior
+	if self.xLastPosition == self.position[0]:
+		sameX = True
+	if self.yLastPosition == self.position[1]:
+		sameY = True
+
+	#Actualizamos la posición anterior a la actual para la proxima llamada
+	self.xLastPosition = self.position[0]
+	self.yLastPosition = self.position[1]
+
+	if sameX and (lastMove == character.RIGHT):
+		self.rightBlock = True
+	if sameX and (lastMove == character.LEFT):
+		self.leftBlock = True
+	if sameY and (lastMove == character.DOWN):
+		self.downBlock = True
+	if sameY and (lastMove == character.UP):
+		self.upBlock = True
+
+	if not self.rightBlock and xdiference > 2:
+		self.move(character.RIGHT)
+		self.lastMove = character.RIGHT
+		self.leftBlock = False
+		self.downBlock = False
+		self.upBlock = False
+	elif not self.leftBlock and xdiference < -2:
+		self.move(character.LEFT)
+		self.lastMove = character.LEFT
+		self.rightBlock = False
+		self.downBlock = False
+		self.upBlock = False
+	elif not self.downBlock and ydiference > 2:
+		self.move(character.DOWN)
+		self.lastMove = character.DOWN
+		self.rightBlock = False
+		self.leftBlock = False
+		self.upBlock = False
+	elif not self.upBlock and ydiference < -2:
+		self.move(character.UP)
+		self.lastMove = character.UP
+		self.rightBlock = False
+		self.leftBlock = False
+		self.downBlock = False
+	else:
+		self.move(character.STILL)
+		self.lastMove = character.STILL
+
 def iaHorizontalGuardian(self, player):
+	# Variables sobre la posicion anterior
+	sameX = False
+
+	#intento de movimiento anterior
+	lastMove = self.lastMove
+
+	#Actualizamos variables sobre posición anterior
+	if self.xLastPosition == self.position[0]:
+		sameX = True
+	
+	# Por ejemplo, intentara acercarse al jugador mas cercano en el eje x o y
+	#Calcular distancias en eje x e y
+	#ydiference = player.position[1] - self.position[1]
+
+	#Actualizamos la posición anterior a la actual para la proxima llamada
+	self.xLastPosition = self.position[0]
+
+	if sameX and (lastMove == character.RIGHT):
+		self.rightBlock = True
+		self.leftBlock = False
+	elif sameX and (lastMove == character.LEFT):
+		self.leftBlock = True
+		self.rightBlock = False
+
+	#if (ydiference < 20) and (ydiference > -20):
+	#	self.speed = self.initialSpeed + 0.05
+	#else:  
+	#	self.speed = self.initialSpeed
+	
+	if not self.rightBlock:
+		self.move(character.RIGHT)
+		self.lastMove = character.RIGHT
+	elif not self.leftBlock:
+		self.move(character.LEFT)
+		self.lastMove = character.LEFT
+
+def iaHorizontalFollowGuardian(self, player):
 	# Variables sobre la posicion anterior
 	sameX = False
 
@@ -189,20 +298,55 @@ def iaHorizontalGuardian(self, player):
 	elif sameX and (lastMove == character.LEFT):
 		self.leftBlock = True
 		self.rightBlock = False
-
-	if (ydiference < 20) and (ydiference > -20):
-		self.speed = self.initialSpeed + 0.1
-	else:  
-		self.speed = self.initialSpeed
 	
-	if not self.rightBlock:
-		self.move(character.RIGHT)
-		self.lastMove = character.RIGHT
-	elif not self.leftBlock:
-		self.move(character.LEFT)
-		self.lastMove = character.LEFT
+	if getEuclideanDistance(self,player) < 100:
+		iaFollowsContinuos3(self,player)
+	else:
+		if not self.rightBlock:
+			self.move(character.RIGHT)
+			self.lastMove = character.RIGHT
+		elif not self.leftBlock:
+			self.move(character.LEFT)
+			self.lastMove = character.LEFT
 
 def iaVerticalGuardian(self, player):
+	# Variables sobre la posicion anterior
+	sameY = False
+
+	#intento de movimiento anterior
+	lastMove = self.lastMove
+
+	#Actualizamos variables sobre posición anterior
+	if self.yLastPosition == self.position[1]:
+		sameY = True
+	
+	# Por ejemplo, intentara acercarse al jugador mas cercano en el eje x o y
+	#Calcular distancias en eje x e y
+	#xdiference = player.position[0] - self.position[0]
+
+	#Actualizamos la posición anterior a la actual para la proxima llamada
+	self.yLastPosition = self.position[1]
+
+	if sameY and (lastMove == character.UP):
+		self.upBlock = True
+		self.downBlock = False
+	elif sameY and (lastMove == character.DOWN):
+		self.downBlock = True
+		self.upBlock = False
+
+	#if (xdiference < 20) and (xdiference > -20):
+	#	self.speed = self.initialSpeed + 0.05
+	#else:  
+	#	self.speed = self.initialSpeed
+	
+	if not self.upBlock:
+		self.move(character.UP)
+		self.lastMove = character.UP
+	elif not self.downBlock:
+		self.move(character.DOWN)
+		self.lastMove = character.DOWN
+
+def iaVerticalFollowGuardian(self, player):
 	# Variables sobre la posicion anterior
 	sameY = False
 
@@ -227,14 +371,12 @@ def iaVerticalGuardian(self, player):
 		self.downBlock = True
 		self.upBlock = False
 
-	if (xdiference < 20) and (xdiference > -20):
-		self.speed = self.initialSpeed + 0.1
-	else:  
-		self.speed = self.initialSpeed
-	
-	if not self.upBlock:
-		self.move(character.UP)
-		self.lastMove = character.UP
-	elif not self.downBlock:
-		self.move(character.DOWN)
-		self.lastMove = character.DOWN
+	if getEuclideanDistance(self,player) < 100:
+		iaFollowsContinuos3(self,player)
+	else:
+		if not self.upBlock:
+			self.move(character.UP)
+			self.lastMove = character.UP
+		elif not self.downBlock:
+			self.move(character.DOWN)
+			self.lastMove = character.DOWN
