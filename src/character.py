@@ -448,16 +448,27 @@ class Enemy1(Enemy):
         ia.iaFollow(self,player)
 
 
-
-class Fire(Enemy):
-    "Just fire"
-    lifespan = 6
+class Fire(InmobileSprite):
+    "Just Fire"
     oldTime = 0
-    def __init__(self, director, dmgGroup, solidGroup):
-        # Invocamos al constructor de la clase padre con la configuracion de este enemigo concreto
-        Enemy.__init__(self,'fire.png','fire.data', 0.1, 3, director, dmgGroup, solidGroup)
+    lifespan = 6
+    def __init__(self, imageFile, position, folder = BUILD_FOLDER):
 
-    def move_cpu(self, player):
+        InmobileSprite.__init__(self,imageFile,position,folder)
+        self.sheet = resourceManager.loadImage(imageFile, folder = folder)
+        self.sheet = self.sheet.convert()
+        #self.sheet = pygame.transform.scale(self.sheet,(120,140))
+        self.image = self.sheet
+        self.image.set_colorkey((255,0,255))
+        self.rect = self.image.get_rect()
+        self.setPosition(position)
+        self.dmg = 10
+        self.parent = self
+
+    def getDmg(self, dmg, looking, timeToBlock = 10):
+        pass
+
+    def update(self, time):
         #No IA, Just Fire T.T
         now = time.time()
         if self.oldTime == 0:
@@ -467,8 +478,9 @@ class Fire(Enemy):
         self.acc += delta
         if self.acc >= lifespan:
             self.acc = 0
-            self.dead = True
+            self.life = 0
         self.oldTime = now
+
 
 class Warmond(Enemy):
     "Nigromante Warmond"
