@@ -286,7 +286,12 @@ class Level(Scene):
 		["Habrá algún héroe dispuesto a impedirlo..."]]
 		self.addDialog(firstDialog)
 
-		boss = Warmond(self.director,self,self.playerGroup,self.solidGroup)
-		self.addEnemy2(350,1750,boss)
+		#boss = Warmond(self.director,self,self.playerGroup,self.solidGroup)
+		#self.addEnemy2(350,1750,boss)
 		self.loadItemsFromFile()
-		self.addEnemy(315,1682)
+		#self.addEnemy(315,1682)
+		fire = Fire('fire.png',(315,1682))
+		fire.setPosition((315,1682))
+		fire.updateHitboxPosition()
+		self.enemys.append(fire)
+		self.enemyGroup.add(fire.hitbox)

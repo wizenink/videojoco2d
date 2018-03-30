@@ -452,7 +452,7 @@ class Fire(InmobileSprite):
     "Just Fire"
     oldTime = 0
     lifespan = 6
-    def __init__(self, imageFile, position, folder = BUILD_FOLDER):
+    def __init__(self, imageFile, position, folder = CHARACTER_SPRITE_FOLDER):
 
         InmobileSprite.__init__(self,imageFile,position,folder)
         self.sheet = resourceManager.loadImage(imageFile, folder = folder)
@@ -464,9 +464,28 @@ class Fire(InmobileSprite):
         self.setPosition(position)
         self.dmg = 10
         self.parent = self
+        self.animationDelay = 5
+        self.animationDelayCont = self.animationDelay
+        self.images = resourceManager.loadStaticAnimation(imageFile)
+        self.numFrame = 0
+        self.rect = self.images[0].get_rect()
 
     def getDmg(self, dmg, looking, timeToBlock = 10):
         pass
+
+    def changeAnimation(self):
+
+        self.animationDelayCont -= 1
+        if (self.animationDelayCont < 0):
+            self.animationDelayCont = self.animationDelay
+            self.numFrame += 1
+
+            if self.numFrame >= len(self.images)-1:
+                self.numFrame = 0
+            if self.numFrame < 0:
+                self.numFrame = len(self.images)-1
+
+            self.image = self.images[self.numFrame]
 
     def update(self, time):
         #No IA, Just Fire T.T
@@ -481,6 +500,7 @@ class Fire(InmobileSprite):
             self.life = 0
         self.oldTime = now
 
+        self.changeAnimation()
 
 class Warmond(Enemy):
     "Nigromante Warmond"
