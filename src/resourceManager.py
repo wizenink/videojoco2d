@@ -171,21 +171,16 @@ class resourceManager(object):
         # dead
         ######
         sheetPositions = []
-        print(sheetPositions)
         sizexFrame = deadData[0][0]
         sizeyFrame = deadData[0][1]
         initPixel = deadData[1]
         numFrame = deadData[2]
-        print(sizexFrame)
-        print(sizeyFrame)
-        print(initPixel)
-        print(numFrame)
+
 
         for i in range(0, numFrame):
             sheetPositions.append(pygame.Rect(0+i*sizexFrame, initPixel+sizeyFrame-sizeyFrame, sizexFrame, sizeyFrame))
-            print(sheetPositions)
+
         deadSprites = []
-        print(sheetPositions)
         for j in range(0,numFrame):
             deadTmp = image.subsurface(sheetPositions[j])
             deadSprites.append(cls.imageMod(deadTmp))
