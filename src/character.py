@@ -448,9 +448,9 @@ class Enemy1(Enemy):
 
 class Warmond(Enemy):
     "Nigromante Warmond"
-    summonTimerCD = 50
+    summonTimerCD = 3
     summonTimer = 0
-    NENEMIES = 3
+    NENEMIES = 4
     spawnThread = None
     def __init__(self,director,scene,dmgGroup,solidGroup):
         self.scene = scene
@@ -458,13 +458,17 @@ class Warmond(Enemy):
 
 
     def spawner(self):
+        camera = self.scene.camera
         while True:
             self.summonTimer += 1
             if self.summonTimer >= self.summonTimerCD:
                 for i in range(self.NENEMIES):
-                    rx = random.randint(int(self.scene.player.position[0]-10),int(self.scene.player.position[0]+10))
-                    ry = random.randint(int(self.scene.player.position[1]-10),int(self.scene.player.position[1]+10))
-                    self.scene.addEnemy(rx,ry,)
+                    print("Iteration n:",i)
+                    #rx = random.randint(int(self.scene.player.position[0]-10),int(self.scene.player.position[0]+10))
+                    #ry = random.randint(int(self.scene.player.position[1]-10),int(self.scene.player.position[1]+10))
+                    rx = random.randint(int(camera.apply(self)[0]-10),int(camera.apply(self)[0]+10))
+                    ry = random.randint(int(camera.apply(self)[1]-10),int(camera.apply(self)[1]+10))
+                    self.scene.addEnemy(rx,ry)
                     print("Thread spawned some shit")
                 self.summonTimer = 0
             print(self.dead)

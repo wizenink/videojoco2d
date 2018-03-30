@@ -164,10 +164,14 @@ class resourceManager(object):
             sheetPositions[j] = tmp
 
         walkSprites = [[],[],[],[]]
-        for i in range(4):
-            for j in range(numFrame):
-                walkTmp = image.subsurface(sheetPositions[i][j])
-                walkSprites[i].append(cls.imageMod(walkTmp))
+        if (name+"ws") in cls.resources:
+            walkSprites =  cls.resources[name+"ws"]
+        else:
+            for i in range(4):
+                for j in range(numFrame):
+                    walkTmp = image.subsurface(sheetPositions[i][j])
+                    walkSprites[i].append(cls.imageMod(walkTmp))
+            cls.resources[name+"ws"] = walkSprites
 
         # dead
         ######
@@ -182,9 +186,13 @@ class resourceManager(object):
             sheetPositions.append(pygame.Rect(0+i*sizexFrame, initPixel+sizeyFrame-sizeyFrame, sizexFrame, sizeyFrame))
 
         deadSprites = []
-        for j in range(0,numFrame):
-            deadTmp = image.subsurface(sheetPositions[j])
-            deadSprites.append(cls.imageMod(deadTmp))
+        if (name+"ds") in cls.resources:
+            deadSprites = cls.resources[name+"ds"]
+        else:
+            for j in range(0,numFrame):
+                deadTmp = image.subsurface(sheetPositions[j])
+                deadSprites.append(cls.imageMod(deadTmp))
+            cls.resources[name+"ds"] = deadSprites
 
 
         return walkSprites, deadSprites
