@@ -590,6 +590,7 @@ class Warmond(Enemy):
     NENEMIES = 4
     spawnThread = None
     deathdone = False
+    startDialogDone = False
     dialog = [["El emperador ha exigido la limpieza de cada aldea,","y no seré el que falle en su tarea."],["Te eliminaré junto al resto...","y pasaréis a formar parte de mi ejército"]]
     deathdialog = [["Con Warmond muerto, el camino del este está libre","y es tu mejor oportunidad de escapar","hacia las tierras del Este."]]
     def __init__(self,director,scene,dmgGroup,solidGroup):
@@ -598,8 +599,8 @@ class Warmond(Enemy):
         Enemy.__init__(self,"warmond.png","warmond.data",0.1,3,director,dmgGroup,solidGroup)
         self.maxlife = 500
         self.life = 500
-        scene.addDialog(self.dialog)
-        director.dialog = True
+        #scene.addDialog(self.dialog)
+        #director.dialog = True
 
     def spawner2(self):
         camera = self.scene.camera
@@ -626,8 +627,13 @@ class Warmond(Enemy):
             self.director.dialog = True
             self.deathdone = True
             self.scene.bossDead = True
-        ia.iaFollow(self,player)
-        self.spawner2()
+        if not self.startDialogDone and ia.getEuclideanDistance(self,player)<200:
+            self.scene.addDialog(self.dialog)
+            self.director.dialog = True
+            self.startDialogDone = True
+        if self.startDialogDone:
+            ia.iaFollow(self,player)
+            self.spawner2()
         #if self.spawnThread == None:
         #    self.spawnThread = _thread.start_new_thread(self.spawner,())
         return
