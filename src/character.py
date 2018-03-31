@@ -393,7 +393,6 @@ class Player(Character):
 
             else:
                 Character.move(self,STILL)
-        print(self.position)
 
     def drawUI(self,screen):
         if self.life <= 0:
@@ -631,6 +630,7 @@ class Warmond(Enemy):
             self.scene.bossDead = True
         if not self.startDialogDone and ia.getEuclideanDistance(self,player)<200:
             self.startDialogDone = True
+            self.scene.addDialog(self.dialog)
             self.director.dialog = True
         if self.startDialogDone:
             ia.iaFollow(self,player)
