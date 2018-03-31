@@ -20,6 +20,7 @@ offset_x = 65
 offset_y = 70
 
 class Level(Scene):
+	bossSpawned = False
 	def __init__(self,director):
 		pygame.time.set_timer(WARMOND_SUMMONTIMER,200)
 		#Test variables
@@ -185,6 +186,10 @@ class Level(Scene):
 		if not self.firstTime:
 			self.director.dialog = not self.director.dialog
 			self.firstTime = True
+		if ( 1100 <= self.player.position[0] <= 1200) and (2500 <= self.player.position[1] <= 2700) and not self.bossSpawned:
+			boss = Warmond(self.director,self,self.playerGroup,self.solidGroup)
+			self.addEnemy2(1183,2612,boss)
+			self.bossSpawned = True
 		for enemy in self.enemys:
 			if enemy.dead:
 				self.solidGroup.remove(enemy.hitbox)
@@ -202,6 +207,7 @@ class Level(Scene):
 
 		for solid in self.solids:
 			solid.draw(screen,self.camera)
+
 		for enemy in self.enemys:
 			enemy.draw(screen,self.camera)
 			enemy.drawUI(screen,self.camera)
@@ -287,7 +293,7 @@ class Level(Scene):
 		firstDialog = [["En el reino de Shendralar, cada diez años, su rey Tux",
 		"convoca una purga para diezmar y amedrentar a su pueblo",
 		"Sus sicarios se disponen a atacar el pueblo."],
-		["Habrá algún héroe dispuesto a impedirlo..."]]
+		["Se rumorea que el necromántico Warmond ha venido","personalmente a cumplir los designios del emperador"],["Corre el rumor de que se le ha visto en","*la playa al sur del pueblo*"]]
 		self.addDialog(firstDialog)
 
 		#boss = Warmond(self.director,self,self.playerGroup,self.solidGroup)

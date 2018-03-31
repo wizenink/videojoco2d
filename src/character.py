@@ -585,9 +585,12 @@ class Warmond(Enemy):
     summonTimer = 0
     NENEMIES = 4
     spawnThread = None
+    dialog = [["El emperador ha exigido la limpieza de cada aldea,","y no seré el que falle en su tarea."],["Te eliminaré junto al resto...","y pasaréis a formar parte de mi ejército"]]
     def __init__(self,director,scene,dmgGroup,solidGroup):
         self.scene = scene
         Enemy.__init__(self,"warmond.png","warmond.data",0.1,3,director,dmgGroup,solidGroup)
+        scene.addDialog(self.dialog)
+        director.dialog = True
 
     def spawner2(self):
         camera = self.scene.camera
@@ -615,7 +618,43 @@ class Warmond(Enemy):
         #    self.spawnThread = _thread.start_new_thread(self.spawner,())
         return
 
+class Ludwig(Enemy):
+    "Berzerk Ludwig"
+    lastTime = 0
+    acctime = 0
+    summonTimerCD = 3
+    summonTimer = 0
+    NFIRES = 4
+    spawnThread = None
+    def __init__(self,director,scene,dmgGroup,solidGroup):
+        self.scene = scene
+        Enemy.__init__(self,"ludwig.png","ludwig.data",0.1,3,director,dmgGroup,solidGroup)
 
+    def spawner2(self):
+        camera = self.scene.camera
+        now = time.time()
+        if self.lastTime == 0:
+            self.lastTime = now
+            return
+
+        delta = now - self.lastTime
+        self.acctime += delta
+        if self.acctime >= 10:
+            self.acctime = 0
+            #rx = random.randint(int(camera.apply(self)[0]-10),int(camera.apply(self)[0]+10))
+            #ry = random.randint(int(camera.apply(self)[1]-10),int(camera.apply(self)[1]+10))
+            for i in range(self.NFIRES):
+                rx = random.randint(int(self.scene.player.position[0]-512),int(self.scene.player.position[0]+512))
+                ry = random.randint(int(self.scene.player.position[1]-512),int(self.scene.player.position[1]+512))
+                self.scene.addEnemy(rx,ry)
+        self.lastTime = now
+
+    def move_cpu(self,player):
+        ia.iaFollow(self,player)
+        self.spawner2()
+        #if self.spawnThread == None:
+        #    self.spawnThread = _thread.start_new_thread(self.spawner,())
+        return
 
 class Disas(Enemy):
     "Mago Disas"
