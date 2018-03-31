@@ -9,8 +9,8 @@ class Graph:
         n1.append((node2,cost))
         self.dict[node1] = n1
     def move_cost(self,a,b):
-        if a == (47,18):
-            print(self.dict[a])
+        #if a == (47,18):
+            #print(self.dict[a])
         for x in self.dict[a]:
             x1,x2 = x
             x11,x12 = x1

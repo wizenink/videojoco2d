@@ -763,8 +763,8 @@ class Disas(Enemy):
 
     def move_cpu(self,player):
         #ia.iaFollow(self,player)
-        self.spawner2()
-        ia.iaFollow2(self,player,self.scene.collisionGraph)
+        #self.spawner2()
+        ia.iaFollow3(self,player,self.scene.collisionGraph)
         #if self.spawnThread == None:
         #    self.spawnThread = _thread.start_new_thread(self.spawner,())
         return
