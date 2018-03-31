@@ -7,6 +7,7 @@ from scene import serializer
 from resourceManager import *
 from character import *
 from scenes import menu
+from scenes import level_castle_lindisfarne
 from util.levelDesigner import *
 sys.path.insert(0,"./dialog")
 from diag import *
@@ -21,6 +22,7 @@ offset_y = 70
 
 class Level(Scene):
 	bossSpawned = False
+	bossDead = False
 	def __init__(self,director):
 		pygame.time.set_timer(WARMOND_SUMMONTIMER,200)
 		#Test variables
@@ -186,6 +188,10 @@ class Level(Scene):
 		if not self.firstTime:
 			self.director.dialog = not self.director.dialog
 			self.firstTime = True
+
+		if ( 2650 <= self.player.position[0] <= 2800) and (900 <= self.player.position[1] <= 1200) and self.bossDead:
+			newscene = level_castle_lindisfarne.Level(self.director)
+			self.director.swapScene(newscene)
 		if ( 1100 <= self.player.position[0] <= 1200) and (2500 <= self.player.position[1] <= 2700) and not self.bossSpawned:
 			boss = Warmond(self.director,self,self.playerGroup,self.solidGroup)
 			self.addEnemy2(1183,2612,boss)

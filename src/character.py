@@ -580,15 +580,19 @@ class Fire(InmobileSpriteDmg):
 class Warmond(Enemy):
     "Nigromante Warmond"
     lastTime = 0
-    acctime = 0
+    acctime = 12
     summonTimerCD = 3
     summonTimer = 0
     NENEMIES = 4
     spawnThread = None
+    deathdone = False
     dialog = [["El emperador ha exigido la limpieza de cada aldea,","y no seré el que falle en su tarea."],["Te eliminaré junto al resto...","y pasaréis a formar parte de mi ejército"]]
+    deathdialog = [["Con Warmond muerto, el camino del este está libre","y es tu mejor oportunidad de escapar."]]
     def __init__(self,director,scene,dmgGroup,solidGroup):
         self.scene = scene
+        self.director = director
         Enemy.__init__(self,"warmond.png","warmond.data",0.1,3,director,dmgGroup,solidGroup)
+        self.life = 100
         scene.addDialog(self.dialog)
         director.dialog = True
 
@@ -612,7 +616,13 @@ class Warmond(Enemy):
         self.lastTime = now
 
     def move_cpu(self,player):
+        if self.life <= 0 and not self.deathdone :
+            self.scene.addDialog(self.deathdialog)
+            self.director.dialog = True
+            self.deathdone = True
+            self.scene.bossDead = True
         ia.iaFollow(self,player)
+        print(self.life)
         self.spawner2()
         #if self.spawnThread == None:
         #    self.spawnThread = _thread.start_new_thread(self.spawner,())
