@@ -46,7 +46,7 @@ class Level(Scene):
 		self.initLevel()
 
 	def music(self):
-		self.director.sound.generalSoundManage(GAME_SOUND_MUSIC_EVENT_MUSIC_1,repeat = -1)
+		self.director.sound.generalSoundManage(GAME_SOUND_MUSIC_EVENT_MUSIC_3,repeat = -1)
 
 	def addEnemy(self,x,y):
 		enemy = Enemy1(self.director,dmgGroup = self.playerGroup, solidGroup = self.solidGroup)
