@@ -191,6 +191,7 @@ class Level(Scene):
 		self.camera.update(self.player)
 		self.camera.apply(self.player)
 		self.player.update(time)
+		print(self.player.position)
 		if not self.firstTime:
 			self.director.dialog = not self.director.dialog
 			self.firstTime = True
@@ -199,7 +200,7 @@ class Level(Scene):
 				self.solidGroup.remove(self.fencePassLevel)
 				self.solids.remove(self.fencePassLevel)
 				self.fenceRemoved = True
-		if ( 3100 <= self.player.position[0] <= 3120) and (2200 <= self.player.position[1] <= 1240) and self.bossDead:
+		if ( 3100 <= self.player.position[0] <= 3300) and (2195 <= self.player.position[1] <= 2250) and self.bossDead:
 			newscene = level_castle_lindisfarne.Level(self.director)
 			self.director.swapScene(newscene)
 		#if ( 1000 <= self.player.position[0] <= 1300) and (2400 <= self.player.position[1] <= 2800) and not self.bossSpawned:
