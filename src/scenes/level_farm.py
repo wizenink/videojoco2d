@@ -26,7 +26,7 @@ class Level(Scene):
 	def __init__(self,director):
 		pygame.time.set_timer(WARMOND_SUMMONTIMER,200)
 		#Test variables
-		self.debug = 1
+		self.debug = 0
 		self.firstTime = False
 		##############
 		self.enemyGroup = pygame.sprite.Group()
