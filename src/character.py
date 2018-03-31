@@ -121,7 +121,6 @@ class AttackHitbox(Hitbox):
 
             for enemy in collideList:
                 enemy.parent.getDmg(self.parent.dmg ,self.parent.looking, timeToBlock = 30)
-                print(-30)
 
 
 
@@ -274,7 +273,7 @@ class  Character(MySprite):
 
                 self.image = self.sheet.subsurface(self.sheetPositionsAtack[self.looking][self.numFrame])
                 if self.numFrame == 3:
-                    print(self.hitboxes[self.looking][0])
+                    #print(self.hitboxes[self.looking][0])
                     self.hitboxes[self.looking][0].collitionUpdate()
 
             else:
@@ -628,7 +627,6 @@ class Warmond(Enemy):
             self.deathdone = True
             self.scene.bossDead = True
         ia.iaFollow(self,player)
-        print(self.life)
         self.spawner2()
         #if self.spawnThread == None:
         #    self.spawnThread = _thread.start_new_thread(self.spawner,())
