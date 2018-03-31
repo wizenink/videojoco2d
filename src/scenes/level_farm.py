@@ -293,6 +293,6 @@ class Level(Scene):
 		fire = Fire('fire.png',(315,1682))
 		fire.setPosition((315,1682))
 		#fire.updateHitboxPosition()
-		#self.enemys.append(fire)
-		self.solids.append(fire)
+		self.enemys.append(fire)
+		#self.solids.append(fire)
 		#self.enemyGroup.add(fire.hitbox)

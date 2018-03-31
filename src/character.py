@@ -469,6 +469,7 @@ class Fire(InmobileSprite):
         self.images = resourceManager.loadStaticAnimation(imageFile)
         self.numFrame = 0
         self.rect = self.images[0].get_rect()
+        self.dead = False
 
     def getDmg(self, dmg, looking, timeToBlock = 10):
         pass
