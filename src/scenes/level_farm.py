@@ -196,6 +196,10 @@ class Level(Scene):
 
 	def groupDraws(self,screen):
 		self.player.draw(screen,self.camera)
+		#self.player.hitbox.draw(screen,self.camera)
+		self.player.hitboxes[1][0].draw(screen,self.camera)
+		self.player.hitboxes[3][0].draw(screen,self.camera)
+
 		for solid in self.solids:
 			solid.draw(screen,self.camera)
 		for enemy in self.enemys:
@@ -290,9 +294,9 @@ class Level(Scene):
 		#self.addEnemy2(350,1750,boss)
 		self.loadItemsFromFile()
 		#self.addEnemy(315,1682)
-		fire = Fire('fire.png',(315,1682))
+		fire = Fire('fire.png',(315,1682),self.solidGroup)
 		fire.setPosition((315,1682))
 		#fire.updateHitboxPosition()
 		self.enemys.append(fire)
 		#self.solids.append(fire)
-		#self.enemyGroup.add(fire.hitbox)
+		self.enemyGroup.add(fire)

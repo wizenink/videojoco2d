@@ -34,6 +34,17 @@ STILL = 4
 PLAYER_SPEED = 0.2
 PLAYER_ANIMATION_DELAY = 4
 
+def inverseLooking(looking):
+    if looking == UP:
+        return DOWN
+    elif looking == DOWN:
+        return UP
+    elif looking == LEFT:
+        return RIGHT
+    elif looking == RIGHT:
+        return LEFT
+
+
 class MySprite(pygame.sprite.Sprite):
     old = (0,0)
     def __init__(self):
@@ -329,8 +340,11 @@ class  Character(MySprite):
         collideList = pygame.sprite.spritecollide(self.hitbox, self.solidGroup, False)
         for solidSprite in collideList:
             if (not isinstance(solidSprite, InmobileSprite)) and ( solidSprite in self.dmgGroup.sprites()):
-                self.getDmg(solidSprite.parent.dmg, solidSprite.parent.looking, timeToBlock = 30)
-                solidSprite.parent.getDmg(self.dmg, self.looking,timeToBlock = 0)
+                if (isinstance(solidSprite, Fire)):
+                    self.getDmg(solidSprite.parent.dmg, inverseLooking(self.looking), timeToBlock = 10)
+                else:
+                    self.getDmg(solidSprite.parent.dmg, solidSprite.parent.looking, timeToBlock = 30)
+                    solidSprite.parent.getDmg(self.dmg, self.looking,timeToBlock = 0)
 
         if collideList:
             self.setPosition(positionTmp)
@@ -383,6 +397,7 @@ class Player(Character):
         screen.blit(self.lifeSprites[int((self.life) / 10)-1],(DISPLAY_WIDTH*0.05,DISPLAY_HEIGHT*0.9))
 
 
+
 class InmobileSprite(MySprite):
 
     def __init__(self, imageFile, position, folder = BUILD_FOLDER):
@@ -399,7 +414,18 @@ class InmobileSprite(MySprite):
         self.parent = self
 
     def getDmg(self, dmg, looking, timeToBlock = 10):
-        pass
+        #quitamos daño
+        self.life -= dmg
+        self.timeBlock = timeToBlock
+        #desplazamos al afectado hacia el sentido contrario del golpe
+        if looking == UP:
+            self.currentSpeed = (0,-self.speed)
+        elif looking == LEFT:
+            self.currentSpeed = (-self.speed,0)
+        elif looking == RIGHT:
+            self.currentSpeed = (self.speed,0)
+        elif looking == DOWN:
+            self.currentSpeed = (0,self.speed)
 
     def update(self, time):
         pass
@@ -448,15 +474,11 @@ class Enemy1(Enemy):
         #ia.iaVerticalGuardian(self, player)
         ia.iaFollow(self,player)
 
+class InmobileSpriteDmg(MySprite):
 
-class Fire(InmobileSprite):
-    "Just Fire"
-    oldTime = 0
-    lifespan = 6
-    acc = 0
-    def __init__(self, imageFile, position, folder = CHARACTER_SPRITE_FOLDER):
+    def __init__(self, imageFile, position, folder = BUILD_FOLDER):
 
-        InmobileSprite.__init__(self,imageFile,position,folder)
+        MySprite.__init__(self)
         self.sheet = resourceManager.loadImage(imageFile, folder = folder)
         self.sheet = self.sheet.convert()
         #self.sheet = pygame.transform.scale(self.sheet,(120,140))
@@ -464,15 +486,46 @@ class Fire(InmobileSprite):
         self.image.set_colorkey((255,0,255))
         self.rect = self.image.get_rect()
         self.setPosition(position)
+        self.dmg = 0
+        self.parent = self
+
+    def getDmg(self, dmg, looking, timeToBlock = 10):
+        #quitamos daño
+        self.life -= dmg
+        self.timeBlock = timeToBlock
+        #desplazamos al afectado hacia el sentido contrario del golpe
+        if looking == UP:
+            self.currentSpeed = (0,-self.speed)
+        elif looking == LEFT:
+            self.currentSpeed = (-self.speed,0)
+        elif looking == RIGHT:
+            self.currentSpeed = (self.speed,0)
+        elif looking == DOWN:
+            self.currentSpeed = (0,self.speed)
+
+    def update(self, time):
+        pass
+
+class Fire(InmobileSpriteDmg):
+    "Just Fire"
+    oldTime = 0
+    lifespan = 10
+    acc = 0
+    def __init__(self, imageFile, position, solidGroup, folder = CHARACTER_SPRITE_FOLDER):
+
+        InmobileSprite.__init__(self,imageFile,position,folder)
+        self.images = resourceManager.loadStaticAnimation(imageFile)
+        self.image = self.images[0]
+        self.rect = self.image.get_rect()
+        self.setPosition(position)
+        self.hitbox = self
+        self.solidGroup = solidGroup
         self.dmg = 10
         self.parent = self
         self.animationDelay = 5
         self.animationDelayCont = self.animationDelay
-        self.images = resourceManager.loadStaticAnimation(imageFile)
         self.numFrame = 0
-        self.rect = self.images[0].get_rect()
         self.dead = False
-        self.image = self.images[0]
 
     def drawUI(self,screen,camera):
         pass
@@ -481,9 +534,7 @@ class Fire(InmobileSprite):
     def getDmg(self, dmg, looking, timeToBlock = 10):
         pass
 
-
     def changeAnimation(self):
-
         self.animationDelayCont -= 1
         if (self.animationDelayCont < 0):
             self.animationDelayCont = self.animationDelay
@@ -506,10 +557,25 @@ class Fire(InmobileSprite):
         self.acc += delta
         if self.acc >= self.lifespan:
             self.acc = 0
-            self.life = 0
+            self.dead = True
         self.oldTime = now
 
         self.changeAnimation()
+
+        self.solidGroup.remove(self)
+        collideList = pygame.sprite.spritecollide(self.hitbox, self.solidGroup, False)
+        for solidSprite in collideList:
+            if (not isinstance(solidSprite, InmobileSprite)) and ( solidSprite in self.dmgGroup.sprites()):
+                self.getDmg(solidSprite.parent.dmg, solidSprite.parent.looking, timeToBlock = 30)
+                solidSprite.parent.getDmg(self.dmg, self.looking,timeToBlock = 0)
+
+        if collideList:
+            self.setPosition(positionTmp)
+            self.updateHitboxPosition()
+
+
+
+        self.solidGroup.add(self)
 
 class Warmond(Enemy):
     "Nigromante Warmond"
