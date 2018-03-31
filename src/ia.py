@@ -7,14 +7,16 @@ def getEuclideanDistance(object1,object2):
 
 def iaFollow3(self, player, graph):
 	listaPos,_ = iaFollow2(self,player,graph)
+	actualPos = listaPos[0]
 	sigPos = listaPos[1]
 	(xSigPos,ySigPos) = sigPos
+	(xActualPos,yActualPos) = actualPos
 	#graph to window meter
-	xSigPos = xSigPos * 32
-	ySigPos = ySigPos * 32
+	#xSigPos = xSigPos * 32
+	#ySigPos = ySigPos * 32
 
-	xdiference = xSigPos - self.position[0]
-	ydiference = ySigPos - self.position[1]
+	xdiference = xSigPos - xActualPos
+	ydiference = ySigPos - yActualPos
 
 	mayor = abs(xdiference) >= abs(ydiference)
 
