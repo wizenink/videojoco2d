@@ -392,6 +392,7 @@ class Player(Character):
 
             else:
                 Character.move(self,STILL)
+        print(self.position)
 
     def drawUI(self,screen):
         if self.life <= 0:
