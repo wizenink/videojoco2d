@@ -205,6 +205,7 @@ class  Character(MySprite):
 
         # Init variables
         # Life
+        self.maxlife = 100
         self.life = 100
         self.dead = False
         self.director = director
@@ -394,7 +395,10 @@ class Player(Character):
                 Character.move(self,STILL)
 
     def drawUI(self,screen):
-        screen.blit(self.lifeSprites[int((self.life) / 10)-1],(DISPLAY_WIDTH*0.05,DISPLAY_HEIGHT*0.9))
+        if self.life <= 0:
+            pass 
+        else:
+            screen.blit(self.lifeSprites[int((self.life) / 10)-1],(DISPLAY_WIDTH*0.05,DISPLAY_HEIGHT*0.9))
 
 
 
@@ -460,7 +464,7 @@ class Enemy(Character):
 
         offset_x = 68
         offset_y = 64
-        pygame.draw.rect(screen,health_color,( camera.apply(self)[0]+offset_x,camera.apply(self)[1]+offset_y,self.life / 2,5))
+        pygame.draw.rect(screen,health_color,( camera.apply(self)[0]+offset_x,camera.apply(self)[1]+offset_y,(self.life/self.maxlife) * 100 / 2,5))
 
 
 class Enemy1(Enemy):
@@ -468,6 +472,7 @@ class Enemy1(Enemy):
     def __init__(self, director, dmgGroup, solidGroup):
         # Invocamos al constructor de la clase padre con la configuracion de este enemigo concreto
         Enemy.__init__(self,'eskeleton.png','eskeleton.data', 0.1, 3, director, dmgGroup, solidGroup)
+        self.maxlife = 100
 
     def move_cpu(self, player):
         # Indicamos las acciónes a realizar para el enemigo
@@ -592,7 +597,8 @@ class Warmond(Enemy):
         self.scene = scene
         self.director = director
         Enemy.__init__(self,"warmond.png","warmond.data",0.1,3,director,dmgGroup,solidGroup)
-        self.life = 100
+        self.maxlife = 500
+        self.life = 500
         scene.addDialog(self.dialog)
         director.dialog = True
 
@@ -639,6 +645,8 @@ class Ludwig(Enemy):
     def __init__(self,director,scene,dmgGroup,solidGroup):
         self.scene = scene
         Enemy.__init__(self,"ludwig.png","ludwig.data",0.1,3,director,dmgGroup,solidGroup)
+        self.maxlife = 600
+        self.life = 600
 
     def spawner2(self):
         camera = self.scene.camera
@@ -674,9 +682,12 @@ class Disas(Enemy):
     summonTimer = 0
     NFIRES = 4
     spawnThread = None
+
     def __init__(self,director,scene,dmgGroup,solidGroup):
         self.scene = scene
         Enemy.__init__(self,"disas.png","disas.data",0.1,3,director,dmgGroup,solidGroup)
+        self.maxlife = 600
+        self.life = 600
 
     def spawner2(self):
         camera = self.scene.camera
