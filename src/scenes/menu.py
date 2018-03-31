@@ -253,7 +253,7 @@ class Menu(Scene):
 
 	def updateDialog(self,screen):
 		return
-	
+
 	def music(self):
 		self.director.sound.generalSoundManage(GAME_SOUND_MUSIC_EVENT_MUSIC_6, repeat = -1)
 	def update(self, *args):
@@ -297,7 +297,8 @@ class Menu(Scene):
 
 
 	def runGame(self):
-		first = level_farm.Level(self.director)
+		#first = level_farm.Level(self.director)
+		first = level_castle_lindisfarne.Level(self.director)
 		self.director.swapScene(first)
 
 	def showMainScreen(self):

@@ -188,8 +188,7 @@ class Level(Scene):
 		if not self.firstTime:
 			self.director.dialog = not self.director.dialog
 			self.firstTime = True
-
-		if ( 2650 <= self.player.position[0] <= 2800) and (900 <= self.player.position[1] <= 1200) and self.bossDead:
+		if ( 2900 <= self.player.position[0] <= 3100) and (2100 <= self.player.position[1] <= 2300) and self.bossDead:
 			newscene = level_castle_lindisfarne.Level(self.director)
 			self.director.swapScene(newscene)
 		if ( 1100 <= self.player.position[0] <= 1200) and (2500 <= self.player.position[1] <= 2700) and not self.bossSpawned:
