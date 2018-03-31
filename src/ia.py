@@ -12,7 +12,6 @@ def iaFollow2(self,player,graph):
 	path = graphc.find_path(graph,selfpos,playerpos)
 	#print(self.position,player.position)
 	#print(graph.dict[(47,18)])
-	print("got here")
 	print(path)
 def iaFollow(self, player):
 	# Movemos solo a los enemigos que esten en la pantalla
