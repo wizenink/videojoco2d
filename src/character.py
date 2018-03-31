@@ -623,7 +623,19 @@ class Warmond(Enemy):
                 self.scene.addEnemy(rx,ry)
         self.lastTime = now
 
-
+    def move_cpu(self,player):
+        if self.life <= 0 and not self.deathdone :
+            self.scene.addDialog(self.deathdialog)
+            self.director.dialog = True
+            self.deathdone = True
+            self.scene.bossDead = True
+        if not self.startDialogDone and ia.getEuclideanDistance(self,player)<200:
+            self.startDialogDone = True
+            self.director.dialog = True
+        if self.startDialogDone:
+            ia.iaFollow(self,player)
+            self.spawner2()
+        
 
 class TuxHand(Enemy):
     "Tux's Right Hand"
