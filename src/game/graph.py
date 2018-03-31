@@ -48,7 +48,7 @@ def toGraph(map):
     #print(walkable((47,18)))
     #print(walkable((48,18)))
     #print(walkable((47,19)))
-    for x in range(width-1):
+    """for x in range(width-1):
         for y in range(height-1):
             if not walkable(map[x][y]):
                 continue
@@ -56,12 +56,30 @@ def toGraph(map):
                 for j in range(-1,2):
                     if (i == 0) and (j == 0):
                         continue
-                    if (x,y) == (47,18):
-                        print((x+i,y+j))
                     if(walkable(map[x+i][y+j])):
                         graph.add_path((x,y),(x+i,y+j),1)
                     else:
-                        graph.add_path((x,y),(x+i,y+j),100)
+                        graph.add_path((x,y),(x+i,y+j),100)"""
+    for x in range(1,width-1):
+        for y in range(1,height-1):
+            if not walkable(map[x][y]):
+                continue
+            if(walkable(map[x+1][y])):
+                graph.add_path((x,y),(x+1,y),1)
+            else:
+                graph.add_path((x,y),(x+1,y),100)
+            if(walkable(map[x-1][y])):
+                graph.add_path((x,y),(x-1,y),1)
+            else:
+                graph.add_path((x,y),(x-1,y),100)
+            if(walkable(map[x][y+1])):
+                graph.add_path((x,y),(x,y+1),1)
+            else:
+                graph.add_path((x,y),(x,y+1),100)
+            if(walkable(map[x][y-1])):
+                graph.add_path((x,y),(x,y-1),1)
+            else:
+                graph.add_path((x,y),(x,y-1),100)
     return graph
 
 
@@ -111,7 +129,7 @@ def AStarSearch(start, end, graph):
 			elif candidateG >= G[neighbour]:
 				continue
 
-			
+
 			cameFrom[neighbour] = current
 			G[neighbour] = candidateG
 			H = graph.heuristic(neighbour, end)
