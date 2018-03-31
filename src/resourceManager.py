@@ -217,14 +217,12 @@ class resourceManager(object):
 
     @classmethod
     def loadStaticAnimation(cls,name):
-
-        if name in cls.resources:
-            return cls.resources[name]
+        if (name+"st") in cls.resources:
+            return cls.resources[name+"st"]
         else:
-            image = cls.loadImage(image)
+            image = cls.loadImage(name)
             result = []
-
             for i in range(0,4):
                 result.append(image.subsurface(pygame.Rect(0+i*64, 0, 64, 64)))
-            cls.resources[name] = result
+            cls.resources[name+"st"] = result
             return result
