@@ -1,5 +1,6 @@
 import pygame, sys, os
 import time
+import time as timeM
 import _thread
 import random
 import ia
@@ -452,6 +453,7 @@ class Fire(InmobileSprite):
     "Just Fire"
     oldTime = 0
     lifespan = 6
+    acc = 0
     def __init__(self, imageFile, position, folder = CHARACTER_SPRITE_FOLDER):
 
         InmobileSprite.__init__(self,imageFile,position,folder)
@@ -471,8 +473,13 @@ class Fire(InmobileSprite):
         self.rect = self.images[0].get_rect()
         self.dead = False
 
+    def drawUI(self,screen,camera):
+        pass
+    def move_cpu(self,player):
+        pass
     def getDmg(self, dmg, looking, timeToBlock = 10):
         pass
+
 
     def changeAnimation(self):
 
@@ -490,13 +497,13 @@ class Fire(InmobileSprite):
 
     def update(self, time):
         #No IA, Just Fire T.T
-        now = time.time()
+        now = timeM.time()
         if self.oldTime == 0:
             self.oldTime = now
             return
         delta = now - self.oldTime
         self.acc += delta
-        if self.acc >= lifespan:
+        if self.acc >= self.lifespan:
             self.acc = 0
             self.life = 0
         self.oldTime = now
