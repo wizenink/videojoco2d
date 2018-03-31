@@ -592,7 +592,7 @@ class Warmond(Enemy):
     spawnThread = None
     deathdone = False
     dialog = [["El emperador ha exigido la limpieza de cada aldea,","y no seré el que falle en su tarea."],["Te eliminaré junto al resto...","y pasaréis a formar parte de mi ejército"]]
-    deathdialog = [["Con Warmond muerto, el camino del este está libre","y es tu mejor oportunidad de escapar."]]
+    deathdialog = [["Con Warmond muerto, el camino del este está libre","y es tu mejor oportunidad de escapar","hacia las tierras del Este."]]
     def __init__(self,director,scene,dmgGroup,solidGroup):
         self.scene = scene
         self.director = director
