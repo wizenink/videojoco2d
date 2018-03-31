@@ -26,7 +26,7 @@ class Level(Scene):
 	def __init__(self,director):
 		pygame.time.set_timer(WARMOND_SUMMONTIMER,200)
 		#Test variables
-		self.debug = 0
+		self.debug = 1
 		self.firstTime = False
 		##############
 		self.enemyGroup = pygame.sprite.Group()
@@ -45,6 +45,7 @@ class Level(Scene):
 		self.designer = Designer(self.lvlfile)
 		width,height,map = serializer.loadLevel(self.lvlname)
 		Scene.__init__(self,self.lvlname,width,height,map,32,director)
+		self.fenceRemoved = False
 		self.initLevel()
 
 	def music(self):
@@ -120,6 +121,9 @@ class Level(Scene):
 		elif event.type == KEYDOWN and event.key == K_0:
 			self.addCastle((self.player.position[0]+offset_x,self.player.position[1]+offset_y))
 			self.designer.writeFile("castle",(self.player.position[0]+offset_x,self.player.position[1]+70))
+		elif event.type == KEYDOWN and event.key == K_l:
+			self.addFence((self.player.position[0]+offset_x,self.player.position[1]+offset_y))
+			self.designer.writeFile("fence",(self.player.position[0]+offset_x,self.player.position[1]+70))
 
 	def loadItemsFromFile(self):
 		items = self.designer.readFile()
@@ -144,6 +148,8 @@ class Level(Scene):
 				self.addMisc(item[1],3)
 			elif item[0] == "castle":
 				self.addCastle(item[1])
+			elif item[0] == "fence":
+				self.addFence(item[1])
 
 	def events(self,events):
 		for event in events:
@@ -188,7 +194,11 @@ class Level(Scene):
 		if not self.firstTime:
 			self.director.dialog = not self.director.dialog
 			self.firstTime = True
-
+		if self.bossDead:
+			if not self.fenceRemoved:
+				self.solidGroup.remove(self.fencePassLevel)
+				self.solids.remove(self.fencePassLevel)
+				self.fenceRemoved = True
 		if ( 2650 <= self.player.position[0] <= 2800) and (900 <= self.player.position[1] <= 1200) and self.bossDead:
 			newscene = level_castle_lindisfarne.Level(self.director)
 			self.director.swapScene(newscene)
@@ -243,6 +253,15 @@ class Level(Scene):
 		self.solidGroup.add(castle)
 		self.solids.append(castle)
 
+	def addFence(self,pos):
+		fence = Building(pos,buildname = 'fence.png')
+
+		self.solidGroup.add(fence)
+		self.solids.append(fence)
+
+		return fence
+
+
 	def addTent(self,pos):
 		tent = Building(pos,buildname = 'cab.png')
 
@@ -289,9 +308,8 @@ class Level(Scene):
 		self.solids.append(greenTree)
 
 	def initLevel(self):
-
 		self.searchCollidables()
-
+		self.fencePassLevel = self.addFence((3175.4000000000124,2304.6000000000117))
 		self.playerGroup.add(self.player.hitbox)
 		self.solidGroup.add(self.player.hitbox)
 		self.player.setPosition((315,1382))
@@ -312,3 +330,7 @@ class Level(Scene):
 		self.enemys.append(fire)
 		#self.solids.append(fire)
 		self.enemyGroup.add(fire)
+		#self.fencePassLevel = self.addFence((3175.4000000000124,2304.6000000000117))
+
+
+

@@ -327,6 +327,7 @@ class  Character(MySprite):
         else:
             self.currentSpeed = (0,0)
             self.killAnimation()
+            self.dmg = 0
 
 
         MySprite.update(self,time)
@@ -443,7 +444,7 @@ class Enemy(Character):
     def __init__(self, imageFile, coordFile, speed, animationDelay, director, dmgGroup, solidGroup):
         # Invocamos al constructor de la clase padre con la configuracion de este enemigo concreto
         Character.__init__(self, imageFile, coordFile, speed, animationDelay, director, dmgGroup, solidGroup)
-        self.dmg = 20
+        self.dmg = 15
 
     def move_cpu(self, player):
         # Indicamos las acciónes a realizar para el enemigo
