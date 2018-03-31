@@ -1,13 +1,23 @@
 import character
 import math
+from game import graph as graphc
 
 def getEuclideanDistance(object1,object2):
 	return math.ceil(math.sqrt((math.pow((object2.position[0] - object1.position[0]),2) + math.pow((object2.position[1] - object1.position[1]),2))))
 
+def iaFollow2(self,player,graph):
+	playerpos = (int(player.position[0]/32),int(player.position[1]/32))
+	selfpos = (int(self.position[0]/32),int(self.position[1]/32))
+	#path =  graphc.find_path(graph,int(self.position/32),int(player.position/32))
+	path = graphc.find_path(graph,selfpos,playerpos)
+	#print(self.position,player.position)
+	#print(graph.dict[(47,18)])
+	print("got here")
+	print(path)
 def iaFollow(self, player):
 	# Movemos solo a los enemigos que esten en la pantalla
 	#if self.rect.left>0 and self.rect.right< DISPLAY_WIDTH and self.rect.bottom>0 and self.rect.top< DISPLAY_HEIGHT:
-		
+
 		# Por ejemplo, intentara acercarse al jugador mas cercano en el eje x o y
 		xdiference = player.position[0] - self.position[0]
 		ydiference = player.position[1] - self.position[1]
@@ -62,7 +72,7 @@ def iaFollowsContinuos(self, player):
 			self.move(character.UP)
 		else:
 			self.move(character.STILL)
-		
+
     #Si este personaje no esta en pantalla, no hara nada
 	#else:
 		#Character.move(self,STILL)
@@ -170,7 +180,7 @@ def iaFollowsContinuos2(self, player):
 		#self.upBlock = False
 
 def iaFollowsContinuos3(self, player):
-	
+
 	# Variables sobre la posicion anterior
 	sameX = False
 	sameY = False
@@ -247,7 +257,7 @@ def iaHorizontalGuardian(self, player):
 	#Actualizamos variables sobre posición anterior
 	if self.xLastPosition == self.position[0]:
 		sameX = True
-	
+
 	# Por ejemplo, intentara acercarse al jugador mas cercano en el eje x o y
 	#Calcular distancias en eje x e y
 	#ydiference = player.position[1] - self.position[1]
@@ -264,9 +274,9 @@ def iaHorizontalGuardian(self, player):
 
 	#if (ydiference < 20) and (ydiference > -20):
 	#	self.speed = self.initialSpeed + 0.05
-	#else:  
+	#else:
 	#	self.speed = self.initialSpeed
-	
+
 	if not self.rightBlock:
 		self.move(character.RIGHT)
 		self.lastMove = character.RIGHT
@@ -284,7 +294,7 @@ def iaHorizontalFollowGuardian(self, player):
 	#Actualizamos variables sobre posición anterior
 	if self.xLastPosition == self.position[0]:
 		sameX = True
-	
+
 	# Por ejemplo, intentara acercarse al jugador mas cercano en el eje x o y
 	#Calcular distancias en eje x e y
 	ydiference = player.position[1] - self.position[1]
@@ -298,7 +308,7 @@ def iaHorizontalFollowGuardian(self, player):
 	elif sameX and (lastMove == character.LEFT):
 		self.leftBlock = True
 		self.rightBlock = False
-	
+
 	if getEuclideanDistance(self,player) < 100:
 		iaFollowsContinuos3(self,player)
 	else:
@@ -319,7 +329,7 @@ def iaVerticalGuardian(self, player):
 	#Actualizamos variables sobre posición anterior
 	if self.yLastPosition == self.position[1]:
 		sameY = True
-	
+
 	# Por ejemplo, intentara acercarse al jugador mas cercano en el eje x o y
 	#Calcular distancias en eje x e y
 	#xdiference = player.position[0] - self.position[0]
@@ -336,9 +346,9 @@ def iaVerticalGuardian(self, player):
 
 	#if (xdiference < 20) and (xdiference > -20):
 	#	self.speed = self.initialSpeed + 0.05
-	#else:  
+	#else:
 	#	self.speed = self.initialSpeed
-	
+
 	if not self.upBlock:
 		self.move(character.UP)
 		self.lastMove = character.UP
@@ -356,7 +366,7 @@ def iaVerticalFollowGuardian(self, player):
 	#Actualizamos variables sobre posición anterior
 	if self.yLastPosition == self.position[1]:
 		sameY = True
-	
+
 	# Por ejemplo, intentara acercarse al jugador mas cercano en el eje x o y
 	#Calcular distancias en eje x e y
 	xdiference = player.position[0] - self.position[0]
@@ -394,7 +404,7 @@ def iaCubeGuardian(self, player):
 		sameY = True
 	if self.xLastPosition == self.position[0]:
 		sameX = True
-	
+
 	# Por ejemplo, intentara acercarse al jugador mas cercano en el eje x o y
 	#Calcular distancias en eje x e y
 	#xdiference = player.position[0] - self.position[0]
@@ -421,7 +431,7 @@ def iaCubeGuardian(self, player):
 
 	#if (xdiference < 20) and (xdiference > -20):
 	#	self.speed = self.initialSpeed + 0.05
-	#else:  
+	#else:
 	#	self.speed = self.initialSpeed
 	if not self.rightBlock:
 		self.move(character.RIGHT)

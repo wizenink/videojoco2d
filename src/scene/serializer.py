@@ -45,23 +45,24 @@ def loadLevel(levelName):
     height = levelImg.get_height()
     buffer =  pygame.surfarray.pixels3d(levelImg)
     map = []
+    collisionMap = [[0 for i in range(width)] for j in range(height)]
     for y in range(height):
         row = [None] * width
         for x in range(width):
             default = { BOTTOM_RIGHT_GRASS : "grass_right_bottom.png",
-            DESERT : "desert.png", 
-            BOTTOM_LEFT_GRASS : "grass_left_bottom.png", 
-            BOTTOM_GRASS : "grass_mid_bottom.png", 
-            RIGHT_GRASS : "grass_right.png", 
-            LEFT_GRASS : "grass_left.png", 
-            UPPER_RIGHT_GRASS : "grass_right_upper.png", 
-            UPPER_GRASS : "grass_mid_upper.png",  
-            UPPER_LEFT_GRASS : "grass_left_upper.png", 
-            FLOWERS : "flowers_"+randomnum()+".png", 
-            GRASS : "grass_mid.png", 
-            WATER : "water.png", 
-            ROCK : "rock.png", 
-            TREE : "tree.png", 
+            DESERT : "desert.png",
+            BOTTOM_LEFT_GRASS : "grass_left_bottom.png",
+            BOTTOM_GRASS : "grass_mid_bottom.png",
+            RIGHT_GRASS : "grass_right.png",
+            LEFT_GRASS : "grass_left.png",
+            UPPER_RIGHT_GRASS : "grass_right_upper.png",
+            UPPER_GRASS : "grass_mid_upper.png",
+            UPPER_LEFT_GRASS : "grass_left_upper.png",
+            FLOWERS : "flowers_"+randomnum()+".png",
+            GRASS : "grass_mid.png",
+            WATER : "water.png",
+            ROCK : "rock.png",
+            TREE : "tree.png",
             TREE2 : "tree.png",
             BLACK : 'black.png'}
             tupla = default[tuple(buffer[x,y])]
@@ -69,5 +70,6 @@ def loadLevel(levelName):
                 row[x] = (resourceManager.loadImage((tupla),folder = TILE_FOLDER), True)
             else:
                 row[x] = (resourceManager.loadImage((tupla),folder = TILE_FOLDER) , False)
+                collisionMap[x][y] = 1
         map.append(row)
-    return width,height,map
+    return width,height,map,collisionMap

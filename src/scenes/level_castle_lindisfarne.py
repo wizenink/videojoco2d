@@ -4,6 +4,7 @@ import sys
 sys.path.insert(0,"../")
 from scene.scenec import *
 from scene import serializer
+from game import graph
 from resourceManager import *
 from character import *
 from util.levelDesigner import *
@@ -38,7 +39,9 @@ class Level(Scene):
 		self.lvlname = "level_castle_lindisfarne.png"
 		self.lvlfile = "level_lindisfarne.txt"
 		self.designer = Designer(self.lvlfile)
-		width,height,map = serializer.loadLevel(self.lvlname)
+		width,height,map,collisionMap = serializer.loadLevel(self.lvlname)
+		self.collisionMap = collisionMap
+		self.collisionGraph = graph.toGraph(collisionMap)
 		Scene.__init__(self,self.lvlname,width,height,map,32,director)
 		self.initLevel()
 

@@ -635,7 +635,7 @@ class Warmond(Enemy):
         if self.startDialogDone:
             ia.iaFollow(self,player)
             self.spawner2()
-        
+
 
 class TuxHand(Enemy):
     "Tux's Right Hand"
@@ -764,6 +764,7 @@ class Disas(Enemy):
     def move_cpu(self,player):
         #ia.iaFollow(self,player)
         self.spawner2()
+        ia.iaFollow2(self,player,self.scene.collisionGraph)
         #if self.spawnThread == None:
         #    self.spawnThread = _thread.start_new_thread(self.spawner,())
         return
