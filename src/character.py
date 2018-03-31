@@ -472,6 +472,7 @@ class Fire(InmobileSprite):
         self.numFrame = 0
         self.rect = self.images[0].get_rect()
         self.dead = False
+        self.image = self.images[0]
 
     def drawUI(self,screen,camera):
         pass

@@ -221,6 +221,8 @@ class resourceManager(object):
             return cls.resources[name+"st"]
         else:
             image = cls.loadImage(name)
+            image.convert()
+            image.set_colorkey(image.get_at((0,0)))
             result = []
             for i in range(0,4):
                 result.append(image.subsurface(pygame.Rect(0+i*64, 0, 64, 64)))
