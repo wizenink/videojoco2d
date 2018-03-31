@@ -199,13 +199,13 @@ class Level(Scene):
 				self.solidGroup.remove(self.fencePassLevel)
 				self.solids.remove(self.fencePassLevel)
 				self.fenceRemoved = True
-		if ( 2650 <= self.player.position[0] <= 2800) and (900 <= self.player.position[1] <= 1200) and self.bossDead:
+		if ( 3100 <= self.player.position[0] <= 3120) and (2200 <= self.player.position[1] <= 1240) and self.bossDead:
 			newscene = level_castle_lindisfarne.Level(self.director)
 			self.director.swapScene(newscene)
-		if ( 1100 <= self.player.position[0] <= 1200) and (2500 <= self.player.position[1] <= 2700) and not self.bossSpawned:
-			boss = Warmond(self.director,self,self.playerGroup,self.solidGroup)
-			self.addEnemy2(1183,2612,boss)
-			self.bossSpawned = True
+		#if ( 1000 <= self.player.position[0] <= 1300) and (2400 <= self.player.position[1] <= 2800) and not self.bossSpawned:
+		#	boss = Warmond(self.director,self,self.playerGroup,self.solidGroup)
+		#	self.addEnemy2(1183,2612,boss)
+		#	self.bossSpawned = True
 		for enemy in self.enemys:
 			if enemy.dead:
 				self.solidGroup.remove(enemy.hitbox)
@@ -324,6 +324,10 @@ class Level(Scene):
 		#self.addEnemy2(350,1750,boss)
 		self.loadItemsFromFile()
 		#self.addEnemy(315,1682)
+		boss = Warmond(self.director,self,self.playerGroup,self.solidGroup)
+		self.addEnemy2(1183,2612,boss)
+		self.bossSpawned = True
+
 		fire = Fire('fire.png',(315,1682),self.solidGroup)
 		fire.setPosition((315,1682))
 		#fire.updateHitboxPosition()

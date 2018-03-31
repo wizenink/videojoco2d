@@ -393,10 +393,11 @@ class Player(Character):
 
             else:
                 Character.move(self,STILL)
+        print(self.position)
 
     def drawUI(self,screen):
         if self.life <= 0:
-            pass 
+            pass
         else:
             screen.blit(self.lifeSprites[int((self.life) / 10)-1],(DISPLAY_WIDTH*0.05,DISPLAY_HEIGHT*0.9))
 
@@ -574,9 +575,9 @@ class Fire(InmobileSpriteDmg):
                 self.getDmg(solidSprite.parent.dmg, solidSprite.parent.looking, timeToBlock = 30)
                 solidSprite.parent.getDmg(self.dmg, self.looking,timeToBlock = 0)
 
-        if collideList:
-            self.setPosition(positionTmp)
-            self.updateHitboxPosition()
+        #if collideList:
+            #self.setPosition(positionTmp)
+            #self.updateHitboxPosition()
 
 
 
@@ -591,16 +592,17 @@ class Warmond(Enemy):
     NENEMIES = 4
     spawnThread = None
     deathdone = False
+    startDialogDone = False
     dialog = [["El emperador ha exigido la limpieza de cada aldea,","y no seré el que falle en su tarea."],["Te eliminaré junto al resto...","y pasaréis a formar parte de mi ejército"]]
-    deathdialog = [["Con Warmond muerto, el camino del este está libre","y es tu mejor oportunidad de escapar."]]
+    deathdialog = [["Con Warmond muerto, el camino del este está libre","y es tu mejor oportunidad de escapar","hacia las tierras del Este."]]
     def __init__(self,director,scene,dmgGroup,solidGroup):
         self.scene = scene
         self.director = director
         Enemy.__init__(self,"warmond.png","warmond.data",0.1,3,director,dmgGroup,solidGroup)
         self.maxlife = 500
         self.life = 500
-        scene.addDialog(self.dialog)
-        director.dialog = True
+        #scene.addDialog(self.dialog)
+        #director.dialog = True
 
     def spawner2(self):
         camera = self.scene.camera
@@ -621,16 +623,55 @@ class Warmond(Enemy):
                 self.scene.addEnemy(rx,ry)
         self.lastTime = now
 
+
+
+class TuxHand(Enemy):
+    "Tux's Right Hand"
+    lastTime = 0
+    acctime = 12
+    summonTimerCD = 3
+    summonTimer = 0
+    NENEMIES = 4
+    spawnThread = None
+    deathdone = False
+    killPlayer = False
+    dialog = [["Se acabó.","El emperador me ha pedido que acabe contigo,pero valdrás más como","gladiador en la Arena..."]]
+    def __init__(self,director,scene,dmgGroup,solidGroup):
+        self.scene = scene
+        self.director = director
+        Enemy.__init__(self,"tuxhand.png","tuxhand.data",0.1,3,director,dmgGroup,solidGroup)
+        self.life = 100
+
+    def spawner2(self):
+        camera = self.scene.camera
+        now = time.time()
+        if self.lastTime == 0:
+            self.lastTime = now
+            return
+
+        delta = now - self.lastTime
+        self.acctime += delta
+        if self.acctime >= 10:
+            self.acctime = 0
+            #rx = random.randint(int(camera.apply(self)[0]-10),int(camera.apply(self)[0]+10))
+            #ry = random.randint(int(camera.apply(self)[1]-10),int(camera.apply(self)[1]+10))
+            for i in range(self.NENEMIES):
+                rx = random.randint(int(self.position[0]-512),int(self.position[0]+512))
+                ry = random.randint(int(self.position[1]-512),int(self.position[1]+512))
+                self.scene.addEnemy(rx,ry)
+        self.lastTime = now
     def move_cpu(self,player):
-        if self.life <= 0 and not self.deathdone :
-            self.scene.addDialog(self.deathdialog)
+        if (player.position[0] - 100 <= self.position[0] <= player.position[0] + 100) and (player.position[1] - 100 <= self.position[1] <= player.position[1] + 100) and not self.killPlayer:
+            self.scene.addDialog(self.dialog)
             self.director.dialog = True
-            self.deathdone = True
-            self.scene.bossDead = True
-        ia.iaFollow(self,player)
-        self.spawner2()
-        #if self.spawnThread == None:
-        #    self.spawnThread = _thread.start_new_thread(self.spawner,())
+            self.killPlayer = True
+        else:
+            ia.iaFollow(self,player)
+        if self.killPlayer:
+            #START ATTACK ANIMATION
+            #END THE GAME
+            pass
+        #self.spawner2()
         return
 
 class Ludwig(Enemy):
@@ -702,13 +743,14 @@ class Disas(Enemy):
             #rx = random.randint(int(camera.apply(self)[0]-10),int(camera.apply(self)[0]+10))
             #ry = random.randint(int(camera.apply(self)[1]-10),int(camera.apply(self)[1]+10))
             for i in range(self.NFIRES):
-                rx = random.randint(int(self.scene.player.position[0]-512),int(self.scene.player.position[0]+512))
-                ry = random.randint(int(self.scene.player.position[1]-512),int(self.scene.player.position[1]+512))
-                self.scene.addEnemy(rx,ry)
+                fire = Fire('fire.png',(315,1682),self.solidGroup)
+                rx = random.randint(int(self.scene.player.position[0]-128),int(self.scene.player.position[0]+128))
+                ry = random.randint(int(self.scene.player.position[1]-128),int(self.scene.player.position[1]+128))
+                self.scene.addEnemyFire(rx,ry,fire)
         self.lastTime = now
 
     def move_cpu(self,player):
-        ia.iaFollow(self,player)
+        #ia.iaFollow(self,player)
         self.spawner2()
         #if self.spawnThread == None:
         #    self.spawnThread = _thread.start_new_thread(self.spawner,())

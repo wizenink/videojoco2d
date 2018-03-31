@@ -19,16 +19,17 @@ offset_x = 65
 offset_y = 70
 
 class Level(Scene):
+	bossSpawned = False
 	def __init__(self,director):
 		#Test variables
-		self.debug = 1
+		self.debug = 0
 		##############
 		self.enemyGroup = pygame.sprite.Group()
 		self.playerGroup = pygame.sprite.Group()
 		self.solidGroup = pygame.sprite.Group()
 		#Si estamos en modo debug no colisionaremos con nada
 		if (self.debug):
-			self.player = Player(director, dmgGroup = self.enemyGroup, solidGroup = pygame.sprite.Group())			
+			self.player = Player(director, dmgGroup = self.enemyGroup, solidGroup = pygame.sprite.Group())
 		else:
 			self.player = Player(director, dmgGroup = self.enemyGroup, solidGroup = self.solidGroup)
 		self.solids = []
@@ -51,6 +52,18 @@ class Level(Scene):
 		self.enemys.append(enemy)
 		self.enemyGroup.add(enemy.hitbox)
 		self.addSolid(enemy)
+
+	def addEnemy2(self,x,y,enemy):
+		enemy.setPosition((x,y))
+		enemy.updateHitboxPosition()
+		self.enemys.append(enemy)
+		self.enemyGroup.add(enemy.hitbox)
+
+	def addEnemyFire(self,x,y,enemy):
+		enemy.setPosition((x,y))
+		#enemy.updateHitboxPosition()
+		self.enemys.append(enemy)
+		self.enemyGroup.add(enemy.hitbox)
 
 	def addSolid(self,solid):
 		#Si es un building
@@ -120,7 +133,7 @@ class Level(Scene):
 			elif item[0] == "misc2":
 				self.addMisc(item[1],2)
 			elif item[0] == "plants":
-				self.addMisc(item[1],4) 
+				self.addMisc(item[1],4)
 			elif item[0] == "house":
 				self.addHouse(item[1])
 			elif item[0] == "fiddlesticks":
@@ -131,7 +144,7 @@ class Level(Scene):
 				self.addMisc(item[1],3)
 			elif item[0] == "castle":
 				self.addCastle(item[1])
-				
+
 	def events(self,events):
 		for event in events:
 				# Pausa
@@ -147,7 +160,7 @@ class Level(Scene):
 						self.dialogs[0].queueScreen()
 				# Si el event es la pulsación de la tecla Escape
 				if event.type == KEYDOWN and event.key == K_ESCAPE:
-						# Se sale del programa
+						# Se sale del programa¡
 					pygame.quit()
 					sys.exit()
 
@@ -162,16 +175,28 @@ class Level(Scene):
 		self.camera.update(self.player)
 		self.camera.apply(self.player)
 		self.player.update(time)
+		if ( 1400 <= self.player.position[0] <= 1600) and (890 <= self.player.position[1] <= 900) and not self.bossSpawned:
+			boss = Disas(self.director,self,self.playerGroup,self.solidGroup)
+			self.addEnemy2(1505,600,boss)
+			self.bossSpawned = True
 		for enemy in self.enemys:
-			enemy.update(time)
+			if enemy.dead:
+				self.solidGroup.remove(enemy.hitbox)
+				self.enemyGroup.remove(enemy.hitbox)
+				self.enemys.remove(enemy)
+				#self.solids.remove(enemy)
+			else:
+				enemy.update(time)
 
 	def groupDraws(self,screen):
 		self.player.draw(screen,self.camera)
 		for enemy in self.enemys:
 			enemy.draw(screen,self.camera)
+			enemy.drawUI(screen,self.camera)
 		for solid in self.solids:
 			solid.draw(screen,self.camera)
-	
+		self.player.drawUI(screen)
+
 	def drawUI(self,screen):
 		pass
 
@@ -255,7 +280,3 @@ class Level(Scene):
 		#self.addDialog(firstDialog)
 
 		self.loadItemsFromFile()
-
-
-
-		
