@@ -65,7 +65,7 @@ def loadLevel(levelName):
             ROCK : "rock.png",
             TREE : "tree.png",
             TREE2 : "tree.png",
-            TREE3 : "grass.png",
+            TREE3 : "grass_mid.png",
             BLACK : 'black.png'}
             tupla = default[tuple(buffer[x,y])]
             if collidable(tupla):
