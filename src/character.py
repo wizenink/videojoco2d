@@ -47,8 +47,8 @@ def inverseLooking(looking):
 
 
 class MySprite(pygame.sprite.Sprite):
-    old = (0,0)
     def __init__(self):
+        self.old = (0,0)
         pygame.sprite.Sprite.__init__(self)
         self.position = (100,100)
         self.old = self.position
@@ -514,13 +514,13 @@ class InmobileSpriteDmg(MySprite):
 
 class Fire(InmobileSpriteDmg):
     "Just Fire"
-    oldTime = 0
-    lifespan = 10
-    acc = 0
-    looking = UP
     def __init__(self, imageFile, position, solidGroup,dmgGroup, folder = CHARACTER_SPRITE_FOLDER):
 
         InmobileSprite.__init__(self,imageFile,position,folder)
+        self.oldTime = 0
+        self.lifespan = 10
+        self.acc = 0
+        self.looking = UP
         self.dmgGroup = dmgGroup
         self.images = resourceManager.loadStaticAnimation(imageFile)
         self.image = self.images[0]
@@ -599,6 +599,16 @@ class Warmond(Enemy):
     dialog = [["El emperador ha exigido la limpieza de cada aldea,","y no seré el que falle en su tarea."],["Te eliminaré junto al resto...","y pasaréis a formar parte de mi ejército"]]
     deathdialog = [["Con Warmond muerto, el camino del este está libre","y es tu mejor oportunidad de escapar","hacia las tierras del Este."]]
     def __init__(self,director,scene,dmgGroup,solidGroup):
+        self.lastTime = 0
+        self.acctime = 12
+        self.summonTimerCD = 3
+        self.summonTimer = 0
+        self.NENEMIES = 4
+        self.spawnThread = None
+        self.deathdone = False
+        self.startDialogDone = False
+        self.dialog = [["El emperador ha exigido la limpieza de cada aldea,","y no seré el que falle en su tarea."],["Te eliminaré junto al resto...","y pasaréis a formar parte de mi ejército"]]
+        self.deathdialog = [["Con Warmond muerto, el camino del este está libre","y es tu mejor oportunidad de escapar","hacia las tierras del Este."]]
         self.scene = scene
         self.director = director
         Enemy.__init__(self,"warmond.png","warmond.data",0.1,3,director,dmgGroup,solidGroup)
@@ -716,21 +726,18 @@ class TuxHand(Enemy):
 
 class Ludwig(Enemy):
     "Berzerk Ludwig"
-    lastTime = 0
-    acctime = 0
-    summonTimerCD = 3
-    summonTimer = 0
-    NFIRES = 4
-    spawnThread = None
-    m = None
-    movements = [(UP,(262.2000000000136,3175.4000000000283)), (STILL,(262.2000000000136,173.2000000000407))]
-
     def __init__(self,director,dmgGroup,solidGroup):
+        self.lastTime = 0
+        self.acctime = 0
+        self.summonTimerCD = 3
+        self.summonTimer = 0
+        self.NFIRES = 4
+        self.spawnThread = None
+        self.m = None
+        self.movements = [(UP,(262.2000000000136,3175.4000000000283)), (STILL,(262.2000000000136,173.2000000000407))]
         Enemy.__init__(self,"ludwig.png","ludwig.data",0.05,3,director,dmgGroup,solidGroup)
         self.maxlife = 600
         self.life = 600
-        self.m = None
-        self.movements = [(UP,(262.2000000000136,3175.4000000000283)), (STILL,(262.2000000000136,173.2000000000407))]
 
     def move_cpu(self,player):
         if self.movements:
@@ -743,16 +750,17 @@ class Ludwig(Enemy):
 
 class Disas(Enemy):
     "Mago Disas"
-    lastTime = 0
-    acctime = 0
-    summonTimerCD = 3
-    summonTimer = 0
-    NFIRES = 4
-    spawnThread = None
-    deathdone = False
-    dialog = [["El camino está bloqueado,me he encargado de ello.","¡Calcinaré tus huesos antes de que intentes escapar!"]]
-    deathdialog = [["El castillo ha sido asediado por el Ludwig","y ya no es un lugar seguro."],["Tu mejor opción es intentar escapar","por el camino del *oeste*"]]
+
     def __init__(self,director,scene,dmgGroup,solidGroup):
+        self.lastTime = 0
+        self.acctime = 0
+        self.summonTimerCD = 3
+        self.summonTimer = 0
+        self.NFIRES = 4
+        self.spawnThread = None
+        self.deathdone = False
+        self.dialog = [["El camino está bloqueado,me he encargado de ello.","¡Calcinaré tus huesos antes de que intentes escapar!"]]
+        self.deathdialog = [["El castillo ha sido asediado por el Ludwig","y ya no es un lugar seguro."],["Tu mejor opción es intentar escapar","por el camino del *oeste*"]]
         self.scene = scene
         self.scene.addDialog(self.dialog)
         director.dialog = True
