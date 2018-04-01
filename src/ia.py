@@ -15,7 +15,7 @@ def calcMovement(act,sig):
 	return character.STILL
 def iaFollow3(self, player, graph):
 	listaPos,_ = iaFollow2(self,player,graph)
-	if listaPos == [] or len(listaPos == 1):
+	if (listaPos == []) or (len(listaPos) == 1):
 		return
 	actualPos = listaPos[0]
 	sigPos = listaPos[1]

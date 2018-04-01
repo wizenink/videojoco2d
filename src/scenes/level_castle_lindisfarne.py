@@ -193,6 +193,7 @@ class Level(Scene):
 
 	def groupDraws(self,screen):
 		self.player.draw(screen,self.camera)
+		self.player.hitbox.draw(screen,self.camera)
 		for enemy in self.enemys:
 			enemy.draw(screen,self.camera)
 			enemy.drawUI(screen,self.camera)

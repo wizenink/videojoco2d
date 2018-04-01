@@ -138,7 +138,7 @@ class  Character(MySprite):
         walkData, atackData, self.deadData = resourceManager.loadData(coordFile)
 
         # Body Hitbox
-        self.hitbox = BodyHitbox(25,47, self.position, self, dmgGroup, solidGroup)
+        self.hitbox = BodyHitbox(25,22, self.position, self, dmgGroup, solidGroup)
         self.offsetHitbox = (83,62)
 
         # List of attack hitboxes
