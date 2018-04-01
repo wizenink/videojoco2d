@@ -4,6 +4,7 @@ import sys
 sys.path.insert(0,"../")
 from scene.scenec import *
 from scene import serializer
+from scenes import menu
 from game import graph
 from resourceManager import *
 from character import *
@@ -148,7 +149,42 @@ class Level(Scene):
 			elif item[0] == "castle":
 				self.addCastle(item[1])
 
+
 	def events(self,events):
+		for event in events:
+			# Pausa
+			if self.debug:
+				pygame.mouse.set_visible(1)
+				self.addItem(event)
+				if event.type == KEYDOWN and event.key == K_c:
+					self.solids = []
+			if event.type == KEYDOWN and event.key == K_p:
+				self.director.dialog = not self.director.dialog
+			# Si el event es la pulsación de la tecla Escape
+			if event.type == KEYDOWN and event.key == K_ESCAPE:
+					# Se sale del programa
+				menuscene = menu.MenuPause(self.director)
+				self.director.pushScene(menuscene)
+
+
+
+			#if event.type == pygame.USEREVENT: message.update()s
+			#if (event.type == KEYDOWN and event.key == K_SPACE): message.update()
+
+			if not self.director.dialog:
+				self.player.move(pygame.key.get_pressed(), K_UP, K_DOWN, K_LEFT, K_RIGHT, K_SPACE)
+				for enemy in self.enemys:
+					enemy.move_cpu(self.player)
+			else:
+				if event.type == KEYDOWN and event.key == K_SPACE:
+					if self.dialogs:
+						if not self.dialogs[0].allDialogDone():
+							self.dialogs[0].qUpdate()
+						else:
+							print("No more dialogs")
+							self.dialogs.pop(0)
+							self.director.dialog = False
+	"""def events(self,events):
 		for event in events:
 				# Pausa
 				if self.debug:
@@ -172,7 +208,7 @@ class Level(Scene):
 
 		self.player.move(pygame.key.get_pressed(), K_UP, K_DOWN, K_LEFT, K_RIGHT, K_SPACE)
 		for enemy in self.enemys:
-			enemy.move_cpu(self.player)
+			enemy.move_cpu(self.player)"""
 
 	def update(self,time):
 		self.camera.update(self.player)
@@ -190,6 +226,16 @@ class Level(Scene):
 				#self.solids.remove(enemy)
 			else:
 				enemy.update(time)
+
+	def updateDialog(self,screen):
+		if self.dialogs:
+			self.dialogs[0].update()
+			self.dialogs[0].draw(screen)
+
+
+	def addDialog(self, textDialog):
+		dialog = Dialog("test",textDialog)
+		self.dialogs.append(dialog)
 
 	def groupDraws(self,screen):
 		self.player.draw(screen,self.camera)
