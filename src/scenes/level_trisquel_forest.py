@@ -166,11 +166,13 @@ class Level(Scene):
 			enemy.update(time)
 
 	def groupDraws(self,screen):
-		self.player.draw(screen,self.camera)
-		for enemy in self.enemys:
-			enemy.draw(screen,self.camera)
 		for solid in self.solids:
 			solid.draw(screen,self.camera)
+		for enemy in self.enemys:
+			enemy.draw(screen,self.camera)
+			enemy.drawUI(screen,self.camera)
+		self.player.draw(screen,self.camera)
+		self.player.drawUI(screen)
 
 	def drawUI(self,screen):
 		pass

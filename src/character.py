@@ -723,44 +723,19 @@ class Ludwig(Enemy):
     NFIRES = 4
     spawnThread = None
     m = None
-    movements = [(UP,(262.2000000000136,3175.4000000000283)),
-    (RIGHT,(262.2000000000136,2418.200000000026)),
-    (DOWN,(675.0000000000133,2418.200000000026)),
-    (RIGHT,(675.0000000000133,3125.4000000000283)),
-    (UP,(2146.600000000015,3125.4000000000283)),
-    (STILL,(2146.600000000015,2822.000000000024))]
+    movements = [(UP,(262.2000000000136,3175.4000000000283)), (STILL,(262.2000000000136,173.2000000000407))]
 
     def __init__(self,director,dmgGroup,solidGroup):
         Enemy.__init__(self,"ludwig.png","ludwig.data",0.1,3,director,dmgGroup,solidGroup)
         self.maxlife = 600
         self.life = 600
 
-    def spawner2(self):
-        camera = self.scene.camera
-        now = time.time()
-        if self.lastTime == 0:
-            self.lastTime = now
-            return
-
-        delta = now - self.lastTime
-        self.acctime += delta
-        if self.acctime >= 10:
-            self.acctime = 0
-            #rx = random.randint(int(camera.apply(self)[0]-10),int(camera.apply(self)[0]+10))
-            #ry = random.randint(int(camera.apply(self)[1]-10),int(camera.apply(self)[1]+10))
-            for i in range(self.NFIRES):
-                rx = random.randint(int(self.scene.player.position[0]-512),int(self.scene.player.position[0]+512))
-                ry = random.randint(int(self.scene.player.position[1]-512),int(self.scene.player.position[1]+512))
-                self.scene.addEnemy(rx,ry)
-        self.lastTime = now
-
     def move_cpu(self,player):
         if not self.m:
             self.m = self.movements.pop(0)
-        if math.isclose(self.position[0],self.movements[0][1][0]-64,abs_tol=1.5) and math.isclose(self.position[1],self.movements[0][1][1]-64,abs_tol=1.5):
-            if self.movements:
+        if self.movements:
+            if math.isclose(self.position[0],self.movements[0][1][0]-64,abs_tol=1.5) and math.isclose(self.position[1],self.movements[0][1][1]-64,abs_tol=1.5):
                 self.m = self.movements.pop(0)
-        print(self.m)
         self.move(self.m[0])
 
 class Disas(Enemy):
