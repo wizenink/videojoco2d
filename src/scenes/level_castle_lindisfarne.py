@@ -11,6 +11,7 @@ from character import *
 from util.levelDesigner import *
 sys.path.insert(0,"./dialog")
 from diag import *
+from scenes import level_trisquel_forest
 
 #RGB 100,100,100 ROCA
 #RGB 255,255,255 GRASS
@@ -22,6 +23,7 @@ offset_y = 70
 
 class Level(Scene):
 	bossSpawned = False
+	bossDead = False
 	def __init__(self,director):
 		#Test variables
 		self.debug = 0
@@ -218,6 +220,9 @@ class Level(Scene):
 			boss = Disas(self.director,self,self.playerGroup,self.solidGroup)
 			self.addEnemy2(1505,600,boss)
 			self.bossSpawned = True
+		if ( -100 <= self.player.position[0] <= 100) and (2800 <= self.player.position[1] <= 2900) and self.bossDead:
+			newScene = level_trisquel_forest.Level(self.director)
+			self.director.swapScene(newScene)
 		for enemy in self.enemys:
 			if enemy.dead:
 				self.solidGroup.remove(enemy.hitbox)

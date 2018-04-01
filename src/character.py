@@ -771,7 +771,9 @@ class Disas(Enemy):
     summonTimer = 0
     NFIRES = 4
     spawnThread = None
+    deathdone = False
     dialog = [["El camino está bloqueado,me he encargado de ello.","¡Calcinaré tus huesos antes de que intentes escapar!"]]
+    deathdialog = [["El castillo ha sido asediado por el mago","y ya no es un lugar seguro."],["Tu mejor opción es intentar escapar","por el camino del *oeste*"]]
     def __init__(self,director,scene,dmgGroup,solidGroup):
         self.scene = scene
         self.scene.addDialog(self.dialog)
@@ -811,13 +813,11 @@ class Disas(Enemy):
             while i < self.NFIRES:
                 fire = Fire('fire.png',(315,1682),self.dmgGroup,self.solidGroup)
                 while True:
-                    rx = random.randint(int(self.scene.player.position[0]-512),int(self.scene.player.position[0]+512))
-                    ry = random.randint(int(self.scene.player.position[1]-512),int(self.scene.player.position[1]+512))
+                    rx = random.randint(int(self.scene.player.position[0]-256),int(self.scene.player.position[0]+256))
+                    ry = random.randint(int(self.scene.player.position[1]-256),int(self.scene.player.position[1]+256))
                     rxt = int(rx/32)
                     ryt = int(ry/32)
-                    if self.intersectsPlayer(rxt,ryt):
-                        continue
-                    if self.doesCollide(rxt,ryt):
+                    if self.doesCollide(rxt,ryt) or self.intersectsPlayer(rxt,ryt):
                         continue
                     else:
                         break
@@ -826,6 +826,11 @@ class Disas(Enemy):
         self.lastTime = now
 
     def move_cpu(self,player):
+        if self.life <= 0 and not self.deathdone:
+            self.scene.bossDead = True
+            self.scene.addDialog(self.deathdialog)
+            self.director.dialog = True
+            self.deathdone = True
         #ia.iaFollow(self,player)
         self.spawner2()
         ia.iaFollow(self,player)
