@@ -11,7 +11,7 @@ class Director():
 		self.stack = []
 		self.clock = pygame.time.Clock()
 		self.screen = pygame.display.set_mode((DISPLAY_WIDTH,DISPLAY_HEIGHT))
-		pygame.display.set_caption("Reign of Shendralar")
+		pygame.display.set_caption("The Last of Shendralar")
 		#salir del juego
 		self.exit_scene = False
 		dirname = os.path.dirname(__file__)
