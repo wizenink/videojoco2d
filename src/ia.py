@@ -5,6 +5,36 @@ from game import graph as graphc
 def getEuclideanDistance(object1,object2):
 	return math.ceil(math.sqrt((math.pow((object2.position[0] - object1.position[0]),2) + math.pow((object2.position[1] - object1.position[1]),2))))
 
+def calcMovement(act,sig):
+	ax,ay = act
+	sx,sy = sig
+	if ax == sx:
+		return character.DOWN if (sy-ay) > 0 else character.UP
+	if ay == sy:
+		return character.RIGHT if (sx-ax) > 0 else character.LEFT
+	return character.STILL
+def iaFollow3(self, player, graph):
+	listaPos,_ = iaFollow2(self,player,graph)
+	if listaPos == [] or len(listaPos == 1):
+		return
+	actualPos = listaPos[0]
+	sigPos = listaPos[1]
+	(xSigPos,ySigPos) = sigPos
+	(xActualPos,yActualPos) = actualPos
+	#graph to window meter
+	#xSigPos = xSigPos * 32
+	#ySigPos = ySigPos * 32
+
+	xdiference = xSigPos - xActualPos
+	ydiference = ySigPos - yActualPos
+
+	mayor = abs(xdiference) >= abs(ydiference)
+
+	#Diferencia de dos para contemplar que el exprite no eté en el mismo sitio por distancia de menos de dos pixeles y se mueva igual
+	self.move(calcMovement(actualPos,sigPos))
+
+
+
 def iaFollow2(self,player,graph):
 	playerpos = (int(player.position[0]/32),int(player.position[1]/32))
 	selfpos = (int(self.position[0]/32),int(self.position[1]/32))
@@ -12,7 +42,8 @@ def iaFollow2(self,player,graph):
 	path = graphc.find_path(graph,selfpos,playerpos)
 	#print(self.position,player.position)
 	#print(graph.dict[(47,18)])
-	print(path)
+	#print(path)
+	return path
 def iaFollow(self, player):
 	# Movemos solo a los enemigos que esten en la pantalla
 	#if self.rect.left>0 and self.rect.right< DISPLAY_WIDTH and self.rect.bottom>0 and self.rect.top< DISPLAY_HEIGHT:
