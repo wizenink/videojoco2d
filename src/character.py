@@ -729,6 +729,8 @@ class Ludwig(Enemy):
         Enemy.__init__(self,"ludwig.png","ludwig.data",0.05,3,director,dmgGroup,solidGroup)
         self.maxlife = 600
         self.life = 600
+        self.m = None
+        self.movements = [(UP,(262.2000000000136,3175.4000000000283)), (STILL,(262.2000000000136,173.2000000000407))]
 
     def move_cpu(self,player):
         if self.movements:
