@@ -758,7 +758,7 @@ class Ludwig(Enemy):
         if not self.m:
             self.m = self.movements.pop(0)
         if math.isclose(self.position[0],self.movements[0][1][0]-64,abs_tol=1.5) and math.isclose(self.position[1],self.movements[0][1][1]-64,abs_tol=1.5):
-            if movements:
+            if self.movements:
                 self.m = self.movements.pop(0)
         print(self.m)
         self.move(self.m[0])
