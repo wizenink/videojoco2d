@@ -22,7 +22,7 @@ offset_y = 70
 class Level(Scene):
 	def __init__(self,director):
 		#Test variables
-		self.debug = 1
+		self.debug = 0
 		##############
 		self.enemyGroup = pygame.sprite.Group()
 		self.playerGroup = pygame.sprite.Group()
@@ -40,6 +40,8 @@ class Level(Scene):
 		self.designer = Designer(self.lvlfile)
 		width,height,map,colissionmap = serializer.loadLevel(self.lvlname)
 		Scene.__init__(self,self.lvlname,width,height,map,32,director)
+		self.firstTime = False
+		self.end = False
 		self.initLevel()
 
 	def music(self):
@@ -136,25 +138,36 @@ class Level(Scene):
 					self.addItem(event)
 					if event.type == KEYDOWN and event.key == K_c:
 						self.solids = []
-				if event.type == KEYDOWN and event.key == K_p:
-					self.director.pause = not self.director.pause
-				if event.type == KEYDOWN and event.key == K_o:
-					if self.dialogs:
-						self.dialogs[0].queueScreen()
 				# Si el event es la pulsación de la tecla Escape
 				if event.type == KEYDOWN and event.key == K_ESCAPE:
 						# Se sale del programa
-					pygame.quit()
-					sys.exit()
+					menuscene = menu.MenuPause(self.director)
+					self.director.pushScene(menuscene)
+
+
 
 				#if event.type == pygame.USEREVENT: message.update()s
 				#if (event.type == KEYDOWN and event.key == K_SPACE): message.update()
 
-		self.player.move(pygame.key.get_pressed(), K_UP, K_DOWN, K_LEFT, K_RIGHT, K_SPACE)
-		for enemy in self.enemys:
-			enemy.move_cpu(self.player)
+				if not self.director.dialog:
+					self.player.move(pygame.key.get_pressed(), K_UP, K_DOWN, K_LEFT, K_RIGHT, K_SPACE)
+					for enemy in self.enemys:
+						enemy.move_cpu(self.player)
+				else:
+					if event.type == KEYDOWN and event.key == K_SPACE:
+						if self.dialogs:
+							if not self.dialogs[0].allDialogDone():
+								self.dialogs[0].qUpdate()
+							else:
+								print("No more dialogs")
+								self.dialogs.pop(0)
+								self.director.dialog = False
 
 	def update(self,time):
+		if not self.firstTime:
+			self.director.dialog = not self.director.dialog
+			self.firstTime = True
+
 		if self.player.dead:
 			level = Level(self.director)
 			deadScene = menu.MenuDead(self.director,level)
@@ -164,6 +177,15 @@ class Level(Scene):
 		self.player.update(time)
 		for enemy in self.enemys:
 			enemy.update(time)
+		if self.end:
+			menuscene = menu.MenuEnd(self.director)
+			self.director.swapScene(menuscene)
+		if math.isclose(self.ludwig.position[1],109.2000000000407,abs_tol=6) and not self.end:
+			lastDialog = [["Te mataría aqui mismo pero Tux tiene otros planes para ti","el coliseo será tu nuevo hogar"]]
+			self.addDialog(lastDialog)
+			self.end = True
+			self.director.dialog = not self.director.dialog
+
 
 	def groupDraws(self,screen):
 		for solid in self.solids:
@@ -247,14 +269,17 @@ class Level(Scene):
 
 		self.playerGroup.add(self.player.hitbox)
 		self.solidGroup.add(self.player.hitbox)
-		self.player.setPosition(( 262.0000000000004,3202.8000000000106))
+		self.player.setPosition(( 198.0000000000004,2902.8000000000106))
 		self.player.updateHitboxPosition()
+		firstDialog = [["Ludwig se acerca, huye de el es demasiado fuerte!"]]
+		self.addDialog(firstDialog)
 
 
 		self.loadItemsFromFile()
-		enemy = Ludwig(self.director,self.playerGroup,self.solidGroup)
-		enemy.setPosition((262.2000000000136-64,3175.4000000000283-64))
-		enemy.updateHitboxPosition()
-		self.enemys.append(enemy)
-		self.enemyGroup.add(enemy.hitbox)
-		self.addSolid(enemy)
+		self.ludwig = Ludwig(self.director,self.playerGroup,self.solidGroup)
+		self.ludwig.setPosition((260.2000000000136-64,3275.4000000000283-64))
+		self.ludwig.updateHitboxPosition()
+		self.ludwig.movement = UP
+		self.enemys.append(self.ludwig)
+		self.enemyGroup.add(self.ludwig.hitbox)
+		self.addSolid(self.ludwig)

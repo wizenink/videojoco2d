@@ -139,7 +139,7 @@ class  Character(MySprite):
         walkData, atackData, self.deadData = resourceManager.loadData(coordFile)
 
         # Body Hitbox
-        self.hitbox = BodyHitbox(25,22, self.position, self, dmgGroup, solidGroup)
+        self.hitbox = BodyHitbox(25,47, self.position, self, dmgGroup, solidGroup)
         self.offsetHitbox = (83,62)
 
         # List of attack hitboxes
@@ -726,15 +726,16 @@ class Ludwig(Enemy):
     movements = [(UP,(262.2000000000136,3175.4000000000283)), (STILL,(262.2000000000136,173.2000000000407))]
 
     def __init__(self,director,dmgGroup,solidGroup):
-        Enemy.__init__(self,"ludwig.png","ludwig.data",0.1,3,director,dmgGroup,solidGroup)
+        Enemy.__init__(self,"ludwig.png","ludwig.data",0.05,3,director,dmgGroup,solidGroup)
         self.maxlife = 600
         self.life = 600
 
     def move_cpu(self,player):
-        if not self.m:
-            self.m = self.movements.pop(0)
         if self.movements:
-            if math.isclose(self.position[0],self.movements[0][1][0]-64,abs_tol=1.5) and math.isclose(self.position[1],self.movements[0][1][1]-64,abs_tol=1.5):
+            if not self.m:
+                self.m = self.movements.pop(0)
+
+            if math.isclose(self.position[0],self.movements[0][1][0]-64,abs_tol=6) and math.isclose(self.position[1],self.movements[0][1][1]-64,abs_tol=6):
                 self.m = self.movements.pop(0)
         self.move(self.m[0])
 
@@ -748,7 +749,7 @@ class Disas(Enemy):
     spawnThread = None
     deathdone = False
     dialog = [["El camino está bloqueado,me he encargado de ello.","¡Calcinaré tus huesos antes de que intentes escapar!"]]
-    deathdialog = [["El castillo ha sido asediado por el mago","y ya no es un lugar seguro."],["Tu mejor opción es intentar escapar","por el camino del *oeste*"]]
+    deathdialog = [["El castillo ha sido asediado por el Ludwig","y ya no es un lugar seguro."],["Tu mejor opción es intentar escapar","por el camino del *oeste*"]]
     def __init__(self,director,scene,dmgGroup,solidGroup):
         self.scene = scene
         self.scene.addDialog(self.dialog)
@@ -756,6 +757,7 @@ class Disas(Enemy):
         Enemy.__init__(self,"disas.png","disas.data",0.1,3,director,dmgGroup,solidGroup)
         self.maxlife = 600
         self.life = 600
+
 
     def doesCollide(self,rxt,ryt):
         for i in range(-1,2):

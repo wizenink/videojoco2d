@@ -216,9 +216,13 @@ class Level(Scene):
 		self.camera.update(self.player)
 		self.camera.apply(self.player)
 		self.player.update(time)
+		if self.player.dead:
+			level = Level(self.director)
+			deadScene = menu.MenuDead(self.director,level)
+			self.director.swapScene(deadScene)
 		if ( 1400 <= self.player.position[0] <= 1600) and (890 <= self.player.position[1] <= 900) and not self.bossSpawned:
 			boss = Disas(self.director,self,self.playerGroup,self.solidGroup)
-			self.addEnemy2(1505,600,boss)
+			self.addEnemy2(1505,610,boss)
 			self.bossSpawned = True
 		if ( -100 <= self.player.position[0] <= 100) and (2800 <= self.player.position[1] <= 2900) and self.bossDead:
 			newScene = level_trisquel_forest.Level(self.director)
@@ -244,7 +248,6 @@ class Level(Scene):
 
 	def groupDraws(self,screen):
 		self.player.draw(screen,self.camera)
-		self.player.hitbox.draw(screen,self.camera)
 		for enemy in self.enemys:
 			enemy.draw(screen,self.camera)
 			enemy.drawUI(screen,self.camera)
