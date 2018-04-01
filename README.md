@@ -5,3 +5,11 @@
 ### src/ -> Código
 ### res/ -> Recursos gráficos y de sonido
 ### lib/ -> Librerías y utilidades
+
+## Ejecución
+```
+cd src/
+```
+```
+python3 main.py
+```
