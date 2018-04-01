@@ -324,7 +324,8 @@ class Level(Scene):
 		"Sus sicarios se disponen a atacar el pueblo."],
 		["Se rumorea que el necromántico Warmond ha venido","personalmente a cumplir los designios del emperador"],["Corre el rumor de que se le ha visto en","*la playa al sur del pueblo*"]]
 		self.addDialog(firstDialog)
-
+		self.addEnemy(982,1748)
+		self.addEnemy(773,2100)
 		#boss = Warmond(self.director,self,self.playerGroup,self.solidGroup)
 		#self.addEnemy2(350,1750,boss)
 		self.loadItemsFromFile()

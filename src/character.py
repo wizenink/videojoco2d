@@ -611,7 +611,7 @@ class Warmond(Enemy):
     def doesCollide(self,rxt,ryt):
         for i in range(-1,2):
             for j in range(-1,2):
-                if not self.scene.collisionMap[rxt+i][ryt+j]:
+                if not self.scene. collisionMap[rxt+i][ryt+j]:
                     return True
         return False
     def spawner2(self):
