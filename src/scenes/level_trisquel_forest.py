@@ -6,6 +6,7 @@ from scene.scenec import *
 from scene import serializer
 from resourceManager import *
 from character import *
+from scenes import menu
 from util.levelDesigner import *
 sys.path.insert(0,"./dialog")
 from diag import *
@@ -37,7 +38,7 @@ class Level(Scene):
 		self.lvlname = "level_trisquel_forest.png"
 		self.lvlfile = "level_trisquel.txt"
 		self.designer = Designer(self.lvlfile)
-		width,height,map = serializer.loadLevel(self.lvlname)
+		width,height,map,colissionmap = serializer.loadLevel(self.lvlname)
 		Scene.__init__(self,self.lvlname,width,height,map,32,director)
 		self.initLevel()
 
@@ -154,6 +155,10 @@ class Level(Scene):
 			enemy.move_cpu(self.player)
 
 	def update(self,time):
+		if self.player.dead:
+			level = Level(self.director)
+			deadScene = menu.MenuDead(self.director,level)
+			self.director.swapScene(deadScene)		
 		self.camera.update(self.player)
 		self.camera.apply(self.player)
 		self.player.update(time)

@@ -326,7 +326,7 @@ class Menu(Scene):
 
 	def runGame(self):
 		#first = level_farm.Level(self.director)
-		first = level_castle_lindisfarne.Level(self.director)
+		first = level_trisquel_forest.Level(self.director)
 		self.director.swapScene(first)
 
 	def showMainScreen(self):
