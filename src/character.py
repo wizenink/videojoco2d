@@ -345,7 +345,7 @@ class  Character(MySprite):
                     self.getDmg(solidSprite.parent.dmg, inverseLooking(self.looking), timeToBlock = 10)
                 else:
                     self.getDmg(solidSprite.parent.dmg, solidSprite.parent.looking, timeToBlock = 30)
-                    solidSprite.parent.getDmg(self.dmg, self.looking,timeToBlock = 0)
+                    solidSprite.parent.getDmg(self.dmg, self.looking,timeToBlock = 10)
 
         if collideList:
             self.setPosition(positionTmp)
@@ -600,6 +600,12 @@ class Warmond(Enemy):
         Enemy.__init__(self,"warmond.png","warmond.data",0.1,3,director,dmgGroup,solidGroup)
         self.maxlife = 500
         self.life = 500
+        self.dmg = 15
+        self.spawns = []
+        for i in range(self.NENEMIES):
+            e = Enemy1(self.director,dmgGroup = self.dmgGroup, solidGroup = self.solidGroup)
+            e.dead = True
+            self.spawns.append(e)
         #scene.addDialog(self.dialog)
         #director.dialog = True
 
@@ -616,10 +622,13 @@ class Warmond(Enemy):
             self.acctime = 0
             #rx = random.randint(int(camera.apply(self)[0]-10),int(camera.apply(self)[0]+10))
             #ry = random.randint(int(camera.apply(self)[1]-10),int(camera.apply(self)[1]+10))
-            for i in range(self.NENEMIES):
-                rx = random.randint(int(self.position[0]-512),int(self.position[0]+512))
-                ry = random.randint(int(self.position[1]-512),int(self.position[1]+512))
-                self.scene.addEnemy(rx,ry)
+            for enemy in self.spawns:
+                if enemy.dead:
+                    enemy.dead = False
+                    enemy.life = enemy.maxlife
+                    rx = random.randint(int(self.position[0]-512),int(self.position[0]+512))
+                    ry = random.randint(int(self.position[1]-512),int(self.position[1]+512))
+                    self.scene.addEnemy2(rx,ry,enemy)
         self.lastTime = now
 
     def move_cpu(self,player):
