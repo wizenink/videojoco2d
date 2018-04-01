@@ -4,12 +4,14 @@ import sys
 sys.path.insert(0,"../")
 from scene.scenec import *
 from scene import serializer
+from scenes import menu
 from game import graph
 from resourceManager import *
 from character import *
 from util.levelDesigner import *
 sys.path.insert(0,"./dialog")
 from diag import *
+from scenes import level_trisquel_forest
 
 #RGB 100,100,100 ROCA
 #RGB 255,255,255 GRASS
@@ -21,6 +23,7 @@ offset_y = 70
 
 class Level(Scene):
 	bossSpawned = False
+	bossDead = False
 	def __init__(self,director):
 		#Test variables
 		self.debug = 0
@@ -148,7 +151,42 @@ class Level(Scene):
 			elif item[0] == "castle":
 				self.addCastle(item[1])
 
+
 	def events(self,events):
+		for event in events:
+			# Pausa
+			if self.debug:
+				pygame.mouse.set_visible(1)
+				self.addItem(event)
+				if event.type == KEYDOWN and event.key == K_c:
+					self.solids = []
+			if event.type == KEYDOWN and event.key == K_p:
+				self.director.dialog = not self.director.dialog
+			# Si el event es la pulsación de la tecla Escape
+			if event.type == KEYDOWN and event.key == K_ESCAPE:
+					# Se sale del programa
+				menuscene = menu.MenuPause(self.director)
+				self.director.pushScene(menuscene)
+
+
+
+			#if event.type == pygame.USEREVENT: message.update()s
+			#if (event.type == KEYDOWN and event.key == K_SPACE): message.update()
+
+			if not self.director.dialog:
+				self.player.move(pygame.key.get_pressed(), K_UP, K_DOWN, K_LEFT, K_RIGHT, K_SPACE)
+				for enemy in self.enemys:
+					enemy.move_cpu(self.player)
+			else:
+				if event.type == KEYDOWN and event.key == K_SPACE:
+					if self.dialogs:
+						if not self.dialogs[0].allDialogDone():
+							self.dialogs[0].qUpdate()
+						else:
+							print("No more dialogs")
+							self.dialogs.pop(0)
+							self.director.dialog = False
+	"""def events(self,events):
 		for event in events:
 				# Pausa
 				if self.debug:
@@ -172,7 +210,7 @@ class Level(Scene):
 
 		self.player.move(pygame.key.get_pressed(), K_UP, K_DOWN, K_LEFT, K_RIGHT, K_SPACE)
 		for enemy in self.enemys:
-			enemy.move_cpu(self.player)
+			enemy.move_cpu(self.player)"""
 
 	def update(self,time):
 		self.camera.update(self.player)
@@ -182,6 +220,9 @@ class Level(Scene):
 			boss = Disas(self.director,self,self.playerGroup,self.solidGroup)
 			self.addEnemy2(1505,600,boss)
 			self.bossSpawned = True
+		if ( -100 <= self.player.position[0] <= 100) and (2800 <= self.player.position[1] <= 2900) and self.bossDead:
+			newScene = level_trisquel_forest.Level(self.director)
+			self.director.swapScene(newScene)
 		for enemy in self.enemys:
 			if enemy.dead:
 				self.solidGroup.remove(enemy.hitbox)
@@ -191,8 +232,19 @@ class Level(Scene):
 			else:
 				enemy.update(time)
 
+	def updateDialog(self,screen):
+		if self.dialogs:
+			self.dialogs[0].update()
+			self.dialogs[0].draw(screen)
+
+
+	def addDialog(self, textDialog):
+		dialog = Dialog("test",textDialog)
+		self.dialogs.append(dialog)
+
 	def groupDraws(self,screen):
 		self.player.draw(screen,self.camera)
+		self.player.hitbox.draw(screen,self.camera)
 		for enemy in self.enemys:
 			enemy.draw(screen,self.camera)
 			enemy.drawUI(screen,self.camera)

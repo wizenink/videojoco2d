@@ -9,6 +9,7 @@ from pygame.locals import *
 from resourceManager import *
 from director import *
 from game.constants import *
+import math
 
 # for testing
 # sys.path.insert(0, './test/')
@@ -138,7 +139,7 @@ class  Character(MySprite):
         walkData, atackData, self.deadData = resourceManager.loadData(coordFile)
 
         # Body Hitbox
-        self.hitbox = BodyHitbox(25,47, self.position, self, dmgGroup, solidGroup)
+        self.hitbox = BodyHitbox(25,22, self.position, self, dmgGroup, solidGroup)
         self.offsetHitbox = (83,62)
 
         # List of attack hitboxes
@@ -345,7 +346,7 @@ class  Character(MySprite):
                     self.getDmg(solidSprite.parent.dmg, inverseLooking(self.looking), timeToBlock = 10)
                 else:
                     self.getDmg(solidSprite.parent.dmg, solidSprite.parent.looking, timeToBlock = 30)
-                    solidSprite.parent.getDmg(self.dmg, self.looking,timeToBlock = 0)
+                    solidSprite.parent.getDmg(self.dmg, self.looking,timeToBlock = 10)
 
         if collideList:
             self.setPosition(positionTmp)
@@ -516,9 +517,11 @@ class Fire(InmobileSpriteDmg):
     oldTime = 0
     lifespan = 10
     acc = 0
-    def __init__(self, imageFile, position, solidGroup, folder = CHARACTER_SPRITE_FOLDER):
+    looking = UP
+    def __init__(self, imageFile, position, solidGroup,dmgGroup, folder = CHARACTER_SPRITE_FOLDER):
 
         InmobileSprite.__init__(self,imageFile,position,folder)
+        self.dmgGroup = dmgGroup
         self.images = resourceManager.loadStaticAnimation(imageFile)
         self.image = self.images[0]
         self.rect = self.image.get_rect()
@@ -564,15 +567,16 @@ class Fire(InmobileSpriteDmg):
             self.acc = 0
             self.dead = True
         self.oldTime = now
-
         self.changeAnimation()
 
         self.solidGroup.remove(self)
         collideList = pygame.sprite.spritecollide(self.hitbox, self.solidGroup, False)
         for solidSprite in collideList:
             if (not isinstance(solidSprite, InmobileSprite)) and ( solidSprite in self.dmgGroup.sprites()):
+                self.looking = inverseLooking(solidSprite.parent.looking)
                 self.getDmg(solidSprite.parent.dmg, solidSprite.parent.looking, timeToBlock = 30)
-                solidSprite.parent.getDmg(self.dmg, self.looking,timeToBlock = 0)
+                solidSprite.parent.getDmg(self.dmg, self.looking,timeToBlock = 10)
+
 
         #if collideList:
             #self.setPosition(positionTmp)
@@ -600,9 +604,20 @@ class Warmond(Enemy):
         Enemy.__init__(self,"warmond.png","warmond.data",0.1,3,director,dmgGroup,solidGroup)
         self.maxlife = 500
         self.life = 500
+        self.dmg = 15
+        self.spawns = []
+        for i in range(self.NENEMIES):
+            e = Enemy1(self.director,dmgGroup = self.dmgGroup, solidGroup = self.solidGroup)
+            e.dead = True
+            self.spawns.append(e)
         #scene.addDialog(self.dialog)
         #director.dialog = True
-
+    def doesCollide(self,rxt,ryt):
+        for i in range(-1,2):
+            for j in range(-1,2):
+                if not self.scene. collisionMap[rxt+i][ryt+j]:
+                    return True
+        return False
     def spawner2(self):
         camera = self.scene.camera
         now = time.time()
@@ -616,10 +631,23 @@ class Warmond(Enemy):
             self.acctime = 0
             #rx = random.randint(int(camera.apply(self)[0]-10),int(camera.apply(self)[0]+10))
             #ry = random.randint(int(camera.apply(self)[1]-10),int(camera.apply(self)[1]+10))
-            for i in range(self.NENEMIES):
-                rx = random.randint(int(self.position[0]-512),int(self.position[0]+512))
-                ry = random.randint(int(self.position[1]-512),int(self.position[1]+512))
-                self.scene.addEnemy(rx,ry)
+            for enemy in self.spawns:
+                if enemy.dead:
+                    enemy.dead = False
+                    enemy.life = enemy.maxlife
+                    rx = 0
+                    ry = 0
+                    while True:
+                        rx = random.randint(int(self.position[0]-512),int(self.position[0]+512))
+                        ry = random.randint(int(self.position[1]-512),int(self.position[1]+512))
+                        rxt = int(rx/32)
+                        ryt = int(ry/32)
+                        if self.doesCollide(rxt,ryt):
+                            print("Avoided collision")
+                            continue
+                        else:
+                            break
+                    self.scene.addEnemy2(rx,ry,enemy)
         self.lastTime = now
 
     def move_cpu(self,player):
@@ -694,8 +722,15 @@ class Ludwig(Enemy):
     summonTimer = 0
     NFIRES = 4
     spawnThread = None
-    def __init__(self,director,scene,dmgGroup,solidGroup):
-        self.scene = scene
+    m = None
+    movements = [(UP,(262.2000000000136,3175.4000000000283)),
+    (RIGHT,(262.2000000000136,2418.200000000026)),
+    (DOWN,(675.0000000000133,2418.200000000026)),
+    (RIGHT,(675.0000000000133,3125.4000000000283)),
+    (UP,(2146.600000000015,3125.4000000000283)),
+    (STILL,(2146.600000000015,2822.000000000024))]
+
+    def __init__(self,director,dmgGroup,solidGroup):
         Enemy.__init__(self,"ludwig.png","ludwig.data",0.1,3,director,dmgGroup,solidGroup)
         self.maxlife = 600
         self.life = 600
@@ -720,11 +755,13 @@ class Ludwig(Enemy):
         self.lastTime = now
 
     def move_cpu(self,player):
-        ia.iaFollow(self,player)
-        self.spawner2()
-        #if self.spawnThread == None:
-        #    self.spawnThread = _thread.start_new_thread(self.spawner,())
-        return
+        if not self.m:
+            self.m = self.movements.pop(0)
+        if math.isclose(self.position[0],self.movements[0][1][0]-64,abs_tol=1.5) and math.isclose(self.position[1],self.movements[0][1][1]-64,abs_tol=1.5):
+            if self.movements:
+                self.m = self.movements.pop(0)
+        print(self.m)
+        self.move(self.m[0])
 
 class Disas(Enemy):
     "Mago Disas"
@@ -734,12 +771,30 @@ class Disas(Enemy):
     summonTimer = 0
     NFIRES = 4
     spawnThread = None
-
+    deathdone = False
+    dialog = [["El camino está bloqueado,me he encargado de ello.","¡Calcinaré tus huesos antes de que intentes escapar!"]]
+    deathdialog = [["El castillo ha sido asediado por el mago","y ya no es un lugar seguro."],["Tu mejor opción es intentar escapar","por el camino del *oeste*"]]
     def __init__(self,director,scene,dmgGroup,solidGroup):
         self.scene = scene
+        self.scene.addDialog(self.dialog)
+        director.dialog = True
         Enemy.__init__(self,"disas.png","disas.data",0.1,3,director,dmgGroup,solidGroup)
         self.maxlife = 600
         self.life = 600
+
+    def doesCollide(self,rxt,ryt):
+        for i in range(-1,2):
+            for j in range(-1,2):
+                if not self.scene.collisionMap[rxt+i][ryt+j]:
+                    return True
+        return False
+    def intersectsPlayer(self,rxt,ryt):
+        px = int(self.scene.player.position[0]/32)
+        py = int(self.scene.player.position[1]/32)
+        if abs(rxt-px) <= 2 and abs(ryt-py) <= 2:
+            return True
+        else:
+            return False
 
     def spawner2(self):
         camera = self.scene.camera
@@ -754,17 +809,31 @@ class Disas(Enemy):
             self.acctime = 0
             #rx = random.randint(int(camera.apply(self)[0]-10),int(camera.apply(self)[0]+10))
             #ry = random.randint(int(camera.apply(self)[1]-10),int(camera.apply(self)[1]+10))
-            for i in range(self.NFIRES):
-                fire = Fire('fire.png',(315,1682),self.solidGroup)
-                rx = random.randint(int(self.scene.player.position[0]-128),int(self.scene.player.position[0]+128))
-                ry = random.randint(int(self.scene.player.position[1]-128),int(self.scene.player.position[1]+128))
+            i = 0
+            while i < self.NFIRES:
+                fire = Fire('fire.png',(315,1682),self.dmgGroup,self.solidGroup)
+                while True:
+                    rx = random.randint(int(self.scene.player.position[0]-256),int(self.scene.player.position[0]+256))
+                    ry = random.randint(int(self.scene.player.position[1]-256),int(self.scene.player.position[1]+256))
+                    rxt = int(rx/32)
+                    ryt = int(ry/32)
+                    if self.doesCollide(rxt,ryt) or self.intersectsPlayer(rxt,ryt):
+                        continue
+                    else:
+                        break
                 self.scene.addEnemyFire(rx,ry,fire)
+                i += 1
         self.lastTime = now
 
     def move_cpu(self,player):
+        if self.life <= 0 and not self.deathdone:
+            self.scene.bossDead = True
+            self.scene.addDialog(self.deathdialog)
+            self.director.dialog = True
+            self.deathdone = True
         #ia.iaFollow(self,player)
-        #self.spawner2()
-        ia.iaFollow3(self,player,self.scene.collisionGraph)
+        self.spawner2()
+        ia.iaFollow(self,player)
         #if self.spawnThread == None:
         #    self.spawnThread = _thread.start_new_thread(self.spawner,())
         return
