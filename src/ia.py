@@ -45,6 +45,8 @@ def iaFollow2(self,player,graph):
 	#print(path)
 	return path
 def iaFollow(self, player):
+		if getEuclideanDistance(self,player) >= 300:
+			return
 	# Movemos solo a los enemigos que esten en la pantalla
 	#if self.rect.left>0 and self.rect.right< DISPLAY_WIDTH and self.rect.bottom>0 and self.rect.top< DISPLAY_HEIGHT:
 
