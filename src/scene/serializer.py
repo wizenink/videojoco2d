@@ -12,6 +12,7 @@ ROCK = (100,100,100)
 GRASS = (255,255,255)
 TREE = (94,255,98)
 TREE2 = (95,255,99)
+TREE3 = (25,50,220)
 FLOWERS = (255,0,120)
 BLACK = (0,0,0)
 UPPER_GRASS = (255,255,20)
@@ -64,12 +65,14 @@ def loadLevel(levelName):
             ROCK : "rock.png",
             TREE : "tree.png",
             TREE2 : "tree.png",
+            TREE3 : "grass.png",
             BLACK : 'black.png'}
             tupla = default[tuple(buffer[x,y])]
             if collidable(tupla):
                 row[x] = (resourceManager.loadImage((tupla),folder = TILE_FOLDER), True)
             else:
                 row[x] = (resourceManager.loadImage((tupla),folder = TILE_FOLDER) , False)
-                collisionMap[x][y] = 1
+                if (tupla != TREE3):
+                    collisionMap[x][y] = 1
         map.append(row)
     return width,height,map,collisionMap
