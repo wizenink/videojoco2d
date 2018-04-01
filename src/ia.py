@@ -5,8 +5,18 @@ from game import graph as graphc
 def getEuclideanDistance(object1,object2):
 	return math.ceil(math.sqrt((math.pow((object2.position[0] - object1.position[0]),2) + math.pow((object2.position[1] - object1.position[1]),2))))
 
+def calcMovement(act,sig):
+	ax,ay = act
+	sx,sy = sig
+	if ax == sx:
+		return character.DOWN if (sy-ay) > 0 else character.UP
+	if ay == sy:
+		return character.RIGHT if (sx-ax) > 0 else character.LEFT
+	return character.STILL
 def iaFollow3(self, player, graph):
 	listaPos,_ = iaFollow2(self,player,graph)
+	if listaPos == [] or len(listaPos == 1):
+		return
 	actualPos = listaPos[0]
 	sigPos = listaPos[1]
 	(xSigPos,ySigPos) = sigPos
@@ -21,17 +31,7 @@ def iaFollow3(self, player, graph):
 	mayor = abs(xdiference) >= abs(ydiference)
 
 	#Diferencia de dos para contemplar que el exprite no eté en el mismo sitio por distancia de menos de dos pixeles y se mueva igual
-	if mayor and (xdiference > 0):
-		self.move(character.RIGHT)
-	elif mayor and (xdiference < 0):
-		self.move(character.LEFT)
-	elif not mayor and (ydiference > 0):
-		self.move(character.DOWN)
-	elif not mayor and (ydiference < 0):
-		self.move(character.UP)
-	else:
-		self.move(character.STILL)
-	print(xdiference,ydiference)
+	self.move(calcMovement(actualPos,sigPos))
 
 
 

@@ -135,7 +135,7 @@ def AStarSearch(start, end, graph):
 			H = graph.heuristic(neighbour, end)
 			F[neighbour] = G[neighbour] + H
 
-	raise RuntimeError("A* failed to find a solution")
+	return [],0
 
 def find_path(graph,start,end,path = []):
     return AStarSearch(start,end,graph)
