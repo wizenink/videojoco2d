@@ -172,11 +172,20 @@ class Level(Scene):
 			level = Level(self.director)
 			deadScene = menu.MenuDead(self.director,level)
 			self.director.swapScene(deadScene)
+		print(self.player.position)
 		self.camera.update(self.player)
 		self.camera.apply(self.player)
 		self.player.update(time)
+
 		for enemy in self.enemys:
-			enemy.update(time)
+			if enemy.dead:
+				self.solidGroup.remove(enemy.hitbox)
+				self.enemyGroup.remove(enemy.hitbox)
+				self.enemys.remove(enemy)
+				#self.solids.remove(enemy)
+			else:
+				enemy.update(time)
+
 		if self.end:
 			menuscene = menu.MenuEnd(self.director)
 			self.director.swapScene(menuscene)
@@ -280,6 +289,12 @@ class Level(Scene):
 		self.ludwig.setPosition((260.2000000000136-64,3275.4000000000283-64))
 		self.ludwig.updateHitboxPosition()
 		self.ludwig.movement = UP
+		self.addEnemy(198,2343)
+		self.addEnemy(198,1537)
+		self.addEnemy(198,1400)
+		self.addEnemy(198,1145)
+		self.addEnemy(198,377)
+		self.addEnemy(198,300)
 		self.enemys.append(self.ludwig)
 		self.enemyGroup.add(self.ludwig.hitbox)
 		self.addSolid(self.ludwig)
