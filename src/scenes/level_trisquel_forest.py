@@ -29,7 +29,7 @@ class Level(Scene):
 		self.solidGroup = pygame.sprite.Group()
 		#Si estamos en modo debug no colisionaremos con nada
 		if (self.debug):
-			self.player = Player(director, dmgGroup = self.enemyGroup, solidGroup = pygame.sprite.Group())			
+			self.player = Player(director, dmgGroup = self.enemyGroup, solidGroup = pygame.sprite.Group())
 		else:
 			self.player = Player(director, dmgGroup = self.enemyGroup, solidGroup = self.solidGroup)
 		self.solids = []
@@ -118,7 +118,7 @@ class Level(Scene):
 			elif item[0] == "misc2":
 				self.addMisc(item[1],2)
 			elif item[0] == "plants":
-				self.addMisc(item[1],4) 
+				self.addMisc(item[1],4)
 			elif item[0] == "house":
 				self.addHouse(item[1])
 			elif item[0] == "fiddlesticks":
@@ -158,7 +158,7 @@ class Level(Scene):
 		if self.player.dead:
 			level = Level(self.director)
 			deadScene = menu.MenuDead(self.director,level)
-			self.director.swapScene(deadScene)		
+			self.director.swapScene(deadScene)
 		self.camera.update(self.player)
 		self.camera.apply(self.player)
 		self.player.update(time)
@@ -171,7 +171,7 @@ class Level(Scene):
 			enemy.draw(screen,self.camera)
 		for solid in self.solids:
 			solid.draw(screen,self.camera)
-	
+
 	def drawUI(self,screen):
 		pass
 
@@ -245,12 +245,14 @@ class Level(Scene):
 
 		self.playerGroup.add(self.player.hitbox)
 		self.solidGroup.add(self.player.hitbox)
-		self.player.setPosition(( 155.8000000000004,3202.8000000000106))
+		self.player.setPosition(( 262.0000000000004,3202.8000000000106))
 		self.player.updateHitboxPosition()
 
 
 		self.loadItemsFromFile()
-		self.addEnemy(315,1682)
-
-
-		
+		enemy = Ludwig(self.director,self.playerGroup,self.solidGroup)
+		enemy.setPosition((262.2000000000136-64,3175.4000000000283-64))
+		enemy.updateHitboxPosition()
+		self.enemys.append(enemy)
+		self.enemyGroup.add(enemy.hitbox)
+		self.addSolid(enemy)

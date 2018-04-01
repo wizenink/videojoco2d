@@ -9,6 +9,7 @@ from pygame.locals import *
 from resourceManager import *
 from director import *
 from game.constants import *
+import math
 
 # for testing
 # sys.path.insert(0, './test/')
@@ -718,8 +719,15 @@ class Ludwig(Enemy):
     summonTimer = 0
     NFIRES = 4
     spawnThread = None
-    def __init__(self,director,scene,dmgGroup,solidGroup):
-        self.scene = scene
+    m = None
+    movements = [(UP,(262.2000000000136,3175.4000000000283)),
+    (RIGHT,(262.2000000000136,2418.200000000026)),
+    (DOWN,(675.0000000000133,2418.200000000026)),
+    (RIGHT,(675.0000000000133,3125.4000000000283)),
+    (UP,(2146.600000000015,3125.4000000000283)),
+    (STILL,(2146.600000000015,2822.000000000024))]
+
+    def __init__(self,director,dmgGroup,solidGroup):
         Enemy.__init__(self,"ludwig.png","ludwig.data",0.1,3,director,dmgGroup,solidGroup)
         self.maxlife = 600
         self.life = 600
@@ -744,11 +752,13 @@ class Ludwig(Enemy):
         self.lastTime = now
 
     def move_cpu(self,player):
-        ia.iaFollow(self,player)
-        self.spawner2()
-        #if self.spawnThread == None:
-        #    self.spawnThread = _thread.start_new_thread(self.spawner,())
-        return
+        if not self.m:
+            self.m = self.movements.pop(0)
+        if math.isclose(self.position[0],self.movements[0][1][0]-64,abs_tol=1.5) and math.isclose(self.position[1],self.movements[0][1][1]-64,abs_tol=1.5):
+            if movements:
+                self.m = self.movements.pop(0)
+        print(self.m)
+        self.move(self.m[0])
 
 class Disas(Enemy):
     "Mago Disas"
