@@ -172,7 +172,7 @@ class Level(Scene):
 			level = Level(self.director)
 			deadScene = menu.MenuDead(self.director,level)
 			self.director.swapScene(deadScene)
-		print(self.player.position)
+
 		self.camera.update(self.player)
 		self.camera.apply(self.player)
 		self.player.update(time)

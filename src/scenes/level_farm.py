@@ -1,5 +1,5 @@
 import pygame
-import pyganim #maybe not needed
+#import pyganim #maybe not needed
 import sys
 sys.path.insert(0,"../")
 from scene.scenec import *
