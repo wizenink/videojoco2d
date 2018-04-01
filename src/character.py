@@ -608,7 +608,12 @@ class Warmond(Enemy):
             self.spawns.append(e)
         #scene.addDialog(self.dialog)
         #director.dialog = True
-
+    def doesCollide(self,rxt,ryt):
+        for i in range(-1,2):
+            for j in range(-1,2):
+                if not self.scene.collisionMap[rxt+i][ryt+j]:
+                    return True
+        return False
     def spawner2(self):
         camera = self.scene.camera
         now = time.time()
@@ -626,8 +631,18 @@ class Warmond(Enemy):
                 if enemy.dead:
                     enemy.dead = False
                     enemy.life = enemy.maxlife
-                    rx = random.randint(int(self.position[0]-512),int(self.position[0]+512))
-                    ry = random.randint(int(self.position[1]-512),int(self.position[1]+512))
+                    rx = 0
+                    ry = 0
+                    while True:
+                        rx = random.randint(int(self.position[0]-512),int(self.position[0]+512))
+                        ry = random.randint(int(self.position[1]-512),int(self.position[1]+512))
+                        rxt = int(rx/32)
+                        ryt = int(ry/32)
+                        if self.doesCollide(rxt,ryt):
+                            print("Avoided collision")
+                            continue
+                        else:
+                            break
                     self.scene.addEnemy2(rx,ry,enemy)
         self.lastTime = now
 
@@ -763,11 +778,17 @@ class Disas(Enemy):
             self.acctime = 0
             #rx = random.randint(int(camera.apply(self)[0]-10),int(camera.apply(self)[0]+10))
             #ry = random.randint(int(camera.apply(self)[1]-10),int(camera.apply(self)[1]+10))
-            for i in range(self.NFIRES):
+            i = 0
+            while i < NFIRES:
                 fire = Fire('fire.png',(315,1682),self.solidGroup)
                 rx = random.randint(int(self.scene.player.position[0]-128),int(self.scene.player.position[0]+128))
                 ry = random.randint(int(self.scene.player.position[1]-128),int(self.scene.player.position[1]+128))
+                rxt = int(rx/32)
+                ryt = int(ry/32)
+                if not collisionMap[rxt][ryt]:
+                    continue
                 self.scene.addEnemyFire(rx,ry,fire)
+                i += 1
         self.lastTime = now
 
     def move_cpu(self,player):
