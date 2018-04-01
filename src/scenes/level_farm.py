@@ -43,7 +43,7 @@ class Level(Scene):
 		self.lvlname = "level_farm.png"
 		self.lvlfile = "level_farm.txt"
 		self.designer = Designer(self.lvlfile)
-		width,height,map = serializer.loadLevel(self.lvlname)
+		width,height,map,collisionMap = serializer.loadLevel(self.lvlname)
 		Scene.__init__(self,self.lvlname,width,height,map,32,director)
 		self.fenceRemoved = False
 		self.initLevel()
@@ -191,7 +191,10 @@ class Level(Scene):
 		self.camera.update(self.player)
 		self.camera.apply(self.player)
 		self.player.update(time)
-		print(self.player.position)
+		if self.player.dead:
+			level = Level(self.director)
+			deadScene = menu.MenuDead(self.director,level)
+			self.director.swapScene(deadScene)
 		if not self.firstTime:
 			self.director.dialog = not self.director.dialog
 			self.firstTime = True

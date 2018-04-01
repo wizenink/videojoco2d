@@ -70,6 +70,21 @@ class TextPlay(TextGUI):
 	def action(self):
 		self.screen.menu.runGame()
 
+class TextPlayDead(TextGUI):
+	def __init__(self,screen,pos):
+		font = resourceManager.loadFont("BLKCHCRY.TTF",26)
+		TextGUI.__init__(self,screen,font,(55,47,45),"Play Again",(95,250 + (pos * 40)))
+	def action(self):
+		self.screen.menu.runGame()
+
+class TextExitDead(TextGUI):
+	def __init__(self,screen,pos):
+		font = resourceManager.loadFont("BLKCHCRY.TTF",26)
+		TextGUI.__init__(self,screen,font,(55,47,45),"Exit (Coward Way)",(95,250 + (pos * 40)))
+	def action(self):
+		self.screen.menu.exitProgram()
+
+
 class TextResume(TextGUI):
 	def __init__(self,screen,pos):
 		font = resourceManager.loadFont("BLKCHCRY.TTF",26)
@@ -188,6 +203,19 @@ class MainScreenGUI(ScreenGUI):
 		self.elementsGUI.append(textPlay)
 		self.elementsGUI.append(textExit)
 
+class MenuDeadGUI(ScreenGUI):
+	def __init__(self,menu):
+		ScreenGUI.__init__(self,menu,'dead_screen.jpg')
+
+		#playButton = PlayButton(self)
+		#exitButton = ExitButton(self)
+		#self.elementsGUI.append(playButton)
+		#self.elementsGUI.append(exitButton)
+		textPlayDead = TextPlayDead(self,0)
+		textExitDead = TextExitDead(self,1)
+		self.elementsGUI.append(textPlayDead)
+		self.elementsGUI.append(textExitDead)
+
 
 class MenuPauseGUI(ScreenGUI):
 	def __init__(self,menu):
@@ -297,8 +325,8 @@ class Menu(Scene):
 
 
 	def runGame(self):
-		#first = level_farm.Level(self.director)
-		first = level_castle_lindisfarne.Level(self.director)
+		first = level_farm.Level(self.director)
+		#first = level_castle_lindisfarne.Level(self.director)
 		self.director.swapScene(first)
 
 	def showMainScreen(self):
@@ -352,6 +380,72 @@ class MenuPause(Scene):
 		y = pos[1]
 		self.drawCursor(screen,x,y)
 
+
+	def menureturn(self):
+		self.showMainScreen()
+
+	def options(self):
+		self.actualScreen = 1
+
+	def exitProgram(self):
+		self.director.exitProgram()
+
+	def resumeGame(self):
+		self.director.exitScene()
+
+	def showMainScreen(self):
+		self.actualScreen = 0
+
+	def drawUI(self, screen):
+		pass
+
+class MenuDead(Scene):
+	def __init__(self,director,level):
+		Scene.__init__(self,"main_menu",director)
+		self.screenList = []
+		self.screenList.append(MenuDeadGUI(self))
+		self.showMainScreen()
+		self.level = level
+		self.mouse_down = False
+		self.cursor = pygame.transform.scale(resourceManager.loadImage("cursor.png",-1,folder = MENU_FOLDER),(32,32))
+		self.cursor_clicked = pygame.transform.scale(resourceManager.loadImage("cursor_clicked.png",-1,folder = MENU_FOLDER),(32,32))
+
+	#dibuja el cursor custom
+	def drawCursor(self,screen,x,y):
+		if self.mouse_down:
+			screen.blit(self.cursor_clicked,(x,y))
+		else:
+			screen.blit(self.cursor,(x,y))
+
+	def music(self):
+		self.director.sound.generalSoundManage(GAME_SOUND_MUSIC_EVENT_MUSIC_6, repeat = -1)
+
+	def update(self, *args):
+		return
+
+	def groupDraws(self, *args):
+		pass
+
+	def events(self,events_list):
+		for event in events_list:
+			if event.type == KEYDOWN:
+				if event.key == K_ESCAPE:
+					self.resumeGame()
+			elif event.type == pygame.QUIT:
+				self.director.exitProgram()
+		#self.mouse_down = pygame.mouse.get_pressed()[0]
+
+		self.screenList[self.actualScreen].events(events_list)
+
+	def draw(self,screen):
+		self.screenList[self.actualScreen].draw(screen)
+		pos = pygame.mouse.get_pos()
+		x = pos[0]
+		y = pos[1]
+		self.drawCursor(screen,x,y)
+
+	def runGame(self):
+		self.director.swapScene(self.level)
 
 	def menureturn(self):
 		self.showMainScreen()
